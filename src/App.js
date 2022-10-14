@@ -1,24 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import { Global } from "@emotion/react";
+import styled from "@emotion/styled";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Reset } from "styled-reset";
+import { Category } from "./components/Category";
+import { Header } from "./components/Header";
+import GlobalStyle from "./styles/GlobalStyle";
+import { Main } from "./pages/Main";
+import { Event } from "./pages/Event";
+import { Best } from "./pages/Best";
+import { Contents } from "./pages/Contents";
+import { My } from "./pages/My";
+// import "../src/styles/global.css";
+
+const Container = styled.div`
+  font-size: 14px;
+  line-height: 1.5;
+  color: #111111;
+  letter-spacing: -0.015em;
+
+  position: relative;
+  /* padding: 47px 0 187px; */
+  margin: 0 auto;
+  max-width: 640px;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #fff;
+  box-sizing: border-box;
+
+  a {
+    color: #111111;
+    text-decoration: none;
+  }
+`;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Reset />
+      <Global styles={GlobalStyle} />
+      <Container>
+        <Header />
+        <Category />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/event" element={<Event />} />
+          <Route path="/best" element={<Best />} />
+          <Route path="/contents" element={<Contents />} />
+          <Route path="/my" element={<My />} />
+        </Routes>
+      </Container>
+    </BrowserRouter>
   );
 }
 

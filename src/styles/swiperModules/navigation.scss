@@ -1,0 +1,129 @@
+// @import "../../swiper-vars.scss";
+@at-root {
+  :root {
+    --swiper-navigation-size: 44px;
+    /*
+  --swiper-navigation-color: var(--swiper-theme-color);
+  */
+  }
+}
+.swiper-button-prev,
+.swiper-button-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  color: #000;
+  z-index: 30;
+
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+
+  &.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: auto;
+    pointer-events: none;
+  }
+}
+
+.swiper-button-next {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: url("https://s2.svgbox.net/materialui.svg?ic=arrow_forward_ios");
+  background-color: #fff;
+  background-size: 60% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.swiper-button-prev {
+  background: url("https://s2.svgbox.net/materialui.svg?ic=arrow_back_ios");
+  background-color: #fff;
+  background-size: 60% auto;
+  background-position: 7px;
+  background-repeat: no-repeat;
+}
+
+.swiper-button-prev,
+.swiper-rtl .swiper-button-next {
+  &:after {
+    content: "";
+  }
+  left: 20px;
+  right: auto;
+}
+
+.swiper-button-next,
+.swiper-rtl .swiper-button-prev {
+  &:after {
+    content: "";
+  }
+  right: 20px;
+  left: auto;
+}
+
+.swiper-button-lock {
+  display: none;
+}
+
+// .swiper-button-prev,
+// .swiper-button-next {
+//   position: absolute;
+//   top: 50%;
+//   width: calc(var(--swiper-navigation-size) / 44 * 27);
+//   height: var(--swiper-navigation-size);
+//   margin-top: calc(0px - (var(--swiper-navigation-size) / 2));
+//   z-index: 10;
+//   cursor: pointer;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   color: red;
+//   // color: var(--swiper-navigation-color, var(--swiper-theme-color));
+//   &.swiper-button-disabled {
+//     opacity: 0.35;
+//     cursor: auto;
+//     pointer-events: none;
+//   }
+//   &.swiper-button-hidden {
+//     opacity: 0;
+//     cursor: auto;
+//     pointer-events: none;
+//   }
+//   .swiper-navigation-disabled & {
+//     display: none !important;
+//   }
+//   &:after {
+//     font-family: swiper-icons;
+//     font-size: var(--swiper-navigation-size);
+//     text-transform: none !important;
+//     letter-spacing: 0;
+//     font-variant: initial;
+//     line-height: 1;
+//   }
+// }
+// .swiper-button-prev,
+// .swiper-rtl .swiper-button-next {
+//   &:after {
+//     content: "prev";
+//   }
+//   left: 10px;
+//   right: auto;
+// }
+// .swiper-button-next,
+// .swiper-rtl .swiper-button-prev {
+//   &:after {
+//     content: "next";
+//   }
+//   right: 10px;
+//   left: auto;
+// }
+
+// .swiper-button-lock {
+//   display: none;
+// }
