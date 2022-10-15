@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import videoContents from "../../image/video_contents_1.mp4";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, A11y } from "swiper";
 import { Link } from "react-router-dom";
 import { BsBag, BsFillPauseFill, BsPlayFill } from "react-icons/bs";
-import { mainContentsSlideList } from "../../data/mainContentsSlideList";
 import itemList1 from "../../image/list_item_1.jpg";
+import itemList2 from "../../image/list_item_2.jpg";
+import itemList3 from "../../image/list_item_3.jpg";
 
 const Container = styled.div``;
 
@@ -34,7 +33,25 @@ const Title = styled.div`
     vertical-align: top;
   }
 `;
+const VideoButton = styled.button`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 20;
+  transform: translate(-50%, -50%);
 
+  opacity: ${(props) => (props.hover ? "0" : "100")};
+  transition: opacity 0.6s;
+
+  svg {
+    width: 70px;
+    height: 70px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
 const VideoBox = styled.div`
   overflow: hidden;
   position: relative;
@@ -56,7 +73,7 @@ const Video = styled.video`
 const InfoBox = styled.div`
   position: relative;
 
-  strong {
+  > strong {
     display: block;
     padding: 16px 16px 0;
     font-size: 16px;
@@ -64,12 +81,24 @@ const InfoBox = styled.div`
     letter-spacing: -0.25px;
   }
 
-  span {
+  > span {
     display: block;
     padding: 6px 16px 0;
     font-size: 14px;
     line-height: 20px;
     color: #535353;
+  }
+
+  ::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border: 1px solid #dedfe0;
+    border-top: 0;
+    border-radius: 0 0 10px 10px;
+    content: "";
   }
 `;
 
@@ -80,9 +109,11 @@ const ListBox = styled.ul`
 
 const List = styled.li`
   position: relative;
+  display: flex;
+  margin-top: 2px;
 
-  @media screen and (min-width: 640px) {
-    /* padding-right: 52px; */
+  :first-of-type {
+    margin-top: 0px;
   }
 `;
 
@@ -100,6 +131,9 @@ const ListImage = styled.span`
   width: 70px;
   height: 70px;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   img {
     display: block;
@@ -110,6 +144,7 @@ const ListImage = styled.span`
 
 const ListText = styled.div`
   overflow: hidden;
+  padding: 0 15px;
 `;
 
 const ListTitle = styled.strong`
@@ -133,11 +168,11 @@ const BagButton = styled.button`
   margin-left: auto;
   border: 0 none;
   background-color: transparent;
-  cursor: pointer;
+  /* cursor: pointer; */
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     margin: 6px;
   }
 
@@ -147,6 +182,32 @@ const BagButton = styled.button`
 `;
 
 export const MainVideoContents = () => {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hover, setHover] = useState(false);
+
+  const togglePlay = () => {
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      console.log("멈추기");
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const onMouseOverButton = (e) => {
+    if (isPlaying) {
+      setHover(false);
+    }
+  };
+  const onMouseOutButton = (e) => {
+    if (isPlaying) {
+      setHover(true);
+    }
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -154,9 +215,21 @@ export const MainVideoContents = () => {
           <strong>춘식이랑 집 꾸미기</strong>
         </Title>
         <VideoBox>
-          <Video>
-            <source src={videoContents} type="video/mp4" />
-          </Video>
+          <VideoButton
+            onClick={togglePlay}
+            hover={hover}
+            onMouseEnter={onMouseOverButton}
+          >
+            {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
+          </VideoButton>
+          <Video
+            ref={videoRef}
+            muted
+            loop
+            src={videoContents}
+            type="video/mp4"
+            onMouseOut={onMouseOutButton}
+          />
         </VideoBox>
         <InfoBox>
           <strong>프렌즈 에브리 예이</strong>
@@ -165,27 +238,56 @@ export const MainVideoContents = () => {
             <br />
             라이언 춘식이와 EveryYay!
           </span>
-        </InfoBox>
 
-        <ListBox>
-          <List>
-            <ListLink to={"/"}>
-              <ListImage>
-                <img
-                  src={itemList1}
-                  alt={"EveryYay 납작 필로우_트민냥춘식이"}
-                />
-              </ListImage>
-              <ListText>
-                <ListTitle>EveryYay 납작 필로우_트민냥춘식이</ListTitle>
-                <ListPrice>22,000원</ListPrice>
-              </ListText>
+          <ListBox>
+            <List>
+              <ListLink to={"/"}>
+                <ListImage>
+                  <img
+                    src={itemList1}
+                    alt={"EveryYay 납작 필로우_트민냥춘식이"}
+                  />
+                </ListImage>
+                <ListText>
+                  <ListTitle>EveryYay 납작 필로우_트민냥춘식이</ListTitle>
+                  <ListPrice>22,000원</ListPrice>
+                </ListText>
+              </ListLink>
               <BagButton>
                 <BsBag />
               </BagButton>
-            </ListLink>
-          </List>
-        </ListBox>
+            </List>
+
+            <List>
+              <ListLink to={"/"}>
+                <ListImage>
+                  <img src={itemList2} alt={"EveryYay 무릎담요_라이언"} />
+                </ListImage>
+                <ListText>
+                  <ListTitle>EveryYay 무릎담요_라이언</ListTitle>
+                  <ListPrice>19,000원</ListPrice>
+                </ListText>
+              </ListLink>
+              <BagButton>
+                <BsBag />
+              </BagButton>
+            </List>
+            <List>
+              <ListLink to={"/"}>
+                <ListImage>
+                  <img src={itemList3} alt={"EveryYay 체커보드고블렛_춘식이"} />
+                </ListImage>
+                <ListText>
+                  <ListTitle>EveryYay 체커보드고블렛_춘식이</ListTitle>
+                  <ListPrice>18,000원</ListPrice>
+                </ListText>
+              </ListLink>
+              <BagButton>
+                <BsBag />
+              </BagButton>
+            </List>
+          </ListBox>
+        </InfoBox>
       </Wrapper>
     </Container>
   );
