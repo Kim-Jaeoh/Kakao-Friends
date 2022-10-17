@@ -6,6 +6,9 @@ import beltbannerMo from "../image/belt_banner_mo.jpg";
 import { useHandleISize } from "../hooks/useHandleISize";
 import { MainSlideContents } from "../components/main/MainSlideContents";
 import { MainVideoContents } from "../components/main/MainVideoContents";
+import { MainCharacterItem } from "../components/main/MainCharacterItem";
+import { MainRecommend } from "../components/main/MainRecommend";
+import { MainRestock } from "../components/main/MainRestock";
 
 const Container = styled.main`
   position: relative;
@@ -31,7 +34,6 @@ const BeltBanner = styled.div`
 const BennerContents = styled.img`
   display: block;
   width: ${(props) => (props.resize ? "350px" : "530px")};
-  /* width: 530px; */
   min-width: 320px;
   margin: 0 auto;
   border-radius: 8px;
@@ -55,6 +57,9 @@ export const Main = () => {
         </BeltBanner>
         <MainSlideContents />
         <MainVideoContents />
+        <MainCharacterItem />
+        <MainRecommend />
+        <MainRestock />
       </Article>
     </Container>
   );

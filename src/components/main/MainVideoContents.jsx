@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
+import { mainContentsSeriesList } from "../../data/mainContentsData";
 import videoContents from "../../image/video_contents_1.mp4";
 import { Link } from "react-router-dom";
-import { BsBag, BsFillPauseFill, BsPlayFill } from "react-icons/bs";
-import itemList1 from "../../image/list_item_1.jpg";
-import itemList2 from "../../image/list_item_2.jpg";
-import itemList3 from "../../image/list_item_3.jpg";
+import { BsBag, BsFillPauseFill, BsPlayFill, BsBagFill } from "react-icons/bs";
 
 const Container = styled.div``;
 
@@ -33,6 +31,7 @@ const Title = styled.div`
     vertical-align: top;
   }
 `;
+
 const VideoButton = styled.button`
   position: absolute;
   left: 50%;
@@ -168,7 +167,7 @@ const BagButton = styled.button`
   margin-left: auto;
   border: 0 none;
   background-color: transparent;
-  /* cursor: pointer; */
+  color: #909092;
 
   svg {
     width: 20px;
@@ -185,6 +184,8 @@ export const MainVideoContents = () => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hover, setHover] = useState(false);
+  const [clickIcon, setClickIcon] = useState(false);
+  const [clickNumber, setClickNumber] = useState([]);
 
   const togglePlay = () => {
     if (videoRef.current.paused) {
@@ -208,12 +209,25 @@ export const MainVideoContents = () => {
     }
   };
 
+  const toggleIcon = useCallback(
+    (index) => {
+      setClickNumber((prev) => [...prev, index]);
+      setClickIcon(true);
+
+      if (clickIcon && clickNumber.includes(index)) {
+        setClickNumber(clickNumber.filter((id) => id !== index));
+        setClickIcon(false);
+      }
+    },
+    [clickIcon, clickNumber]
+  );
+
   return (
     <Container>
+      <Title>
+        <strong>춘식이랑 집 꾸미기</strong>
+      </Title>
       <Wrapper>
-        <Title>
-          <strong>춘식이랑 집 꾸미기</strong>
-        </Title>
         <VideoBox>
           <VideoButton
             onClick={togglePlay}
@@ -240,52 +254,23 @@ export const MainVideoContents = () => {
           </span>
 
           <ListBox>
-            <List>
-              <ListLink to={"/"}>
-                <ListImage>
-                  <img
-                    src={itemList1}
-                    alt={"EveryYay 납작 필로우_트민냥춘식이"}
-                  />
-                </ListImage>
-                <ListText>
-                  <ListTitle>EveryYay 납작 필로우_트민냥춘식이</ListTitle>
-                  <ListPrice>22,000원</ListPrice>
-                </ListText>
-              </ListLink>
-              <BagButton>
-                <BsBag />
-              </BagButton>
-            </List>
+            {mainContentsSeriesList.map((list, index) => (
+              <List key={list.id}>
+                <ListLink to={"/"}>
+                  <ListImage>
+                    <img src={list.image} alt={list.title} />
+                  </ListImage>
+                  <ListText>
+                    <ListTitle>{list.title}</ListTitle>
+                    <ListPrice>{list.price}원</ListPrice>
+                  </ListText>
+                </ListLink>
 
-            <List>
-              <ListLink to={"/"}>
-                <ListImage>
-                  <img src={itemList2} alt={"EveryYay 무릎담요_라이언"} />
-                </ListImage>
-                <ListText>
-                  <ListTitle>EveryYay 무릎담요_라이언</ListTitle>
-                  <ListPrice>19,000원</ListPrice>
-                </ListText>
-              </ListLink>
-              <BagButton>
-                <BsBag />
-              </BagButton>
-            </List>
-            <List>
-              <ListLink to={"/"}>
-                <ListImage>
-                  <img src={itemList3} alt={"EveryYay 체커보드고블렛_춘식이"} />
-                </ListImage>
-                <ListText>
-                  <ListTitle>EveryYay 체커보드고블렛_춘식이</ListTitle>
-                  <ListPrice>18,000원</ListPrice>
-                </ListText>
-              </ListLink>
-              <BagButton>
-                <BsBag />
-              </BagButton>
-            </List>
+                <BagButton onClick={(e) => toggleIcon(index, e)}>
+                  {clickNumber.includes(index) ? <BsBagFill /> : <BsBag />}
+                </BagButton>
+              </List>
+            ))}
           </ListBox>
         </InfoBox>
       </Wrapper>

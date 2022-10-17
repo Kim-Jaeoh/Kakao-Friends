@@ -1,16 +1,17 @@
 import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
+import GlobalStyle from "./styles/GlobalStyle";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Reset } from "styled-reset";
 import { Category } from "./components/Category";
 import { Header } from "./components/Header";
-import GlobalStyle from "./styles/GlobalStyle";
 import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
 import { Best } from "./pages/Best";
 import { Contents } from "./pages/Contents";
 import { My } from "./pages/My";
-// import "../src/styles/global.css";
+import { Footer } from "./components/Footer";
+import { TopButton } from "./components/button/TopButton";
 
 const Container = styled.div`
   font-size: 14px;
@@ -19,7 +20,6 @@ const Container = styled.div`
   letter-spacing: -0.015em;
 
   position: relative;
-  /* padding: 47px 0 187px; */
   margin: 0 auto;
   max-width: 640px;
   min-width: 320px;
@@ -39,6 +39,7 @@ function App() {
       <Reset />
       <Global styles={GlobalStyle} />
       <Container>
+        <TopButton />
         <Header />
         <Category />
         <Routes>
@@ -48,6 +49,7 @@ function App() {
           <Route path="/contents" element={<Contents />} />
           <Route path="/my" element={<My />} />
         </Routes>
+        <Footer />
       </Container>
     </BrowserRouter>
   );

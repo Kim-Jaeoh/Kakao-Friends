@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
-import mainContentsList from "../../data/mainContentsList.json";
+import { mainContentsBannerList } from "../../data/mainContentsData.js";
 
 const Container = styled.div`
   display: block;
@@ -90,7 +90,7 @@ const MainContentsText = styled.span`
 export const MainContents = () => {
   return (
     <>
-      {mainContentsList.map((list) => (
+      {mainContentsBannerList.map((list) => (
         <Container key={list.id}>
           <Link to={"/"}>
             {list.video ? (

@@ -25,5 +25,5 @@ export const useHandleISize = () => {
     };
   }, [size]);
 
-  return { resize };
+  return { size, resize };
 };
