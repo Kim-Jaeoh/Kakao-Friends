@@ -1,9 +1,12 @@
+import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 import logo from "../image/logo_halloween.gif";
+import GlobalStyle from "../styles/GlobalStyle";
+import { Menubar } from "./Menubar";
 
 const Container = styled.div`
   display: flex;
@@ -18,7 +21,7 @@ const Container = styled.div`
   text-overflow: ellipsis;
 `;
 
-const Icon = styled.div`
+const IconBox = styled.div`
   width: 24px;
   height: 24px;
   font-size: 24px;
@@ -26,6 +29,7 @@ const Icon = styled.div`
   justify-content: center;
   align-items: center;
   padding: 5px;
+  cursor: pointer;
 `;
 
 const Icons = styled.div`
@@ -47,22 +51,34 @@ const Logo = styled.div`
 `;
 
 export const Header = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setModalOpen((prev) => !prev);
+  };
+
   return (
-    <Container>
-      <Icon style={{ position: "absolute", left: "12px" }}>
-        <AiOutlineMenu />
-      </Icon>
-      <Logo>
-        <img alt="KAKAO FRIENDS" src={logo} />
-      </Logo>
-      <Icons>
-        <Icon>
-          <FiSearch />
-        </Icon>
-        <Icon>
-          <TbWorld />
-        </Icon>
-      </Icons>
-    </Container>
+    <>
+      <Container>
+        <IconBox
+          style={{ position: "absolute", left: "12px" }}
+          onClick={toggleModal}
+        >
+          <AiOutlineMenu />
+        </IconBox>
+        <Logo>
+          <img alt="KAKAO FRIENDS" src={logo} />
+        </Logo>
+        <Icons>
+          <IconBox>
+            <FiSearch />
+          </IconBox>
+          <IconBox>
+            <TbWorld />
+          </IconBox>
+        </Icons>
+      </Container>
+      {modalOpen && <Menubar modalOpen={modalOpen} toggleModal={toggleModal} />}
+    </>
   );
 };
