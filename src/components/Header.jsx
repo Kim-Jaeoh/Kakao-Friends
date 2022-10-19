@@ -1,14 +1,32 @@
 import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
-import React, { useState } from "react";
+import { Drawer } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 import logo from "../image/logo_halloween.gif";
 import GlobalStyle from "../styles/GlobalStyle";
+import { Category } from "./Category";
 import { Menubar } from "./Menubar";
 
 const Container = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin: 0 auto;
+  background-color: #fff;
+  max-width: 640px;
+  min-width: 320px;
+
+  @media screen and (min-width: 640px) {
+    width: 640px;
+  }
+`;
+
+const HeaderBox = styled.div`
   display: flex;
   /* justify-content: space-between; */
   align-items: center;
@@ -57,28 +75,37 @@ export const Header = () => {
     setModalOpen((prev) => !prev);
   };
 
+  useEffect(() => {
+    return () => console.log("머지");
+  }, []);
+
   return (
     <>
       <Container>
-        <IconBox
-          style={{ position: "absolute", left: "12px" }}
-          onClick={toggleModal}
-        >
-          <AiOutlineMenu />
-        </IconBox>
-        <Logo>
-          <img alt="KAKAO FRIENDS" src={logo} />
-        </Logo>
-        <Icons>
-          <IconBox>
-            <FiSearch />
+        <HeaderBox>
+          <IconBox
+            style={{ position: "absolute", left: "12px" }}
+            onClick={toggleModal}
+          >
+            <AiOutlineMenu />
           </IconBox>
-          <IconBox>
-            <TbWorld />
-          </IconBox>
-        </Icons>
+          <Logo>
+            <img alt="KAKAO FRIENDS" src={logo} />
+          </Logo>
+          <Icons>
+            <IconBox>
+              <FiSearch />
+            </IconBox>
+            <IconBox>
+              <TbWorld />
+            </IconBox>
+          </Icons>
+        </HeaderBox>
+
+        <Category />
       </Container>
-      {modalOpen && <Menubar modalOpen={modalOpen} toggleModal={toggleModal} />}
+
+      <Menubar modalOpen={modalOpen} toggleModal={toggleModal} />
     </>
   );
 };

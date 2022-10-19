@@ -259,10 +259,10 @@ export const MainSlideContents = () => {
     }
   };
 
-  // 이미지 변경 시 state 저장
-  const flickingOnChange = (e) => {
-    setSlideIndex(e);
-  };
+  // // 이미지 변경 시 state 저장
+  // const flickingOnChange = (e) => {
+  //   setSlideIndex(e);
+  // };
 
   // 이미지 변경 시마다 리렌더링
   useEffect(() => {
@@ -282,18 +282,18 @@ export const MainSlideContents = () => {
     });
   };
 
-  // 페이지 아이콘
-  const onPageButton = async (index) => {
-    const flicking = flickingRef.current;
-    if (!flicking) {
-      return;
-    }
+  // // 페이지 아이콘
+  // const onPageButton = async (index) => {
+  //   const flicking = flickingRef.current;
+  //   if (!flicking) {
+  //     return;
+  //   }
 
-    // 무분별하게 이동 시 "Animation is already playing." 에러 뜨는 거 방지
-    await flicking.moveTo(index).catch((e) => {
-      return;
-    });
-  };
+  //   // 무분별하게 이동 시 "Animation is already playing." 에러 뜨는 거 방지
+  //   await flicking.moveTo(index).catch((e) => {
+  //     return;
+  //   });
+  // };
 
   const onClickArrowBackButton = () => {
     // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
@@ -379,14 +379,12 @@ export const MainSlideContents = () => {
           ref={flickingRef}
           // onChange={flickingOnChange}
           onChanged={(e) => {
-            // flickingOnChange(e);
             setSlideIndex(e.index);
             setIsPlaying(false);
             videoRef?.current[slideIndex]?.pause();
           }}
           disableOnInit={disableOnInit}
           changeOnHold={false}
-          // onVisibleChange={(e) => e.stop()}
           moveType={"strict"}
         >
           {mainContentsSlideList.map((list, index) => (

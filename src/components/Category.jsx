@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Link, useLocation } from "react-router-dom";
-import SelectMenuBtn from "./SelectMenuBtn";
+import CategoryMenuBtn from "./CategoryMenuBtn";
 
 const Container = styled.nav`
   border-bottom: 1px solid #e3e5e8;
@@ -38,35 +38,35 @@ export const Category = () => {
   return (
     <Container>
       <Inner>
-        <SelectMenuBtn
+        <CategoryMenuBtn
           num={1}
           selected={selected}
           url={"/"}
           text={"홈"}
           onSelected={onSelected}
         />
-        <SelectMenuBtn
+        <CategoryMenuBtn
           num={2}
           selected={selected}
           url={"/event"}
           onSelected={onSelected}
           text={"할로윈이벤트"}
         />
-        <SelectMenuBtn
+        <CategoryMenuBtn
           num={3}
           selected={selected}
           url={"/best"}
           text={"베스트"}
           onSelected={onSelected}
         />
-        <SelectMenuBtn
+        <CategoryMenuBtn
           num={4}
           selected={selected}
           url={"/contents"}
           text={"콘텐츠"}
           onSelected={onSelected}
         />
-        <SelectMenuBtn
+        <CategoryMenuBtn
           num={5}
           selected={selected}
           url={"/my"}

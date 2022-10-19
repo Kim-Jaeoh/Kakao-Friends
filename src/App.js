@@ -41,14 +41,16 @@ function App() {
       <Container>
         <TopButton />
         <Header />
-        <Category />
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/event" element={<Event />} />
-          <Route path="/best" element={<Best />} />
-          <Route path="/contents" element={<Contents />} />
-          <Route path="/my" element={<My />} />
-        </Routes>
+        {/* <Category /> */}
+        <div style={{ paddingTop: "43px" }}>
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/event" element={<Event />} />
+            <Route path="/best" element={<Best />} />
+            <Route path="/contents" element={<Contents />} />
+            <Route path="/my" element={<My />} />
+          </Routes>
+        </div>
         <Footer />
       </Container>
     </BrowserRouter>

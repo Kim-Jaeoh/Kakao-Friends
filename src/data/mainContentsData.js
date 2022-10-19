@@ -39,6 +39,43 @@ import restock4 from "../image/main_restock_4.jpg";
 import restock5 from "../image/main_restock_5.jpg";
 import restock6 from "../image/main_restock_6.jpg";
 
+// 메뉴 캐릭터
+import Character1 from "../image/menu_character_1.jpg";
+import Character1H from "../image/menu_character_1h.jpg";
+import Character2 from "../image/menu_character_2.jpg";
+import Character2H from "../image/menu_character_2h.jpg";
+import Character3 from "../image/menu_character_3.jpg";
+import Character3H from "../image/menu_character_3h.jpg";
+import Character4 from "../image/menu_character_4.jpg";
+import Character4H from "../image/menu_character_4h.jpg";
+import Character5 from "../image/menu_character_5.jpg";
+import Character5H from "../image/menu_character_5h.jpg";
+import Character6 from "../image/menu_character_6.jpg";
+import Character6H from "../image/menu_character_6h.jpg";
+import Character7 from "../image/menu_character_7.jpg";
+import Character7H from "../image/menu_character_7h.jpg";
+import Character8 from "../image/menu_character_8.jpg";
+import Character8H from "../image/menu_character_8h.jpg";
+import Character9 from "../image/menu_character_9.jpg";
+import Character9H from "../image/menu_character_9h.jpg";
+import Character10 from "../image/menu_character_10.jpg";
+import Character10H from "../image/menu_character_10h.jpg";
+
+import Character11 from "../image/menu_character_11.jpg";
+import Character11H from "../image/menu_character_11h.jpg";
+import Character12 from "../image/menu_character_12.jpg";
+import Character12H from "../image/menu_character_12h.jpg";
+import Character13 from "../image/menu_character_13.jpg";
+import Character13H from "../image/menu_character_13h.jpg";
+import Character14 from "../image/menu_character_14.jpg";
+import Character14H from "../image/menu_character_14h.jpg";
+import Character15 from "../image/menu_character_15.jpg";
+import Character15H from "../image/menu_character_15h.jpg";
+import Character16 from "../image/menu_character_16.jpg";
+import Character16H from "../image/menu_character_16h.jpg";
+import Character17 from "../image/menu_character_17.jpg";
+import Character17H from "../image/menu_character_17h.jpg";
+
 // 메인 배너
 export const mainContentsBannerList = [
   {
@@ -358,5 +395,181 @@ export const mainRestockList = [
     image: restock6,
     title: "차량용방향제(통풍구형)사다리 2_라이언",
     price: "13,900",
+  },
+];
+
+export const menuCharacterListData = [
+  {
+    id: 1,
+    url: "/",
+    image: Character1,
+    imageHover: Character1H,
+    title: "라이언",
+  },
+  {
+    id: 2,
+    url: "/",
+    image: Character2,
+    imageHover: Character2H,
+    title: "어피치",
+  },
+  {
+    id: 3,
+    url: "/",
+    image: Character3,
+    imageHover: Character3H,
+    title: "무지",
+  },
+  {
+    id: 4,
+    url: "/",
+    image: Character4,
+    imageHover: Character4H,
+    title: "프로도",
+  },
+  {
+    id: 5,
+    url: "/",
+    image: Character5,
+    imageHover: Character5H,
+    title: "네오",
+  },
+  {
+    id: 6,
+    url: "/",
+    image: Character6,
+    imageHover: Character6H,
+    title: "튜브",
+  },
+  {
+    id: 7,
+    url: "/",
+    image: Character7,
+    imageHover: Character7H,
+    title: "제이지",
+  },
+  {
+    id: 8,
+    url: "/",
+    image: Character8,
+    imageHover: Character8H,
+    title: "콘",
+  },
+  {
+    id: 9,
+    url: "/",
+    image: Character9,
+    imageHover: Character9H,
+    title: "춘식이",
+  },
+  {
+    id: 10,
+    url: "/",
+    image: Character10,
+    imageHover: Character10H,
+    title: "죠르디",
+  },
+  //
+  {
+    id: 11,
+    url: "/",
+    image: Character11,
+    title: "스카피",
+    imageHover: Character11H,
+  },
+  {
+    id: 12,
+    url: "/",
+    image: Character12,
+    imageHover: Character12H,
+    title: "앙몬드",
+  },
+  {
+    id: 13,
+    url: "/",
+    image: Character13,
+    imageHover: Character13H,
+    title: "팬다주니어",
+  },
+  {
+    id: 14,
+    url: "/",
+    image: Character14,
+    imageHover: Character14H,
+    title: "케로&베로니",
+  },
+  {
+    id: 15,
+    url: "/",
+    image: Character15,
+    imageHover: Character15H,
+    title: "콥",
+  },
+  {
+    id: 16,
+    url: "/",
+    image: Character16,
+    imageHover: Character16H,
+    title: "빠냐",
+  },
+  {
+    id: 17,
+    url: "/",
+    image: Character17,
+    imageHover: Character17H,
+    title: "캐릭터관",
+  },
+];
+
+export const menuCategoryListData = [
+  {
+    id: 1,
+    url: "/",
+    title: "전체",
+  },
+  {
+    id: 2,
+    url: "/",
+    title: "토이",
+  },
+  {
+    id: 3,
+    url: "/",
+    title: "리빙",
+  },
+  {
+    id: 4,
+    url: "/",
+    title: "잡화",
+  },
+  {
+    id: 5,
+    url: "/",
+    title: "문구",
+  },
+  {
+    id: 6,
+    url: "/",
+    title: "의류",
+  },
+  {
+    id: 7,
+    url: "/",
+    title: "디지털",
+  },
+  {
+    id: 8,
+    url: "/",
+    title: "여행/레져",
+  },
+  {
+    id: 9,
+    url: "/",
+    title: "식품",
+  },
+  {
+    id: 10,
+    url: "/",
+    title: "테마 기획전",
   },
 ];

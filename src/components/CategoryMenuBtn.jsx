@@ -14,7 +14,7 @@ const List = styled.div`
   line-height: 43px;
   white-space: nowrap;
   position: relative;
-  font-weight: 500;
+  font-weight: normal;
 `;
 
 const ListAfter = styled.div`

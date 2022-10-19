@@ -8,70 +8,45 @@ import Bold from "./fonts/SpoqaHanSansNeo-Bold.otf";
 const GlobalStyle = css`
   @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700&family=Nanum+Gothic:wght@400;700&display=swap");
 
-  /* @font-face {
-    font-family: "Spoqa Han Sans Neo", "sans-serif";
+  @font-face {
+    font-family: "Spoqa Han Sans Neo";
     font-weight: 100;
-    src: url("./fonts/SpoqaHanSansNeo-Thin.otf");
+    src: url(${thin}) format("opentype");
   }
   @font-face {
-    font-family: "Spoqa Han Sans Neo", "sans-serif";
+    font-family: "Spoqa Han Sans Neo";
     font-weight: 300;
-    src: url("./fonts/SpoqaHanSansNeo-Light.otf");
+    src: url(${Light}) format("opentype");
   }
   @font-face {
-    font-family: "Spoqa Han Sans Neo", "sans-serif";
+    font-family: "Spoqa Han Sans Neo";
     font-weight: 400;
-    src: url("./fonts/SpoqaHanSansNeo-Regular.otf");
+    src: url(${Regular}) format("opentype");
   }
   @font-face {
-    font-family: "Spoqa Han Sans Neo", "sans-serif";
+    font-family: "Spoqa Han Sans Neo";
     font-weight: 500;
-    src: url("./fonts/SpoqaHanSansNeo-Medium.otf");
+    src: url(${Medium}) format("opentype");
   }
   @font-face {
-    font-family: "Spoqa Han Sans Neo", "sans-serif";
+    font-family: "Spoqa Han Sans Neo";
     font-weight: 700;
-    src: url("./fonts/SpoqaHanSansNeo-Bold.otf");
-  } */
+    src: url(${Bold}) format("opentype");
+  }
 
   * {
-    @font-face {
+    /* @font-face {
       font-family: "SpoqaHanSansNeo-Regular";
       src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff")
         format("woff");
       font-weight: normal;
       font-style: normal;
-    }
-    @font-face {
-      font-family: "SpoqaHanSansNeo-Thin", "sans-serif";
-      font-weight: 100;
-      src: url({thin});
-    }
-    @font-face {
-      font-family: "SpoqaHanSansNeo-Light", "sans-serif";
-      font-weight: 300;
-      src: url({Light});
-    }
-    @font-face {
-      font-family: "SpoqaHanSansNeo-Regular", "sans-serif";
-      font-weight: 400;
-      src: url({Regular});
-    }
-    @font-face {
-      font-family: "SpoqaHanSansNeo-Medium", "sans-serif";
-      font-weight: 500;
-      src: url({Medium});
-    }
-    @font-face {
-      font-family: "SpoqaHanSansNeo-Bold", "sans-serif";
-      font-weight: 700;
-      src: url({Bold});
-    }
-    /* font-family: "Inter", "SpoqaHanSansNeo-Thin", "SpoqaHanSansNeo-Light",
-      "SpoqaHanSansNeo-Medium", "SpoqaHanSansNeo-Bold", Apple SD Gothic Neo, */
-    font-family: "Inter", "SpoqaHanSansNeo-Regular", Apple SD Gothic Neo,
+    } */
+
+    font-family: "Inter", "Spoqa Han Sans Neo", Apple SD Gothic Neo,
       Malgun Gothic, "sans-serif" !important;
-    font-weight: 300;
+    font-style: normal;
+    font-weight: normal;
   }
   button {
     border: 0 none;

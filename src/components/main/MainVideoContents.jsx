@@ -192,7 +192,6 @@ export const MainVideoContents = () => {
       videoRef.current.play();
       setIsPlaying(true);
     } else {
-      console.log("멈추기");
       videoRef.current.pause();
       setIsPlaying(false);
     }

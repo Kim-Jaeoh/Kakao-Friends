@@ -12,11 +12,12 @@ import { MainRestock } from "../components/main/MainRestock";
 
 const Container = styled.main`
   position: relative;
-  /* padding-top: 43px; */
+  padding-top: 43px;
 `;
 
 const Article = styled.div`
-  /* overflow: hidden; */
+  overflow: hidden;
+  padding-top: 4px;
   padding-bottom: 100px;
 `;
 
