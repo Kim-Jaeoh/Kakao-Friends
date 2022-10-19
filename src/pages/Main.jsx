@@ -9,15 +9,15 @@ import { MainVideoContents } from "../components/main/MainVideoContents";
 import { MainCharacterItem } from "../components/main/MainCharacterItem";
 import { MainRecommend } from "../components/main/MainRecommend";
 import { MainRestock } from "../components/main/MainRestock";
+import { Header } from "../components/header/Header";
 
 const Container = styled.main`
   position: relative;
-  padding-top: 43px;
+  /* padding-top: 43px; */
 `;
 
 const Article = styled.div`
   overflow: hidden;
-  padding-top: 4px;
   padding-bottom: 100px;
 `;
 
@@ -44,24 +44,27 @@ export const Main = () => {
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
   return (
-    <Container>
-      <Article>
-        <MainBanner>
-          <MainContents />
-        </MainBanner>
-        <BeltBanner>
-          <BennerContents
-            resize={resize}
-            src={resize ? beltbannerMo : beltbannerPc}
-            alt="5만원 이상 구매하고 할로윈 가랜드 득템!"
-          />
-        </BeltBanner>
-        <MainSlideContents />
-        <MainVideoContents />
-        <MainCharacterItem />
-        <MainRecommend />
-        <MainRestock />
-      </Article>
-    </Container>
+    <>
+      {/* <Header /> */}
+      <Container>
+        <Article>
+          <MainBanner>
+            <MainContents />
+          </MainBanner>
+          <BeltBanner>
+            <BennerContents
+              resize={resize}
+              src={resize ? beltbannerMo : beltbannerPc}
+              alt="5만원 이상 구매하고 할로윈 가랜드 득템!"
+            />
+          </BeltBanner>
+          <MainSlideContents />
+          <MainVideoContents />
+          <MainCharacterItem />
+          <MainRecommend />
+          <MainRestock />
+        </Article>
+      </Container>
+    </>
   );
 };

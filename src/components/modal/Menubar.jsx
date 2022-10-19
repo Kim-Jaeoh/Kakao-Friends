@@ -4,23 +4,25 @@ import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { SlLock } from "react-icons/sl";
-import menuBannerImg from "../image/bn_addtalk.png";
+import menuBannerImg from "../../image/bn_addtalk.png";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import {
   menuCategoryListData,
   menuCharacterListData,
-} from "../data/mainContentsData";
+} from "../../data/mainContentsData";
 
 const Container = styled.div`
-  /* overflow-y: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0; */
+  overflow-y: scroll;
 
-  overflow-y: hidden;
+  -ms-overflow-style: none; // 인터넷 익스플로러
+  scrollbar-width: none; // 파이어폭스
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   width: 304px;
   padding-bottom: 25px;
   background-color: #fff;
@@ -259,7 +261,6 @@ const CharacterListImage = styled.span`
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: #fff;
 
   &:hover {
     background-image: url(${(props) => props.imageH});
@@ -306,7 +307,7 @@ const CategoryList = styled.li`
   }
 `;
 
-export const Menubar = ({ modalOpen, toggleModal }) => {
+export const Menubar = ({ menuModal, toggleModal }) => {
   const [expanded, setExpanded] = useState("");
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -315,18 +316,18 @@ export const Menubar = ({ modalOpen, toggleModal }) => {
 
   // 모달창 닫힐 때 아코디언 확장 x
   useEffect(() => {
-    if (modalOpen === false) {
+    if (menuModal === false) {
       setTimeout(() => {
         setExpanded(false);
       }, [200]);
     }
     return () => clearTimeout();
-  }, [modalOpen]);
+  }, [menuModal]);
 
   return (
     <Drawer
       anchor={"left"}
-      open={modalOpen}
+      open={menuModal}
       onClose={toggleModal}
       transitionDuration={400}
     >

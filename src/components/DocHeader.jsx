@@ -1,17 +1,14 @@
-import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Drawer } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
-import { FiSearch } from "react-icons/fi";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { TbWorld } from "react-icons/tb";
-import logo from "../image/logo_halloween.gif";
-import GlobalStyle from "../styles/GlobalStyle";
-import { Category } from "./Category";
-import { Menubar } from "./Menubar";
+import { Link } from "react-router-dom";
+import { Category } from "./header/Category";
+import { Menubar } from "./modal/Menubar";
 
 const Container = styled.div`
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -39,7 +36,7 @@ const HeaderBox = styled.div`
   text-overflow: ellipsis;
 `;
 
-const IconBox = styled.div`
+const Icon = styled.div`
   width: 24px;
   height: 24px;
   font-size: 24px;
@@ -48,9 +45,15 @@ const IconBox = styled.div`
   align-items: center;
   padding: 5px;
   cursor: pointer;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
-const Icons = styled.div`
+const IconBox = styled.div`
   display: flex;
   position: absolute;
   right: 12px;
@@ -68,44 +71,28 @@ const Logo = styled.div`
   }
 `;
 
-export const Header = () => {
+export const DocHeader = ({ toggleSearch }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const toggleModal = () => {
     setModalOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    return () => console.log("머지");
-  }, []);
-
   return (
     <>
       <Container>
         <HeaderBox>
-          <IconBox
-            style={{ position: "absolute", left: "12px" }}
-            onClick={toggleModal}
-          >
-            <AiOutlineMenu />
-          </IconBox>
-          <Logo>
-            <img alt="KAKAO FRIENDS" src={logo} />
-          </Logo>
-          <Icons>
-            <IconBox>
-              <FiSearch />
-            </IconBox>
-            <IconBox>
+          <Icon style={{ position: "absolute", left: "12px" }}>
+            <IoIosArrowBack />
+          </Icon>
+          <Logo>검색</Logo>
+          <IconBox>
+            <Icon onClick={toggleSearch}>
               <TbWorld />
-            </IconBox>
-          </Icons>
+            </Icon>
+          </IconBox>
         </HeaderBox>
-
-        <Category />
       </Container>
-
-      <Menubar modalOpen={modalOpen} toggleModal={toggleModal} />
     </>
   );
 };

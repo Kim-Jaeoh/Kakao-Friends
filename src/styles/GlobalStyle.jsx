@@ -6,7 +6,7 @@ import Medium from "./fonts/SpoqaHanSansNeo-Medium.otf";
 import Bold from "./fonts/SpoqaHanSansNeo-Bold.otf";
 
 const GlobalStyle = css`
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700&family=Nanum+Gothic:wght@400;700&display=swap");
+  /* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700&family=Nanum+Gothic:wght@400;700&display=swap");
 
   @font-face {
     font-family: "Spoqa Han Sans Neo";
@@ -32,7 +32,7 @@ const GlobalStyle = css`
     font-family: "Spoqa Han Sans Neo";
     font-weight: 700;
     src: url(${Bold}) format("opentype");
-  }
+  } */
 
   * {
     /* @font-face {
@@ -43,17 +43,25 @@ const GlobalStyle = css`
       font-style: normal;
     } */
 
-    font-family: "Inter", "Spoqa Han Sans Neo", Apple SD Gothic Neo,
+    /* font-family: "Inter", "Spoqa Han Sans Neo", Apple SD Gothic Neo,
       Malgun Gothic, "sans-serif" !important;
     font-style: normal;
     font-weight: normal;
+
+    line-height: 1.5;
+    letter-spacing: -0.015em; */
+
+    /* a {
+      color: #000;
+      text-decoration: none;
+    } */
   }
-  button {
+  /* button {
     border: 0 none;
     background-color: transparent;
     cursor: pointer;
     padding: 0;
-  }
+  } */
 `;
 
 export default GlobalStyle;

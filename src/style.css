@@ -1,0 +1,44 @@
+@import "https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css";
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700&family=Nanum+Gothic:wght@400;700&display=swap");
+
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 100;
+  src: url("../src/styles/fonts/SpoqaHanSansNeo-Thin.otf") format("opentype");
+}
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 300;
+  src: url("../src/styles/fonts/SpoqaHanSansNeo-Light.otf") format("opentype");
+}
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 400;
+  src: url("../src/styles/fonts/SpoqaHanSansNeo-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 500;
+  src: url("../src/styles/fonts/SpoqaHanSansNeo-Medium.otf") format("opentype");
+}
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 700;
+  src: url("../src/styles/fonts/SpoqaHanSansNeo-Bold.otf") format("opentype");
+}
+
+body {
+  font-family: "Inter", "Spoqa Han Sans Neo", Apple SD Gothic Neo, Malgun Gothic,
+    sans-serif !important;
+  font-style: normal;
+  font-weight: normal;
+
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+
+a {
+  color: #000;
+  text-decoration: none;
+}

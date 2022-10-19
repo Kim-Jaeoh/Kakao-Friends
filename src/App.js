@@ -1,10 +1,9 @@
 import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
 import GlobalStyle from "./styles/GlobalStyle";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import { Reset } from "styled-reset";
-import { Category } from "./components/Category";
-import { Header } from "./components/Header";
+import { Header } from "./components/header/Header";
 import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
 import { Best } from "./pages/Best";
@@ -35,14 +34,13 @@ const Container = styled.div`
 
 function App() {
   return (
-    <BrowserRouter>
-      <Reset />
-      <Global styles={GlobalStyle} />
-      <Container>
-        <TopButton />
-        <Header />
-        {/* <Category /> */}
-        <div style={{ paddingTop: "43px" }}>
+    <>
+      <BrowserRouter>
+        {/* <Reset /> */}
+        {/* <Global styles={GlobalStyle} /> */}
+        <Container>
+          <TopButton />
+          <Header />
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/event" element={<Event />} />
@@ -50,10 +48,10 @@ function App() {
             <Route path="/contents" element={<Contents />} />
             <Route path="/my" element={<My />} />
           </Routes>
-        </div>
-        <Footer />
-      </Container>
-    </BrowserRouter>
+          <Footer />
+        </Container>
+      </BrowserRouter>
+    </>
   );
 }
 
