@@ -17,11 +17,7 @@ const List = styled.div`
   font-weight: normal;
 `;
 
-const ListAfter = styled.div`
-  font-size: 16px;
-  line-height: 43px;
-  white-space: nowrap;
-  position: relative;
+const ListAfter = styled(List)`
   font-weight: 700;
 
   ::after {

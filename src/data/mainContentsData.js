@@ -76,6 +76,23 @@ import Character16H from "../image/menu_character_16h.jpg";
 import Character17 from "../image/menu_character_17.jpg";
 import Character17H from "../image/menu_character_17h.jpg";
 
+// 제품들
+import Product01 from "../image/product01.jpg";
+import Product02 from "../image/product02.jpg";
+import Product03 from "../image/product03.jpg";
+import Product04 from "../image/product04.jpg";
+import Product05 from "../image/product05.jpg";
+import Product06 from "../image/product06.jpg";
+import Product07 from "../image/product07.jpg";
+import Product08 from "../image/product08.jpg";
+import Product09 from "../image/product09.jpg";
+import Product10 from "../image/product10.jpg";
+
+import Product11 from "../image/product11.jpg";
+import Product12 from "../image/product12.jpg";
+import Product13 from "../image/product13.jpg";
+import Product14 from "../image/product14.jpg";
+
 // 메인 배너
 export const mainContentsBannerList = [
   {
@@ -202,7 +219,7 @@ export const mainContentsSeriesList = [
 export const mainCharacterList1 = [
   {
     id: 1,
-    sort: "apeach",
+    character: "어피치",
     url: "/",
     image: imageA1,
     title: "어피치 리틀 얼굴쿠션",
@@ -210,7 +227,7 @@ export const mainCharacterList1 = [
   },
   {
     id: 2,
-    sort: "apeach",
+    character: "어피치",
     url: "/",
     image: imageA2,
     title: "꿀잠 폭신바디필로우_어피치",
@@ -218,7 +235,7 @@ export const mainCharacterList1 = [
   },
   {
     id: 3,
-    sort: "apeach",
+    character: "어피치",
     url: "/",
     image: imageA3,
     title: "렛츠플레이 마우스패드_어피치",
@@ -226,7 +243,7 @@ export const mainCharacterList1 = [
   },
   {
     id: 4,
-    sort: "apeach",
+    character: "어피치",
     url: "/",
     image: imageA4,
     title: "스탠드형칫솔살균기_머그리틀어피치",
@@ -234,7 +251,7 @@ export const mainCharacterList1 = [
   },
   {
     id: 5,
-    sort: "apeach",
+    character: "어피치",
     url: "/",
     image: imageA5,
     title: "체크미니토트백_어피치",
@@ -242,7 +259,7 @@ export const mainCharacterList1 = [
   },
   {
     id: 6,
-    sort: "apeach",
+    character: "어피치",
     url: "/",
     image: imageA6,
     title: "브릭피규어 에펠탑_어피치",
@@ -253,7 +270,7 @@ export const mainCharacterList1 = [
 export const mainCharacterList2 = [
   {
     id: 1,
-    sort: "lion",
+    character: "라이언",
     url: "/",
     image: imageB1,
     title: "[온라인 전용]할로윈 유령 춘식이 피규어 키링",
@@ -261,7 +278,7 @@ export const mainCharacterList2 = [
   },
   {
     id: 2,
-    sort: "lion",
+    character: "라이언",
     url: "/",
     image: imageB2,
     title: "[온라인 전용] 머니건_라이언&춘식이",
@@ -269,7 +286,7 @@ export const mainCharacterList2 = [
   },
   {
     id: 3,
-    sort: "lion",
+    character: "라이언",
     url: "/",
     image: imageB3,
     title: "[온라인 전용] 내몸에 꼭맞는 U자 바디필로우_춘식이",
@@ -277,7 +294,7 @@ export const mainCharacterList2 = [
   },
   {
     id: 4,
-    sort: "lion",
+    character: "라이언",
     url: "/",
     image: imageB4,
     title: "[온라인 전용] 자이언트 소파쿠션_춘식이",
@@ -285,7 +302,7 @@ export const mainCharacterList2 = [
   },
   {
     id: 5,
-    sort: "lion",
+    character: "라이언",
     url: "/",
     image: imageB5,
     title: "[온라인 전용] 미니온풍기_라이언&춘식이",
@@ -293,7 +310,7 @@ export const mainCharacterList2 = [
   },
   {
     id: 6,
-    sort: "lion",
+    character: "라이언",
     url: "/",
     image: imageB6,
     title: "[온라인]2023 다이어리세트_어피치",
@@ -304,7 +321,7 @@ export const mainCharacterList2 = [
 export const mainCharacterList3 = [
   {
     id: 1,
-    sort: "chunsik",
+    character: "춘식이",
     url: "/",
     image: imageC1,
     title: "2023 탁상용 캘린더",
@@ -312,7 +329,7 @@ export const mainCharacterList3 = [
   },
   {
     id: 2,
-    sort: "chunsik",
+    character: "춘식이",
     url: "/",
     image: imageC2,
     title: "최고심 춘식이 세컷 스티커",
@@ -320,7 +337,7 @@ export const mainCharacterList3 = [
   },
   {
     id: 3,
-    sort: "chunsik",
+    character: "춘식이",
     url: "/",
     image: imageC3,
     title: "최고심 춘식이 잘했어요 젤펜",
@@ -328,7 +345,7 @@ export const mainCharacterList3 = [
   },
   {
     id: 4,
-    sort: "chunsik",
+    character: "춘식이",
     url: "/",
     image: imageC4,
     title: "최고심 춘식이 떡메모지",
@@ -336,7 +353,7 @@ export const mainCharacterList3 = [
   },
   {
     id: 5,
-    sort: "chunsik",
+    character: "춘식이",
     url: "/",
     image: imageC5,
     title: "2023 다이어리_라이언",
@@ -344,7 +361,7 @@ export const mainCharacterList3 = [
   },
   {
     id: 6,
-    sort: "chunsik",
+    character: "춘식이",
     url: "/",
     image: imageC6,
     title: "춘식이 4단 점착 메모지",
@@ -571,5 +588,130 @@ export const menuCategoryListData = [
     id: 10,
     url: "/",
     title: "테마 기획전",
+  },
+];
+
+export const BestListData = [
+  {
+    id: 1,
+    character: [
+      "라이언",
+      "어피치",
+      "무지",
+      "프로도",
+      "네오",
+      "튜브",
+      "제이지",
+      "콘",
+      "춘식이",
+    ],
+    url: "/",
+    image: Product01,
+    title: "2023 탁상용 캘린더",
+    price: "6,000",
+  },
+  {
+    id: 2,
+    character: ["춘식이"],
+    url: "/",
+    image: Product02,
+    title: "춘식이 허그 목쿠션",
+    price: "16,000",
+  },
+  {
+    id: 3,
+    character: ["죠르디"],
+    url: "/",
+    image: Product03,
+    title: "죠르디 수면 바지",
+    price: "19,900",
+  },
+  {
+    id: 4,
+    character: ["죠르디"],
+    url: "/",
+    image: Product04,
+    title: "죠르디 수면 가운",
+    price: "49,900",
+  },
+  {
+    id: 5,
+    character: ["춘식이"],
+    url: "/",
+    image: Product05,
+    title: "최고심 춘식이 행복과 행운 스티커",
+    price: "2,000",
+  },
+  {
+    id: 6,
+    character: ["춘식이"],
+    url: "/",
+    image: Product06,
+    title: "최고심 춘식이 다재다능 스티커",
+    price: "2,000",
+  },
+  {
+    id: 7,
+    character: ["춘식이"],
+    url: "/",
+    image: Product07,
+    title: "최고심 춘식이 피규어스탬프_화가",
+    price: "12,000",
+  },
+  {
+    id: 8,
+    character: ["춘식이"],
+    url: "/",
+    image: Product08,
+    title: "최고심 춘식이 만년 다이어리",
+    price: "10,000",
+  },
+  {
+    id: 9,
+    character: ["춘식이"],
+    url: "/",
+    image: Product09,
+    title: "최고심 춘식이 떡메모지",
+    price: "3,500",
+  },
+  {
+    id: 10,
+    character: ["춘식이"],
+    url: "/",
+    image: Product10,
+    title: "최고심 춘식이 짱 젤펜",
+    price: "4,000",
+  },
+  {
+    id: 11,
+    character: ["춘식이"],
+    url: "/",
+    image: Product11,
+    title: "최고심 춘식이 잘했어요 젤펜",
+    price: "4,000",
+  },
+  {
+    id: 12,
+    character: ["춘식이"],
+    url: "/",
+    image: Product12,
+    title: "최고심 춘식이 행복 젤펜",
+    price: "4,000",
+  },
+  {
+    id: 13,
+    character: ["니니즈", "죠르디", "앙몬드", "빠냐"],
+    url: "/",
+    image: Product13,
+    title: "2023 니니즈 다이어리",
+    price: "15,000",
+  },
+  {
+    id: 14,
+    character: ["춘식이"],
+    url: "/",
+    image: Product14,
+    title: "춘식이 봉투파일 발바닥",
+    price: "2,000",
   },
 ];

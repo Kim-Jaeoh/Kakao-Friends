@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "@emotion/styled";
+import { createBrowserHistory } from "history";
 import { Modal } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
@@ -274,10 +275,39 @@ const SearchCategoryText = styled.li`
 
 export const Search = ({ searchModal, toggleSearch }) => {
   const navigate = useNavigate();
+  const history = createBrowserHistory();
+  const location = useLocation();
+
+  // const preventGoBack = () => navigate(null, "", navigate());
+
+  // useEffect(() => {
+  //   navigate(null, "", navigate());
+  //   window.addEventListener("popstate", preventGoBack);
+  //   return () => {
+  //     window.removeEventListener("popstate", preventGoBack);
+  //     toggleSearch();
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    const listenBackEvent = () => {
+      // 뒤로가기 할 때 수행할 동작을 적는다
+      navigate(null, "", navigate());
+    };
+
+    const unlistenHistoryEvent = history.listen(({ action }) => {
+      if (action === "POP") {
+        listenBackEvent();
+      }
+    });
+
+    return () => unlistenHistoryEvent();
+  }, []);
 
   const goHome = () => {
     navigate("/");
     toggleSearch();
+    window.scrollTo(0, 0);
   };
 
   const handleClose = (event, reason) => {
@@ -294,9 +324,6 @@ export const Search = ({ searchModal, toggleSearch }) => {
         aria-describedby="parent-modal-description"
         style={{ overflowY: "scroll" }}
         hideBackdrop={true}
-        // BackdropProps={{
-        //   style: { backgroundColor: "rbg(0, 0, 0, 0.3)", overflowY: "scroll" },
-        // }}
       >
         <Wrapper>
           <Container>
