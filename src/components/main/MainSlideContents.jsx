@@ -13,6 +13,7 @@ import "@egjs/react-flicking/dist/flicking.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { debounce } from "lodash";
+import axios from "axios";
 
 const Container = styled.div`
   /* position: relative; */
@@ -242,8 +243,15 @@ export const MainSlideContents = () => {
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
   const [disableOnInit, setDisableOnInit] = useState(false);
+  const [dataList, setDataList] = useState(null);
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/mainContentsSlideList").then((res) => {
+      setDataList(res.data);
+    });
+  }, []);
 
   // 비디오
   const togglePlay = (event) => {
@@ -387,45 +395,45 @@ export const MainSlideContents = () => {
           changeOnHold={false}
           moveType={"strict"}
         >
-          {mainContentsSlideList.map((list, index) => (
-            <SliderItem key={list.id}>
-              <SlideVideoBox>
-                {index === slideIndex && (
-                  <SlideVideoButton
-                    ref={buttonRef}
-                    onClick={togglePlay}
-                    hover={hover}
-                    onMouseEnter={onMouseOverButton}
-                  >
-                    {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
-                  </SlideVideoButton>
-                )}
+          {dataList &&
+            dataList?.map((list, index) => (
+              <SliderItem key={list.id}>
+                <SlideVideoBox>
+                  {index === slideIndex && (
+                    <SlideVideoButton
+                      ref={buttonRef}
+                      onClick={togglePlay}
+                      hover={hover}
+                      onMouseEnter={onMouseOverButton}
+                    >
+                      {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
+                    </SlideVideoButton>
+                  )}
 
-                <SlideVideo
-                  loop
-                  muted
-                  ref={(el) => {
-                    videoRef.current[index] = el;
-                    // console.log(el);
-                  }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
-                  data-list={index}
-                  src={list.video}
-                  type="video/mp4"
-                  onMouseOut={onMouseOutButton}
-                />
-              </SlideVideoBox>
-              <SlideInfo>
-                <SlideInfoText>
-                  <Link to={list.url}>
-                    <strong>{list.title}</strong>
-                  </Link>
-                </SlideInfoText>
-                <BagButton onClick={(e) => toggleIcon(index, e)}>
-                  {clickNumber.includes(index) ? <BsBagFill /> : <BsBag />}
-                </BagButton>
-              </SlideInfo>
-            </SliderItem>
-          ))}
+                  <SlideVideo
+                    loop
+                    muted
+                    ref={(el) => {
+                      videoRef.current[index] = el;
+                      // console.log(el);
+                    }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
+                    src={list.video}
+                    type="video/mp4"
+                    onMouseOut={onMouseOutButton}
+                  />
+                </SlideVideoBox>
+                <SlideInfo>
+                  <SlideInfoText>
+                    <Link to={list.url}>
+                      <strong>{list.title}</strong>
+                    </Link>
+                  </SlideInfoText>
+                  <BagButton onClick={(e) => toggleIcon(index, e)}>
+                    {clickNumber.includes(index) ? <BsBagFill /> : <BsBag />}
+                  </BagButton>
+                </SlideInfo>
+              </SliderItem>
+            ))}
         </Flicking>
 
         {/* <Swiper

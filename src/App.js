@@ -40,7 +40,7 @@ function App() {
         {/* <Global styles={GlobalStyle} /> */}
         <Container>
           <TopButton />
-          <Header />
+          {/* <Header /> */}
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/event" element={<Event />} />

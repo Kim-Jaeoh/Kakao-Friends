@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { mainContentsBannerList } from "../../data/mainContentsData.js";
+// import mainContentsBannerList from "../../../server/db.json";
+import axios from "axios";
 
 const Container = styled.div`
   display: block;
@@ -88,29 +90,38 @@ const MainContentsText = styled.span`
 `;
 
 export const MainContents = () => {
+  const [dataList, setDataList] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/mainContentsBannerList").then((res) => {
+      setDataList(res.data);
+    });
+  }, []);
+
   return (
     <>
-      {mainContentsBannerList.map((list) => (
-        <Container key={list.id}>
-          <Link to={"/"}>
-            {list.video ? (
-              <MainContentsVideo height={list.height} loop autoPlay muted>
-                <source src={list.video} type="video/mp4" />
-              </MainContentsVideo>
-            ) : (
-              <MainContentsImage src={list.img} height={list.height} />
-            )}
-            <MainContentsText>
-              <strong>{list.title}</strong>
-              <span>
-                {list.sub1}
-                <br />
-                {list.sub2}
-              </span>
-            </MainContentsText>
-          </Link>
-        </Container>
-      ))}
+      {dataList &&
+        dataList?.map((list) => (
+          <Container key={list.id}>
+            <Link to={"/"}>
+              {list.video ? (
+                <MainContentsVideo height={list.height} loop autoPlay muted>
+                  <source src={list.video} type="video/mp4" />
+                </MainContentsVideo>
+              ) : (
+                <MainContentsImage src={list.img} height={list.height} />
+              )}
+              <MainContentsText>
+                <strong>{list.title}</strong>
+                <span>
+                  {list.sub1}
+                  <br />
+                  {list.sub2}
+                </span>
+              </MainContentsText>
+            </Link>
+          </Container>
+        ))}
     </>
   );
 };

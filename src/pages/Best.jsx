@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { BestListData } from "../data/mainContentsData";
+import axios from "axios";
+import { Header } from "../components/header/Header";
 
 const Container = styled.main`
   position: relative;
@@ -203,6 +205,13 @@ export const Best = () => {
   const [clickTabNumber, setClickTabNumber] = useState(1);
   const [clickIcon, setClickIcon] = useState(false);
   const [clickIconNumber, setClickIconNumber] = useState([]);
+  const [dataList, setDataList] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/BestListData").then((res) => {
+      setDataList(res.data);
+    });
+  }, []);
 
   const toggleTab = (num) => {
     setClickTabNumber(num);
@@ -222,62 +231,66 @@ export const Best = () => {
   );
 
   return (
-    <Container>
-      <Wrapper>
-        <WrapperTitle>
-          <strong>지금 인기있는</strong>
-        </WrapperTitle>
-        <TabList>
-          <TabTitle
-            onClick={() => toggleTab(1)}
-            num={1}
-            selected={clickTabNumber}
-          >
-            <p>실시간</p>
-          </TabTitle>
-          <TabTitle
-            onClick={() => toggleTab(2)}
-            num={2}
-            selected={clickTabNumber}
-          >
-            <p>스테디</p>
-          </TabTitle>
-        </TabList>
+    <>
+      <Header />
+      <Container>
+        <Wrapper>
+          <WrapperTitle>
+            <strong>지금 인기있는</strong>
+          </WrapperTitle>
+          <TabList>
+            <TabTitle
+              onClick={() => toggleTab(1)}
+              num={1}
+              selected={clickTabNumber}
+            >
+              <p>실시간</p>
+            </TabTitle>
+            <TabTitle
+              onClick={() => toggleTab(2)}
+              num={2}
+              selected={clickTabNumber}
+            >
+              <p>스테디</p>
+            </TabTitle>
+          </TabList>
 
-        <ListBox>
-          {BestListData.map((list, index) => (
-            <ListItem key={list.id}>
-              <ListItemNumberBox>
-                {list.id < 4 ? (
-                  <ListItemRank>{list.id}</ListItemRank>
-                ) : (
-                  <ListItemNumber>{list.id}</ListItemNumber>
-                )}
-              </ListItemNumberBox>
-              <ProductBox>
-                <ProductImage>
-                  <img src={list.image} alt={list.title} />
-                </ProductImage>
-                <ProductTextBox>
-                  <ProductText>
-                    <strong>{list.title}</strong>
-                  </ProductText>
-                  <ProductPrice>
-                    <span>{list.price}</span>원
-                  </ProductPrice>
-                  <ProductBag onClick={(e) => toggleIcon(index, e)}>
-                    {clickIconNumber.includes(index) ? (
-                      <BsBagFill />
+          <ListBox>
+            {dataList &&
+              dataList?.map((list, index) => (
+                <ListItem key={list.id}>
+                  <ListItemNumberBox>
+                    {list.id < 4 ? (
+                      <ListItemRank>{list.id}</ListItemRank>
                     ) : (
-                      <BsBag />
+                      <ListItemNumber>{list.id}</ListItemNumber>
                     )}
-                  </ProductBag>
-                </ProductTextBox>
-              </ProductBox>
-            </ListItem>
-          ))}
-        </ListBox>
-      </Wrapper>
-    </Container>
+                  </ListItemNumberBox>
+                  <ProductBox>
+                    <ProductImage>
+                      <img src={list.image} alt={list.title} />
+                    </ProductImage>
+                    <ProductTextBox>
+                      <ProductText>
+                        <strong>{list.title}</strong>
+                      </ProductText>
+                      <ProductPrice>
+                        <span>{list.price}</span>원
+                      </ProductPrice>
+                      <ProductBag onClick={(e) => toggleIcon(index, e)}>
+                        {clickIconNumber.includes(index) ? (
+                          <BsBagFill />
+                        ) : (
+                          <BsBag />
+                        )}
+                      </ProductBag>
+                    </ProductTextBox>
+                  </ProductBox>
+                </ListItem>
+              ))}
+          </ListBox>
+        </Wrapper>
+      </Container>
+    </>
   );
 };

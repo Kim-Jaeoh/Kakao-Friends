@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { createBrowserHistory } from "history";
 import { Modal } from "@mui/material";
@@ -13,6 +13,7 @@ import {
   menuCharacterListData,
 } from "../../data/mainContentsData";
 import { Footer } from "../Footer";
+import axios from "axios";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -277,17 +278,13 @@ export const Search = ({ searchModal, toggleSearch }) => {
   const navigate = useNavigate();
   const history = createBrowserHistory();
   const location = useLocation();
+  const [dataList, setDataList] = useState();
 
-  // const preventGoBack = () => navigate(null, "", navigate());
-
-  // useEffect(() => {
-  //   navigate(null, "", navigate());
-  //   window.addEventListener("popstate", preventGoBack);
-  //   return () => {
-  //     window.removeEventListener("popstate", preventGoBack);
-  //     toggleSearch();
-  //   };
-  // }, []);
+  useEffect(() => {
+    axios.get("http://localhost:4000/menuCharacterListData").then((res) => {
+      setDataList(res.data);
+    });
+  }, []);
 
   useEffect(() => {
     const listenBackEvent = () => {
@@ -364,17 +361,18 @@ export const Search = ({ searchModal, toggleSearch }) => {
 
             <SearchCategoryBox>
               <SearchCharacterListBox>
-                {menuCharacterListData.map((list, index) => (
-                  <SearchCharacterList key={list.id}>
-                    <div>
-                      <SearchCharacterImage
-                        image={list.image}
-                        imageH={list.imageHover}
-                      />
-                      <SearchCharacterText>{list.title}</SearchCharacterText>
-                    </div>
-                  </SearchCharacterList>
-                ))}
+                {dataList &&
+                  dataList?.map((list, index) => (
+                    <SearchCharacterList key={list.id}>
+                      <div>
+                        <SearchCharacterImage
+                          image={list.image}
+                          imageH={list.imageHover}
+                        />
+                        <SearchCharacterText>{list.title}</SearchCharacterText>
+                      </div>
+                    </SearchCharacterList>
+                  ))}
               </SearchCharacterListBox>
               <SearchCategoryTextBox>
                 <span>카테고리</span>

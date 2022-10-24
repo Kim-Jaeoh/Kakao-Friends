@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  mainCharacterList1,
-  mainCharacterList2,
-  mainCharacterList3,
-} from "../../data/mainContentsData";
+// import {
+//   mainCharacterList1,
+//   mainCharacterList2,
+//   mainCharacterList3,
+// } from "../../data/mainContentsData";
 import styled from "@emotion/styled";
 import Flicking from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
@@ -14,6 +14,7 @@ import TitleBanner1 from "../../image/main_character_1.png";
 import TitleBanner2 from "../../image/main_character_2.png";
 import TitleBanner3 from "../../image/main_character_3.png";
 import { debounce, throttle } from "lodash";
+import axios from "axios";
 
 const Container = styled.div`
   position: relative;
@@ -158,46 +159,64 @@ export const MainCharacterItem = () => {
     }
   };
 
+  const [dataList1, setDataList1] = useState(null);
+  const [dataList2, setDataList2] = useState(null);
+  const [dataList3, setDataList3] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/mainCharacterList1").then((res) => {
+      setDataList1(res.data);
+    });
+    axios.get("http://localhost:4000/mainCharacterList2").then((res) => {
+      setDataList2(res.data);
+    });
+    axios.get("http://localhost:4000/mainCharacterList3").then((res) => {
+      setDataList3(res.data);
+    });
+  }, []);
+
   return (
     <Container>
-      <Flicking
-        circular={true}
-        duration={500}
-        autoResize={true}
-        autoInit={true}
-        ref={flickingRef}
-        onChange={flickingOnChange}
-        onChanged={(e) => {
-          setSlideIndex(e.index);
-        }}
-        changeOnHold={false}
-        moveType={"strict"}
-      >
-        <div>
-          <MainCharacterItemList
-            titleBanner={TitleBanner1}
-            titleText={"핑크핑크 어피치"}
-            subText={"예쁘기도 하지요"}
-            listData={mainCharacterList1}
-          />
-        </div>
-        <div>
-          <MainCharacterItemList
-            titleBanner={TitleBanner2}
-            titleText={"오직 여기서만"}
-            subText={"온라인 전용상품 보기"}
-            listData={mainCharacterList2}
-          />
-        </div>
-        <div>
-          <MainCharacterItemList
-            titleBanner={TitleBanner3}
-            titleText={"핑크핑크 어피치"}
-            subText={"예쁘기도 하지요"}
-            listData={mainCharacterList3}
-          />
-        </div>
-      </Flicking>
+      {dataList1 && dataList2 && dataList3 && (
+        <Flicking
+          circular={true}
+          duration={500}
+          autoResize={true}
+          autoInit={true}
+          ref={flickingRef}
+          onChange={flickingOnChange}
+          onChanged={(e) => {
+            setSlideIndex(e.index);
+          }}
+          changeOnHold={false}
+          moveType={"strict"}
+        >
+          <div>
+            <MainCharacterItemList
+              titleBanner={TitleBanner1}
+              titleText={"핑크핑크 어피치"}
+              subText={"예쁘기도 하지요"}
+              listData={dataList1}
+            />
+          </div>
+          <div>
+            <MainCharacterItemList
+              titleBanner={TitleBanner2}
+              titleText={"오직 여기서만"}
+              subText={"온라인 전용상품 보기"}
+              listData={dataList2}
+            />
+          </div>
+          <div>
+            <MainCharacterItemList
+              titleBanner={TitleBanner3}
+              titleText={"핑크핑크 어피치"}
+              subText={"예쁘기도 하지요"}
+              listData={dataList3}
+            />
+          </div>
+        </Flicking>
+      )}
       <PageInfoBox>
         <PageInfo>
           {!resize && (

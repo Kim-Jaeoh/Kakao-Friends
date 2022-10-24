@@ -5,7 +5,7 @@ import beltbannerPc from "../image/belt_banner_pc.jpg";
 import beltbannerMo from "../image/belt_banner_mo.jpg";
 import { useHandleISize } from "../hooks/useHandleISize";
 import { MainSlideContents } from "../components/main/MainSlideContents";
-import { MainVideoContents } from "../components/main/MainVideoContents";
+import { MainSeriesContents } from "../components/main/MainSeriesContents";
 import { MainCharacterItem } from "../components/main/MainCharacterItem";
 import { MainRecommend } from "../components/main/MainRecommend";
 import { MainRestock } from "../components/main/MainRestock";
@@ -45,7 +45,7 @@ export const Main = () => {
 
   return (
     <>
-      {/* <Header /> */}
+      <Header />
       <Container>
         <Article>
           <MainBanner>
@@ -59,7 +59,7 @@ export const Main = () => {
             />
           </BeltBanner>
           <MainSlideContents />
-          <MainVideoContents />
+          <MainSeriesContents />
           <MainCharacterItem />
           <MainRecommend />
           <MainRestock />
