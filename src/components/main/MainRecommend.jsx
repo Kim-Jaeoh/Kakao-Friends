@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
-import listImage1 from "../../image/category_list_1.png";
-import listImage2 from "../../image/category_list_2.png";
-import listImage3 from "../../image/category_list_3.png";
-import listImage4 from "../../image/category_list_4.png";
+import listImage1 from "../../assets/category_list_1.png";
+import listImage2 from "../../assets/category_list_2.png";
+import listImage3 from "../../assets/category_list_3.png";
+import listImage4 from "../../assets/category_list_4.png";
 
 const Container = styled.div`
   /* position: relative; */

@@ -10,9 +10,9 @@ import "@egjs/react-flicking/dist/flicking.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { MainCharacterItemList } from "./MainCharacterItemList";
-import TitleBanner1 from "../../image/main_character_1.png";
-import TitleBanner2 from "../../image/main_character_2.png";
-import TitleBanner3 from "../../image/main_character_3.png";
+import TitleBanner1 from "../../assets/main_character_1.png";
+import TitleBanner2 from "../../assets/main_character_2.png";
+import TitleBanner3 from "../../assets/main_character_3.png";
 import { debounce, throttle } from "lodash";
 import axios from "axios";
 

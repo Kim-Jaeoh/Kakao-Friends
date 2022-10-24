@@ -278,11 +278,15 @@ export const Search = ({ searchModal, toggleSearch }) => {
   const navigate = useNavigate();
   const history = createBrowserHistory();
   const location = useLocation();
-  const [dataList, setDataList] = useState();
+  const [dataList1, setDataList1] = useState();
+  const [dataList2, setDataList2] = useState();
 
   useEffect(() => {
     axios.get("http://localhost:4000/menuCharacterListData").then((res) => {
-      setDataList(res.data);
+      setDataList1(res.data);
+    });
+    axios.get("http://localhost:4000/menuCategoryListData").then((res) => {
+      setDataList2(res.data);
     });
   }, []);
 
@@ -361,8 +365,8 @@ export const Search = ({ searchModal, toggleSearch }) => {
 
             <SearchCategoryBox>
               <SearchCharacterListBox>
-                {dataList &&
-                  dataList?.map((list, index) => (
+                {dataList1 &&
+                  dataList1?.map((list, index) => (
                     <SearchCharacterList key={list.id}>
                       <div>
                         <SearchCharacterImage
@@ -377,11 +381,12 @@ export const Search = ({ searchModal, toggleSearch }) => {
               <SearchCategoryTextBox>
                 <span>카테고리</span>
                 <SearchCategoryTextList>
-                  {menuCategoryListData.map((list, index) => (
-                    <SearchCategoryText key={list.id}>
-                      <Link to="/">{list.title}</Link>
-                    </SearchCategoryText>
-                  ))}
+                  {dataList2 &&
+                    dataList2.map((list, index) => (
+                      <SearchCategoryText key={list.id}>
+                        <Link to="/">{list.title}</Link>
+                      </SearchCategoryText>
+                    ))}
                 </SearchCategoryTextList>
               </SearchCategoryTextBox>
             </SearchCategoryBox>

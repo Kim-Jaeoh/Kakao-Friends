@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { mainContentsSeriesList } from "../../data/mainContentsData";
-import videoContents from "../../image/video_contents_1.mp4";
+import videoContents from "../../assets/video_contents_1.mp4";
 import { Link } from "react-router-dom";
 import { BsBag, BsFillPauseFill, BsPlayFill, BsBagFill } from "react-icons/bs";
 import axios from "axios";

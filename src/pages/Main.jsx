@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
 import { MainContents } from "../components/main/MainContents";
-import beltbannerPc from "../image/belt_banner_pc.jpg";
-import beltbannerMo from "../image/belt_banner_mo.jpg";
+import beltbannerPc from "../assets/belt_banner_pc.jpg";
+import beltbannerMo from "../assets/belt_banner_mo.jpg";
 import { useHandleISize } from "../hooks/useHandleISize";
 import { MainSlideContents } from "../components/main/MainSlideContents";
 import { MainSeriesContents } from "../components/main/MainSeriesContents";

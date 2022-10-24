@@ -7,6 +7,7 @@ import { useHandleISize } from "../../hooks/useHandleISize";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { mainRestockList } from "../../data/mainContentsData";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import axios from "axios";
 
 const Container = styled.div`
   /* position: relative; */
@@ -196,6 +197,13 @@ export const MainRestock = () => {
   const [visible2, setVisible2] = useState(true);
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
+  const [dataList, setDataList] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/mainRestockList").then((res) => {
+      setDataList(res.data);
+    });
+  }, []);
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
@@ -237,7 +245,7 @@ export const MainRestock = () => {
     if (flickingRef.current.animating === true) {
       return;
     }
-    if (slideIndex !== mainRestockList.length - 3) {
+    if (slideIndex !== dataList?.length - 3) {
       setSlideIndex(slideIndex + 1);
     }
   };
@@ -249,12 +257,12 @@ export const MainRestock = () => {
       setVisible(true);
     }
 
-    if (slideIndex === mainRestockList.length - 3) {
+    if (slideIndex === dataList?.length - 3) {
       setVisible2(false);
     } else {
       setVisible2(true);
     }
-  }, [slideIndex]);
+  }, [dataList?.length, slideIndex]);
 
   const toggleIcon = useCallback(
     (index) => {
@@ -306,23 +314,24 @@ export const MainRestock = () => {
           bound={true}
           align={"prev"}
         >
-          {mainRestockList.map((list, index) => (
-            <div key={list.id}>
-              <ListBox>
-                <Link to="/">
-                  <ListImage src={list.image} alt={list.title} />
-                  <ListTitle>{list.title}</ListTitle>
-                </Link>
-                <BellButton onClick={(e) => toggleIcon(index, e)}>
-                  {clickNumber.includes(index) ? (
-                    <AiFillBell />
-                  ) : (
-                    <AiOutlineBell />
-                  )}
-                </BellButton>
-              </ListBox>
-            </div>
-          ))}
+          {dataList &&
+            dataList?.map((list, index) => (
+              <div key={list.id}>
+                <ListBox>
+                  <Link to="/">
+                    <ListImage src={list.image} alt={list.title} />
+                    <ListTitle>{list.title}</ListTitle>
+                  </Link>
+                  <BellButton onClick={(e) => toggleIcon(index, e)}>
+                    {clickNumber.includes(index) ? (
+                      <AiFillBell />
+                    ) : (
+                      <AiOutlineBell />
+                    )}
+                  </BellButton>
+                </ListBox>
+              </div>
+            ))}
         </Flicking>
       </SliderBox>
     </Container>

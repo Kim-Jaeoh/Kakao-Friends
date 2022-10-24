@@ -4,7 +4,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 import { Link } from "react-router-dom";
-import logo from "../../image/logo_halloween.gif";
+import logo from "../../assets/logo_halloween.gif";
 import { Category } from "./Category";
 import { Search } from "../modal/Search";
 import { Menubar } from "../modal/Menubar";
