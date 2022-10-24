@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { mainContentsBannerList } from "../../data/mainContentsData.js";
 // import mainContentsBannerList from "../../../server/db.json";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { BannerListApi } from "../../apis/dataApi.js";
 
 const Container = styled.div`
   display: block;
@@ -90,18 +92,16 @@ const MainContentsText = styled.span`
 `;
 
 export const MainContents = () => {
-  const [dataList, setDataList] = useState(null);
-
-  useEffect(() => {
-    axios.get("http://localhost:4000/mainContentsBannerList").then((res) => {
-      setDataList(res.data);
-    });
-  }, []);
+  const { data: dataList, isLoading } = useQuery("banner", BannerListApi, {
+    refetchOnWindowFocus: false,
+    // suspense: true,
+    onError: (e) => console.log(e.message),
+  });
 
   return (
     <>
-      {dataList &&
-        dataList?.map((list) => (
+      {!isLoading &&
+        dataList?.data.map((list) => (
           <Container key={list.id}>
             <Link to={"/"}>
               {list.video ? (

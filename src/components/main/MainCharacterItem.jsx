@@ -1,9 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-// import {
-//   mainCharacterList1,
-//   mainCharacterList2,
-//   mainCharacterList3,
-// } from "../../data/mainContentsData";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import Flicking from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
@@ -13,8 +8,12 @@ import { MainCharacterItemList } from "./MainCharacterItemList";
 import TitleBanner1 from "../../assets/main_character_1.png";
 import TitleBanner2 from "../../assets/main_character_2.png";
 import TitleBanner3 from "../../assets/main_character_3.png";
-import { debounce, throttle } from "lodash";
-import axios from "axios";
+import { useQuery } from "react-query";
+import {
+  CharacterList1Api,
+  CharacterList2Api,
+  CharacterList3Api,
+} from "../../apis/dataApi";
 
 const Container = styled.div`
   position: relative;
@@ -159,64 +158,61 @@ export const MainCharacterItem = () => {
     }
   };
 
-  const [dataList1, setDataList1] = useState(null);
-  const [dataList2, setDataList2] = useState(null);
-  const [dataList3, setDataList3] = useState(null);
+  const { data: data1, isLoading } = useQuery("character1", CharacterList1Api, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
-  useEffect(() => {
-    axios.get("http://localhost:4000/mainCharacterList1").then((res) => {
-      setDataList1(res.data);
-    });
-    axios.get("http://localhost:4000/mainCharacterList2").then((res) => {
-      setDataList2(res.data);
-    });
-    axios.get("http://localhost:4000/mainCharacterList3").then((res) => {
-      setDataList3(res.data);
-    });
-  }, []);
+  const { data: data2 } = useQuery("character2", CharacterList2Api, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  const { data: data3 } = useQuery("character3", CharacterList3Api, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
   return (
     <Container>
-      {dataList1 && dataList2 && dataList3 && (
-        <Flicking
-          circular={true}
-          duration={500}
-          autoResize={true}
-          autoInit={true}
-          ref={flickingRef}
-          onChange={flickingOnChange}
-          onChanged={(e) => {
-            setSlideIndex(e.index);
-          }}
-          changeOnHold={false}
-          moveType={"strict"}
-        >
-          <div>
-            <MainCharacterItemList
-              titleBanner={TitleBanner1}
-              titleText={"핑크핑크 어피치"}
-              subText={"예쁘기도 하지요"}
-              listData={dataList1}
-            />
-          </div>
-          <div>
-            <MainCharacterItemList
-              titleBanner={TitleBanner2}
-              titleText={"오직 여기서만"}
-              subText={"온라인 전용상품 보기"}
-              listData={dataList2}
-            />
-          </div>
-          <div>
-            <MainCharacterItemList
-              titleBanner={TitleBanner3}
-              titleText={"핑크핑크 어피치"}
-              subText={"예쁘기도 하지요"}
-              listData={dataList3}
-            />
-          </div>
-        </Flicking>
-      )}
+      <Flicking
+        circular={true}
+        duration={500}
+        autoResize={true}
+        autoInit={true}
+        ref={flickingRef}
+        onChange={flickingOnChange}
+        onChanged={(e) => {
+          setSlideIndex(e.index);
+        }}
+        changeOnHold={false}
+        moveType={"strict"}
+      >
+        <div>
+          <MainCharacterItemList
+            titleBanner={TitleBanner1}
+            titleText={"핑크핑크 어피치"}
+            subText={"예쁘기도 하지요"}
+            listData={!isLoading && data1?.data}
+          />
+        </div>
+        <div>
+          <MainCharacterItemList
+            titleBanner={TitleBanner2}
+            titleText={"오직 여기서만"}
+            subText={"온라인 전용상품 보기"}
+            listData={!isLoading && data2?.data}
+          />
+        </div>
+        <div>
+          <MainCharacterItemList
+            titleBanner={TitleBanner3}
+            titleText={"핑크핑크 어피치"}
+            subText={"예쁘기도 하지요"}
+            listData={!isLoading && data3?.data}
+          />
+        </div>
+      </Flicking>
       <PageInfoBox>
         <PageInfo>
           {!resize && (

@@ -229,37 +229,38 @@ export const MainCharacterItemList = ({
 
       <SlideBox>
         <SliderItemBox>
-          {(size >= 640 ? listData : resizeItem).map((list, index) => (
-            <SliderItemList key={list.id}>
-              <SliderItem>
-                <Link to="/">
-                  <SliderImage>
-                    <img src={list.image} alt="제품" />
-                  </SliderImage>
-                </Link>
-
-                <SliderItemInfo>
+          {listData &&
+            (size >= 640 ? listData : resizeItem).map((list, index) => (
+              <SliderItemList key={list.id}>
+                <SliderItem>
                   <Link to="/">
-                    <strong>{list.title}</strong>
-                    <em>
-                      <span>{list.price}</span>원
-                    </em>
+                    <SliderImage>
+                      <img src={list.image} alt="제품" />
+                    </SliderImage>
                   </Link>
-                </SliderItemInfo>
 
-                <BagButton
-                  onClick={(e) => toggleIcon(index, e)}
-                  style={{
-                    backgroundColor: clickNumber.includes(index)
-                      ? "#ff477E"
-                      : "#bbb",
-                  }}
-                >
-                  <BsBag />
-                </BagButton>
-              </SliderItem>
-            </SliderItemList>
-          ))}
+                  <SliderItemInfo>
+                    <Link to="/">
+                      <strong>{list.title}</strong>
+                      <em>
+                        <span>{list.price}</span>원
+                      </em>
+                    </Link>
+                  </SliderItemInfo>
+
+                  <BagButton
+                    onClick={(e) => toggleIcon(index, e)}
+                    style={{
+                      backgroundColor: clickNumber.includes(index)
+                        ? "#ff477E"
+                        : "#bbb",
+                    }}
+                  >
+                    <BsBag />
+                  </BagButton>
+                </SliderItem>
+              </SliderItemList>
+            ))}
         </SliderItemBox>
         <WrapLink>
           <Link to="/">

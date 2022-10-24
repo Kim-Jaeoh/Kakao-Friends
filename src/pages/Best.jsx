@@ -1,9 +1,18 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "@emotion/styled";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { BestListData } from "../data/mainContentsData";
 import axios from "axios";
+import { useInView } from "react-intersection-observer";
 import { Header } from "../components/header/Header";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
+import { BestListApi } from "../apis/dataApi";
 
 const Container = styled.main`
   position: relative;
@@ -205,13 +214,33 @@ export const Best = () => {
   const [clickTabNumber, setClickTabNumber] = useState(1);
   const [clickIcon, setClickIcon] = useState(false);
   const [clickIconNumber, setClickIconNumber] = useState([]);
-  const [dataList, setDataList] = useState(null);
+
+  // 무한 스크롤 1번
+  const [dataList, setDataList] = useState([]);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const page = useRef(1);
+  const [ref, inView] = useInView();
+
+  const fetch = useCallback(async () => {
+    try {
+      const { data } = await axios.get(
+        `https://kakao-friends.herokuapp.com/BestListData?_limit=4&_page=${page.current}`
+      );
+      setDataList((prev) => [...prev, ...data]);
+      setHasNextPage(data.length === 4);
+      if (data.length) {
+        page.current += 1;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:4000/BestListData").then((res) => {
-      setDataList(res.data);
-    });
-  }, []);
+    if (inView && hasNextPage) {
+      fetch();
+    }
+  }, [fetch, hasNextPage, inView]);
 
   const toggleTab = (num) => {
     setClickTabNumber(num);
@@ -288,6 +317,7 @@ export const Best = () => {
                   </ProductBox>
                 </ListItem>
               ))}
+            <div ref={ref} style={{ position: "absolute", bottom: "100px" }} />
           </ListBox>
         </Wrapper>
       </Container>

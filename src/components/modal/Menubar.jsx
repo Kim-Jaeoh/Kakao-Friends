@@ -13,6 +13,8 @@ import {
   menuCharacterListData,
 } from "../../data/mainContentsData";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { CategoryListApi, MenuCharacterListApi } from "../../apis/dataApi";
 
 const Container = styled.div`
   overflow-y: scroll;
@@ -310,17 +312,33 @@ const CategoryList = styled.li`
 
 export const Menubar = ({ menuModal, toggleModal }) => {
   const [expanded, setExpanded] = useState("");
-  const [dataList1, setDataList1] = useState();
-  const [dataList2, setDataList2] = useState();
+  // const [dataList1, setDataList1] = useState();
+  // const [dataList2, setDataList2] = useState();
 
-  useEffect(() => {
-    axios.get("http://localhost:4000/menuCharacterListData").then((res) => {
-      setDataList1(res.data);
-    });
-    axios.get("http://localhost:4000/menuCategoryListData").then((res) => {
-      setDataList2(res.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get("http://localhost:4000/menuCharacterListData").then((res) => {
+  //     setDataList1(res.data);
+  //   });
+  //   axios.get("http://localhost:4000/menuCategoryListData").then((res) => {
+  //     setDataList2(res.data);
+  //   });
+  // }, []);
+
+  const { data: dataList1, isLoading } = useQuery(
+    "character",
+    MenuCharacterListApi,
+    {
+      refetchOnWindowFocus: false,
+      // suspense: true,
+      onError: (e) => console.log(e.message),
+    }
+  );
+
+  const { data: dataList2 } = useQuery("category", CategoryListApi, {
+    refetchOnWindowFocus: false,
+    // suspense: true,
+    onError: (e) => console.log(e.message),
+  });
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -385,8 +403,8 @@ export const Menubar = ({ menuModal, toggleModal }) => {
             </ListTab>
             <ListContents>
               <CharacterListBox>
-                {dataList1 &&
-                  dataList1?.map((list, index) => (
+                {!isLoading &&
+                  dataList1?.data.map((list, index) => (
                     <CharacterList key={list.id}>
                       <Link>
                         <CharacterListImage
@@ -418,8 +436,8 @@ export const Menubar = ({ menuModal, toggleModal }) => {
             </ListTab>
             <ListContents>
               <CategoryListBox>
-                {dataList2 &&
-                  dataList2.map((list) => (
+                {!isLoading &&
+                  dataList2.data.map((list) => (
                     <CategoryList key={list.id}>
                       <Link>{list.title}</Link>
                     </CategoryList>

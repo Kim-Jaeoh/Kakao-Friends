@@ -1,14 +1,16 @@
 import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo_halloween.gif";
 import { Category } from "./Category";
-import { Search } from "../modal/Search";
+import { Search } from "../../pages/Search";
 import { Menubar } from "../modal/Menubar";
 import { Reset } from "styled-reset";
+import { useQuery } from "react-query";
+import { CategoryListApi, MenuCharacterListApi } from "../../apis/dataApi";
 
 const Container = styled.div`
   position: sticky;
@@ -76,15 +78,15 @@ const Logo = styled.div`
 
 export const Header = () => {
   const [menuModal, setMemuModal] = useState(false);
-  const [searchModal, setSearchModal] = useState(false);
+  // const [searchModal, setSearchModal] = useState(false);
 
   const toggleModal = () => {
     setMemuModal((prev) => !prev);
   };
 
-  const toggleSearch = () => {
-    setSearchModal((prev) => !prev);
-  };
+  // const toggleSearch = () => {
+  //   setSearchModal((prev) => !prev);
+  // };
 
   return (
     <>
@@ -100,9 +102,11 @@ export const Header = () => {
             <img alt="KAKAO FRIENDS" src={logo} />
           </Logo>
           <Icons>
-            <IconBox onClick={toggleSearch}>
-              <FiSearch />
-            </IconBox>
+            <Link to="/search">
+              <IconBox>
+                <FiSearch />
+              </IconBox>
+            </Link>
             <IconBox>
               <TbWorld />
             </IconBox>
@@ -113,9 +117,6 @@ export const Header = () => {
       </Container>
 
       <Menubar menuModal={menuModal} toggleModal={toggleModal} />
-      {searchModal && (
-        <Search searchModal={searchModal} toggleSearch={toggleSearch} />
-      )}
     </>
   );
 };

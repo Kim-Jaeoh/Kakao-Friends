@@ -5,7 +5,7 @@ export const My = () => {
   return (
     <>
       <Header />
-      <div>My</div>;
+      <div>My</div>
     </>
   );
 };

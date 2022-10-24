@@ -120,7 +120,7 @@ export const Event = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get("http://localhost:4000/Halloween").then((res) => {
+    axios.get("https://kakao-friends.herokuapp.com/Halloween").then((res) => {
       setDataList(res.data[0]);
       setIsLoading(false);
     });

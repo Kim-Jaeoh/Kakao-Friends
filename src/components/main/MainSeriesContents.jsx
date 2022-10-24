@@ -1,10 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "@emotion/styled";
 import { mainContentsSeriesList } from "../../data/mainContentsData";
 import videoContents from "../../assets/video_contents_1.mp4";
 import { Link } from "react-router-dom";
 import { BsBag, BsFillPauseFill, BsPlayFill, BsBagFill } from "react-icons/bs";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { SeriesListApi } from "../../apis/dataApi";
 
 const Container = styled.div``;
 
@@ -191,13 +199,18 @@ export const MainSeriesContents = () => {
   const [hover, setHover] = useState(false);
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
-  const [dataList, setDataList] = useState(null);
+  // const [dataList, setDataList] = useState(null);
 
-  useEffect(() => {
-    axios.get("http://localhost:4000/mainContentsSeriesList").then((res) => {
-      setDataList(res.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get("http://localhost:4000/mainContentsSeriesList").then((res) => {
+  //     setDataList(res.data);
+  //   });
+  // }, []);
+
+  const { data: dataList, isLoading } = useQuery("seriesList", SeriesListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
   const togglePlay = () => {
     if (videoRef.current.paused) {
@@ -265,8 +278,8 @@ export const MainSeriesContents = () => {
           </span>
 
           <ListBox>
-            {dataList &&
-              dataList?.map((list, index) => (
+            {!isLoading &&
+              dataList?.data.map((list, index) => (
                 <List key={list.id}>
                   <ListLink to={"/"}>
                     <ListImage>

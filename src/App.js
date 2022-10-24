@@ -11,6 +11,7 @@ import { Contents } from "./pages/Contents";
 import { My } from "./pages/My";
 import { Footer } from "./components/Footer";
 import { TopButton } from "./components/button/TopButton";
+import { Search } from "./pages/Search";
 
 const Container = styled.div`
   font-size: 14px;
@@ -44,6 +45,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/event" element={<Event />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/best" element={<Best />} />
             <Route path="/contents" element={<Contents />} />
             <Route path="/my" element={<My />} />

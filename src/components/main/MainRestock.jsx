@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import Flicking from "@egjs/react-flicking";
@@ -8,6 +14,8 @@ import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { mainRestockList } from "../../data/mainContentsData";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { RestockListApi } from "../../apis/dataApi";
 
 const Container = styled.div`
   /* position: relative; */
@@ -197,13 +205,18 @@ export const MainRestock = () => {
   const [visible2, setVisible2] = useState(true);
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
-  const [dataList, setDataList] = useState(null);
+  // const [dataList, setDataList] = useState(null);
 
-  useEffect(() => {
-    axios.get("http://localhost:4000/mainRestockList").then((res) => {
-      setDataList(res.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get("http://localhost:4000/mainRestockList").then((res) => {
+  //     setDataList(res.data);
+  //   });
+  // }, []);
+
+  const { data: dataList, isLoading } = useQuery("restock", RestockListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
@@ -245,7 +258,7 @@ export const MainRestock = () => {
     if (flickingRef.current.animating === true) {
       return;
     }
-    if (slideIndex !== dataList?.length - 3) {
+    if (slideIndex !== dataList?.data.length - 3) {
       setSlideIndex(slideIndex + 1);
     }
   };
@@ -257,12 +270,12 @@ export const MainRestock = () => {
       setVisible(true);
     }
 
-    if (slideIndex === dataList?.length - 3) {
+    if (slideIndex === dataList?.data.length - 3) {
       setVisible2(false);
     } else {
       setVisible2(true);
     }
-  }, [dataList?.length, slideIndex]);
+  }, [dataList?.data, slideIndex]);
 
   const toggleIcon = useCallback(
     (index) => {
@@ -314,8 +327,8 @@ export const MainRestock = () => {
           bound={true}
           align={"prev"}
         >
-          {dataList &&
-            dataList?.map((list, index) => (
+          {!isLoading &&
+            dataList?.data.map((list, index) => (
               <div key={list.id}>
                 <ListBox>
                   <Link to="/">

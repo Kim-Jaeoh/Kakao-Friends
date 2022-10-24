@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "@emotion/styled";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, A11y } from "swiper";
@@ -14,6 +20,8 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { debounce } from "lodash";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { SlideListApi } from "../../apis/dataApi";
 
 const Container = styled.div`
   /* position: relative; */
@@ -243,15 +251,20 @@ export const MainSlideContents = () => {
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
   const [disableOnInit, setDisableOnInit] = useState(false);
-  const [dataList, setDataList] = useState(null);
+  // const [dataList, setDataList] = useState(null);
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
-  useEffect(() => {
-    axios.get("http://localhost:4000/mainContentsSlideList").then((res) => {
-      setDataList(res.data);
-    });
-  }, []);
+  const { data: dataList, isLoading } = useQuery("slideList", SlideListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  // useEffect(() => {
+  //   axios.get("http://localhost:4000/mainContentsSlideList").then((res) => {
+  //     setDataList(res.data);
+  //   });
+  // }, []);
 
   // 비디오
   const togglePlay = (event) => {
@@ -310,7 +323,7 @@ export const MainSlideContents = () => {
     }
     // 첫번째 장일 경우 마지막 장 불러오기 (원본 보존으로 인해 전개연산자로 복사)
     if (slideIndex === 0) {
-      setSlideIndex(mainContentsSlideList.length - 1);
+      setSlideIndex(dataList?.data.length - 1);
     } else {
       setSlideIndex(slideIndex - 1);
     }
@@ -325,7 +338,7 @@ export const MainSlideContents = () => {
       return;
     }
     // 마지막 장일 경우 첫번째 장 불러오기 (원본 보존으로 인해 전개연산자로 복사)
-    if (slideIndex === mainContentsSlideList.length - 1) {
+    if (slideIndex === dataList?.data.length - 1) {
       setSlideIndex(0);
     } else {
       setSlideIndex(slideIndex + 1);
@@ -385,7 +398,6 @@ export const MainSlideContents = () => {
           autoResize={true}
           autoInit={true}
           ref={flickingRef}
-          // onChange={flickingOnChange}
           onChanged={(e) => {
             setSlideIndex(e.index);
             setIsPlaying(false);
@@ -395,8 +407,8 @@ export const MainSlideContents = () => {
           changeOnHold={false}
           moveType={"strict"}
         >
-          {dataList &&
-            dataList?.map((list, index) => (
+          {!isLoading &&
+            dataList?.data.map((list, index) => (
               <SliderItem key={list.id}>
                 <SlideVideoBox>
                   {index === slideIndex && (
@@ -492,11 +504,12 @@ export const MainSlideContents = () => {
       </SliderBox>
       {resize && (
         <PaginationButton slideIndex={slideIndex}>
-          {mainContentsSlideList.map((list, index) => (
-            <span key={list.id}>
-              <span />
-            </span>
-          ))}
+          {!isLoading &&
+            dataList?.data.map((list, index) => (
+              <span key={list.id}>
+                <span />
+              </span>
+            ))}
         </PaginationButton>
       )}
     </Container>

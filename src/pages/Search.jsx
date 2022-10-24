@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect } from "react";
 import styled from "@emotion/styled";
 import { createBrowserHistory } from "history";
 import { Modal } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
 import { TbWorld } from "react-icons/tb";
-import { Reset } from "styled-reset";
 import { FiHome } from "react-icons/fi";
 import { CiSearch } from "react-icons/ci";
-import {
-  menuCategoryListData,
-  menuCharacterListData,
-} from "../../data/mainContentsData";
-import { Footer } from "../Footer";
-import axios from "axios";
+
+import { Footer } from "../components/Footer";
+import { useQuery } from "react-query";
+import { CategoryListApi, MenuCharacterListApi } from "../apis/dataApi";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -274,126 +271,111 @@ const SearchCategoryText = styled.li`
   }
 `;
 
-export const Search = ({ searchModal, toggleSearch }) => {
+export const Search = () => {
   const navigate = useNavigate();
-  const history = createBrowserHistory();
-  const location = useLocation();
-  const [dataList1, setDataList1] = useState();
-  const [dataList2, setDataList2] = useState();
+  // const history = createBrowserHistory();
 
-  useEffect(() => {
-    axios.get("http://localhost:4000/menuCharacterListData").then((res) => {
-      setDataList1(res.data);
-    });
-    axios.get("http://localhost:4000/menuCategoryListData").then((res) => {
-      setDataList2(res.data);
-    });
-  }, []);
+  const { data: dataList1, isLoading1 } = useQuery(
+    "character",
+    MenuCharacterListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
 
-  useEffect(() => {
-    const listenBackEvent = () => {
-      // 뒤로가기 할 때 수행할 동작을 적는다
-      navigate(null, "", navigate());
-    };
-
-    const unlistenHistoryEvent = history.listen(({ action }) => {
-      if (action === "POP") {
-        listenBackEvent();
-      }
-    });
-
-    return () => unlistenHistoryEvent();
-  }, []);
+  const { data: dataList2, isLoading2 } = useQuery(
+    "category",
+    CategoryListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
 
   const goHome = () => {
     navigate("/");
-    toggleSearch();
     window.scrollTo(0, 0);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason && reason === "backdropClick") return;
-    toggleSearch();
   };
 
   return (
     <>
-      <Modal
+      {/* <Modal
         open={searchModal}
         onClose={handleClose}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
         style={{ overflowY: "scroll" }}
         hideBackdrop={true}
-      >
-        <Wrapper>
-          <Container>
-            <HeaderBox>
-              <IconBox>
-                <Icon onClick={toggleSearch}>
-                  <IoIosArrowBack />
-                </Icon>
-                <Icon onClick={goHome}>
-                  <FiHome />
-                </Icon>
-              </IconBox>
-
-              <HeaderName>검색</HeaderName>
-
-              <Icon>
-                <TbWorld />
+      > */}
+      <Wrapper>
+        <Container>
+          <HeaderBox>
+            <IconBox>
+              <Icon onClick={() => navigate(-1)}>
+                <IoIosArrowBack />
               </Icon>
-            </HeaderBox>
+              <Icon onClick={goHome}>
+                <FiHome />
+              </Icon>
+            </IconBox>
 
-            <SearchBox>
-              <SearchForm>
-                <SearchContents>
-                  <SearchIcon>
+            <HeaderName>검색</HeaderName>
+
+            <Icon>
+              <TbWorld />
+            </Icon>
+          </HeaderBox>
+
+          <SearchBox>
+            <SearchForm>
+              <SearchContents>
+                <SearchIcon>
+                  <div>
+                    <CiSearch />
+                  </div>
+                </SearchIcon>
+                <SearchInput />
+                <ResetButton>
+                  <span>
+                    <IoMdCloseCircle />
+                  </span>
+                </ResetButton>
+              </SearchContents>
+            </SearchForm>
+          </SearchBox>
+
+          <SearchCategoryBox>
+            <SearchCharacterListBox>
+              {!isLoading1 &&
+                dataList1?.data.map((list, index) => (
+                  <SearchCharacterList key={list.id}>
                     <div>
-                      <CiSearch />
+                      <SearchCharacterImage
+                        image={list.image}
+                        imageH={list.imageHover}
+                      />
+                      <SearchCharacterText>{list.title}</SearchCharacterText>
                     </div>
-                  </SearchIcon>
-                  <SearchInput />
-                  <ResetButton>
-                    <span>
-                      <IoMdCloseCircle />
-                    </span>
-                  </ResetButton>
-                </SearchContents>
-              </SearchForm>
-            </SearchBox>
-
-            <SearchCategoryBox>
-              <SearchCharacterListBox>
-                {dataList1 &&
-                  dataList1?.map((list, index) => (
-                    <SearchCharacterList key={list.id}>
-                      <div>
-                        <SearchCharacterImage
-                          image={list.image}
-                          imageH={list.imageHover}
-                        />
-                        <SearchCharacterText>{list.title}</SearchCharacterText>
-                      </div>
-                    </SearchCharacterList>
+                  </SearchCharacterList>
+                ))}
+            </SearchCharacterListBox>
+            <SearchCategoryTextBox>
+              <span>카테고리</span>
+              <SearchCategoryTextList>
+                {!isLoading2 &&
+                  dataList2.data.map((list, index) => (
+                    <SearchCategoryText key={list.id}>
+                      <Link to="/">{list.title}</Link>
+                    </SearchCategoryText>
                   ))}
-              </SearchCharacterListBox>
-              <SearchCategoryTextBox>
-                <span>카테고리</span>
-                <SearchCategoryTextList>
-                  {dataList2 &&
-                    dataList2.map((list, index) => (
-                      <SearchCategoryText key={list.id}>
-                        <Link to="/">{list.title}</Link>
-                      </SearchCategoryText>
-                    ))}
-                </SearchCategoryTextList>
-              </SearchCategoryTextBox>
-            </SearchCategoryBox>
-            <Footer />
-          </Container>
-        </Wrapper>
-      </Modal>
+              </SearchCategoryTextList>
+            </SearchCategoryTextBox>
+          </SearchCategoryBox>
+          <Footer />
+        </Container>
+      </Wrapper>
+      {/* </Modal> */}
     </>
   );
 };
