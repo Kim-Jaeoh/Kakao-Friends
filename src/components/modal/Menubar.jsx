@@ -437,7 +437,8 @@ export const Menubar = ({ menuModal, toggleModal }) => {
             <ListContents>
               <CategoryListBox>
                 {!isLoading &&
-                  dataList2.data.map((list) => (
+                  // dataList2 &&
+                  dataList2?.data.map((list) => (
                     <CategoryList key={list.id}>
                       <Link>{list.title}</Link>
                     </CategoryList>
