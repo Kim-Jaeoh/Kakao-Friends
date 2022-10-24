@@ -34,9 +34,9 @@
   "scripts": {
     "server": "json-server --watch ./server/db.json --port 4000",
     "start": "node server",
-    "start:dev": "react-scripts start",
+    "start:dev": "cross-env NODE_PATH=src react-scripts start",
     "build": "cross-env NODE_PATH=src react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "heroku-postbuild": "cross-env NODE_PATH=src npm run build"
   },
