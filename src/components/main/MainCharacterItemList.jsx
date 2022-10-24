@@ -111,7 +111,7 @@ const SliderItemInfo = styled.div`
 
       span {
         font-size: 16px;
-        vertical-align: top;
+        /* vertical-align: top; */
       }
     }
   }
@@ -156,9 +156,9 @@ const BagButton = styled.button`
   border-radius: 4px;
 
   svg {
-    width: 16px;
-    height: 16px;
-    padding: 6px;
+    width: 14px;
+    height: 14px;
+    padding: 5px;
     color: white;
   }
 `;

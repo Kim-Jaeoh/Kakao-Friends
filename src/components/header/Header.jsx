@@ -42,7 +42,7 @@ const HeaderBox = styled.div`
 const IconBox = styled.div`
   width: 24px;
   height: 24px;
-  font-size: 24px;
+  font-size: 22px;
   display: flex;
   justify-content: center;
   align-items: center;

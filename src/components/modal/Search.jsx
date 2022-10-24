@@ -68,6 +68,7 @@ const IconBox = styled.div`
 const Icon = styled.div`
   width: 24px;
   height: 24px;
+  font-size: 22px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -75,7 +76,6 @@ const Icon = styled.div`
   cursor: pointer;
 
   svg {
-    font-size: 24px;
   }
 
   a {
@@ -120,6 +120,7 @@ const SearchContents = styled.div`
 const SearchIcon = styled.label`
   width: 24px;
   height: 24px;
+  font-size: 23px;
   /* margin-left: 10px; */
   text-align: center;
   margin-right: 6px;
@@ -130,7 +131,6 @@ const SearchIcon = styled.label`
     justify-content: center;
 
     svg {
-      font-size: 24px;
     }
   }
 `;
@@ -165,7 +165,7 @@ const ResetButton = styled.div`
 
     svg {
       color: #cacbcc;
-      font-size: 24px;
+      font-size: 22px;
     }
   }
 `;

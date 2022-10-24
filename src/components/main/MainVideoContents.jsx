@@ -161,6 +161,10 @@ const ListPrice = styled.strong`
   font-size: 15px;
   line-height: 20px;
   font-weight: bold;
+
+  span {
+    font-size: 16px;
+  }
 `;
 
 const BagButton = styled.button`
@@ -261,7 +265,9 @@ export const MainVideoContents = () => {
                   </ListImage>
                   <ListText>
                     <ListTitle>{list.title}</ListTitle>
-                    <ListPrice>{list.price}원</ListPrice>
+                    <ListPrice>
+                      <span>{list.price}</span>원
+                    </ListPrice>
                   </ListText>
                 </ListLink>
 

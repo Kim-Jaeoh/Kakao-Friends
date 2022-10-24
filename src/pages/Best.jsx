@@ -59,9 +59,10 @@ const TabTitle = styled.li`
 
     // active 값
     border-color: ${(props) =>
-      props.num === props.select ? "#3c404b" : "transparent"};
-    color: ${(props) => (props.num === props.select ? "#3c404b" : "#aeaeaf")};
-    font-weight: ${(props) => (props.num === props.select ? "700" : "normarl")};
+      props.num === props.selected ? "#3c404b" : "transparent"};
+    color: ${(props) => (props.num === props.selected ? "#3c404b" : "#aeaeaf")};
+    font-weight: ${(props) =>
+      props.num === props.selected ? "700" : "normarl"};
   }
 `;
 
@@ -230,14 +231,14 @@ export const Best = () => {
           <TabTitle
             onClick={() => toggleTab(1)}
             num={1}
-            select={clickTabNumber}
+            selected={clickTabNumber}
           >
             <p>실시간</p>
           </TabTitle>
           <TabTitle
             onClick={() => toggleTab(2)}
             num={2}
-            select={clickTabNumber}
+            selected={clickTabNumber}
           >
             <p>스테디</p>
           </TabTitle>

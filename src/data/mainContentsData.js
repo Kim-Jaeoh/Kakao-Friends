@@ -609,6 +609,7 @@ export const BestListData = [
     image: Product01,
     title: "2023 탁상용 캘린더",
     price: "6,000",
+    cart: "",
   },
   {
     id: 2,
@@ -617,6 +618,7 @@ export const BestListData = [
     image: Product02,
     title: "춘식이 허그 목쿠션",
     price: "16,000",
+    cart: "",
   },
   {
     id: 3,
@@ -625,6 +627,7 @@ export const BestListData = [
     image: Product03,
     title: "죠르디 수면 바지",
     price: "19,900",
+    cart: "",
   },
   {
     id: 4,
@@ -633,6 +636,7 @@ export const BestListData = [
     image: Product04,
     title: "죠르디 수면 가운",
     price: "49,900",
+    cart: "",
   },
   {
     id: 5,
@@ -641,6 +645,7 @@ export const BestListData = [
     image: Product05,
     title: "최고심 춘식이 행복과 행운 스티커",
     price: "2,000",
+    cart: "",
   },
   {
     id: 6,
@@ -649,6 +654,7 @@ export const BestListData = [
     image: Product06,
     title: "최고심 춘식이 다재다능 스티커",
     price: "2,000",
+    cart: "",
   },
   {
     id: 7,
@@ -657,6 +663,7 @@ export const BestListData = [
     image: Product07,
     title: "최고심 춘식이 피규어스탬프_화가",
     price: "12,000",
+    cart: "",
   },
   {
     id: 8,
@@ -665,6 +672,7 @@ export const BestListData = [
     image: Product08,
     title: "최고심 춘식이 만년 다이어리",
     price: "10,000",
+    cart: "",
   },
   {
     id: 9,
@@ -673,6 +681,7 @@ export const BestListData = [
     image: Product09,
     title: "최고심 춘식이 떡메모지",
     price: "3,500",
+    cart: "",
   },
   {
     id: 10,
@@ -681,6 +690,7 @@ export const BestListData = [
     image: Product10,
     title: "최고심 춘식이 짱 젤펜",
     price: "4,000",
+    cart: "",
   },
   {
     id: 11,
@@ -689,6 +699,7 @@ export const BestListData = [
     image: Product11,
     title: "최고심 춘식이 잘했어요 젤펜",
     price: "4,000",
+    cart: "",
   },
   {
     id: 12,
@@ -697,6 +708,7 @@ export const BestListData = [
     image: Product12,
     title: "최고심 춘식이 행복 젤펜",
     price: "4,000",
+    cart: "",
   },
   {
     id: 13,
@@ -705,6 +717,7 @@ export const BestListData = [
     image: Product13,
     title: "2023 니니즈 다이어리",
     price: "15,000",
+    cart: "",
   },
   {
     id: 14,
@@ -713,5 +726,6 @@ export const BestListData = [
     image: Product14,
     title: "춘식이 봉투파일 발바닥",
     price: "2,000",
+    cart: "",
   },
 ];
