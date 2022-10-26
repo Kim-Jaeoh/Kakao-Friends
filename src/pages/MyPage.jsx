@@ -9,8 +9,6 @@ import { MyPageOrderList } from "../components/myPage/MyPageOrderList";
 
 const Container = styled.div`
   position: relative;
-  /* padding-bottom: 43px; */
-  /* padding-bottom: 43px; */
 `;
 
 const TabListBox = styled.ul`
