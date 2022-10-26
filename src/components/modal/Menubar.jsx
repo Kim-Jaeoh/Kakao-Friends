@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Drawer, Modal } from "@mui/material";
+import { Drawer } from "@mui/material";
 import styled from "@emotion/styled";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { SlLock } from "react-icons/sl";
 import menuBannerImg from "../../assets/bn_addtalk.png";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import {
-  menuCategoryListData,
-  menuCharacterListData,
-} from "../../data/mainContentsData";
-import axios from "axios";
 import { useQuery } from "react-query";
 import { CategoryListApi, MenuCharacterListApi } from "../../apis/dataApi";
+import { AuthModal } from "./AuthModal";
+import { doc, onSnapshot } from "firebase/firestore";
+import { authService, dbService } from "../../fbase";
+import { AiOutlineBell, AiFillBell } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser, setLoginToken } from "../../reducer/user";
 
 const Container = styled.div`
   overflow-y: scroll;
@@ -30,7 +31,6 @@ const Container = styled.div`
   padding-bottom: 25px;
   background-color: #fff;
   outline: none;
-  z-index: 1500;
 
   font-size: 14px;
   line-height: 1.5;
@@ -58,25 +58,28 @@ const UserInfoBox = styled.div`
   align-items: center;
 `;
 
-const UserLogin = styled(Link)`
+const UserLogin = styled.div`
   font-weight: 700;
   font-size: 16px;
   line-height: 24px;
+  cursor: pointer;
+  user-select: none;
 
   em {
     border-bottom: 1px solid #000;
   }
 `;
 
-const NotUserCheck = styled(Link)`
+const NotUserCheck = styled.div`
   height: 24px;
   line-height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 
   span {
-    font-size: 16px;
+    /* font-size: 24px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -310,33 +313,24 @@ const CategoryList = styled.li`
   }
 `;
 
-export const Menubar = ({ menuModal, toggleModal }) => {
+export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
   const [expanded, setExpanded] = useState("");
-  // const [dataList1, setDataList1] = useState();
-  // const [dataList2, setDataList2] = useState();
+  const [signModal, setSignModal] = useState(false);
 
-  // useEffect(() => {
-  //   axios.get("http://localhost:4000/menuCharacterListData").then((res) => {
-  //     setDataList1(res.data);
-  //   });
-  //   axios.get("http://localhost:4000/menuCategoryListData").then((res) => {
-  //     setDataList2(res.data);
-  //   });
-  // }, []);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { data: dataList1, isLoading } = useQuery(
     "character",
     MenuCharacterListApi,
     {
       refetchOnWindowFocus: false,
-      // suspense: true,
       onError: (e) => console.log(e.message),
     }
   );
 
   const { data: dataList2 } = useQuery("category", CategoryListApi, {
     refetchOnWindowFocus: false,
-    // suspense: true,
     onError: (e) => console.log(e.message),
   });
 
@@ -354,144 +348,201 @@ export const Menubar = ({ menuModal, toggleModal }) => {
     return () => clearTimeout();
   }, [menuModal]);
 
+  const toggleSignModal = () => setSignModal((prev) => !prev);
+  const currentUser = useSelector((state) => state.user.currentUser);
+
+  const onLogOutClick = () => {
+    const ok = window.confirm("로그아웃 하시겠어요?");
+    if (ok) {
+      authService.signOut();
+      dispatch(setLoginToken("logout"));
+      dispatch(
+        setCurrentUser({
+          uid: "",
+          displayName: "",
+          email: "",
+          createdAtId: "",
+          cart: [],
+          like: [],
+        })
+      );
+      toggleModal();
+      navigate("/");
+    }
+  };
+
   return (
-    <Drawer
-      anchor={"left"}
-      open={menuModal}
-      onClose={toggleModal}
-      transitionDuration={400}
-    >
-      <Container role="presentation">
-        <UserInfoBox>
-          <UserLogin to="/">
-            <em>로그인</em>이 필요해요!
-          </UserLogin>
-          <NotUserCheck to="/">
-            비회원 주문조회
-            <span>
-              <IoIosArrowForward />
-            </span>
-          </NotUserCheck>
-        </UserInfoBox>
+    <>
+      <Drawer
+        style={{ position: "relative" }}
+        anchor={"left"}
+        open={menuModal}
+        onClose={toggleModal}
+        transitionDuration={400}
+      >
+        <Container role="presentation">
+          <UserInfoBox>
+            {isLoggedIn ? (
+              <>
+                <UserLogin>
+                  <em>{currentUser.displayName}</em>님 반가워요!
+                </UserLogin>
+                <NotUserCheck>
+                  <span style={{ fontSize: "24px" }}>
+                    <AiOutlineBell />
+                  </span>
+                </NotUserCheck>
+              </>
+            ) : (
+              <>
+                <UserLogin onClick={toggleSignModal}>
+                  <em>로그인</em>이 필요해요!
+                </UserLogin>
+                <NotUserCheck>
+                  비회원 주문조회
+                  <span style={{ fontSize: "16px" }}>
+                    <IoIosArrowForward />
+                  </span>
+                </NotUserCheck>
+              </>
+            )}
+          </UserInfoBox>
 
-        <ListMenu>
-          <List>
-            <Link to="/">장바구니 내역</Link>
-          </List>
-          <ListLast>
-            <Link to="/">
-              주문<span>·</span>배송 내역
-            </Link>
-          </ListLast>
-
-          {/* 구분선 */}
-
-          <Accordion
-            disableGutters
-            elevation={0}
-            square
-            expanded={expanded === "panel1"}
-            onChange={handleChange("panel1")}
-          >
-            <ListTab aria-controls="panel1d-content" id="panel1d-header">
+          <ListMenu>
+            <List>
+              <Link to="/">장바구니 내역</Link>
+            </List>
+            <ListLast>
               <Link to="/">
-                캐릭터
-                <div>
-                  <IoIosArrowDown />
-                </div>
+                주문<span>·</span>배송 내역
               </Link>
-            </ListTab>
-            <ListContents>
-              <CharacterListBox>
-                {!isLoading &&
-                  dataList1?.data.map((list, index) => (
-                    <CharacterList key={list.id}>
-                      <Link>
-                        <CharacterListImage
-                          image={list.image}
-                          imageH={list.imageHover}
-                        />
-                        <CharacterListText>{list.title}</CharacterListText>
-                      </Link>
-                    </CharacterList>
-                  ))}
-              </CharacterListBox>
-            </ListContents>
-          </Accordion>
+            </ListLast>
 
-          <AccordionLast
-            disableGutters
-            elevation={0}
-            square
-            expanded={expanded === "panel2"}
-            onChange={handleChange("panel2")}
-          >
-            <ListTab aria-controls="panel1d-content" id="panel1d-header">
+            {/* 구분선 */}
+
+            <Accordion
+              disableGutters
+              elevation={0}
+              square
+              expanded={expanded === "panel1"}
+              onChange={handleChange("panel1")}
+            >
+              <ListTab aria-controls="panel1d-content" id="panel1d-header">
+                <Link to="/">
+                  캐릭터
+                  <div>
+                    <IoIosArrowDown />
+                  </div>
+                </Link>
+              </ListTab>
+              <ListContents>
+                <CharacterListBox>
+                  {!isLoading &&
+                    dataList1?.data.map((list, index) => (
+                      <CharacterList key={list.id}>
+                        <Link>
+                          <CharacterListImage
+                            image={list.image}
+                            imageH={list.imageHover}
+                          />
+                          <CharacterListText>{list.title}</CharacterListText>
+                        </Link>
+                      </CharacterList>
+                    ))}
+                </CharacterListBox>
+              </ListContents>
+            </Accordion>
+
+            <AccordionLast
+              disableGutters
+              elevation={0}
+              square
+              expanded={expanded === "panel2"}
+              onChange={handleChange("panel2")}
+            >
+              <ListTab aria-controls="panel1d-content" id="panel1d-header">
+                <Link to="/">
+                  카테고리
+                  <div>
+                    <IoIosArrowDown />
+                  </div>
+                </Link>
+              </ListTab>
+              <ListContents>
+                <CategoryListBox>
+                  {!isLoading &&
+                    // dataList2 &&
+                    dataList2?.data.map((list) => (
+                      <CategoryList key={list.id}>
+                        <Link>{list.title}</Link>
+                      </CategoryList>
+                    ))}
+                </CategoryListBox>
+              </ListContents>
+            </AccordionLast>
+
+            {/* 구분선 */}
+
+            <List>
+              <Link to="/">프렌즈 별다꾸</Link>
+            </List>
+            <ListLast>
+              <Link to="/">배경화면</Link>
+            </ListLast>
+
+            {/* 구분선 */}
+
+            <List>
+              <Link to="/">공지사항</Link>
+            </List>
+            <List>
+              <Link to="/">고객센터</Link>
+            </List>
+            <ListLast>
               <Link to="/">
-                카테고리
-                <div>
-                  <IoIosArrowDown />
-                </div>
+                기프트카드 조회<span>·</span>환불
               </Link>
-            </ListTab>
-            <ListContents>
-              <CategoryListBox>
-                {!isLoading &&
-                  // dataList2 &&
-                  dataList2?.data.map((list) => (
-                    <CategoryList key={list.id}>
-                      <Link>{list.title}</Link>
-                    </CategoryList>
-                  ))}
-              </CategoryListBox>
-            </ListContents>
-          </AccordionLast>
+            </ListLast>
 
-          {/* 구분선 */}
+            {/* 구분선 */}
 
-          <List>
-            <Link to="/">프렌즈 별다꾸</Link>
-          </List>
-          <ListLast>
-            <Link to="/">배경화면</Link>
-          </ListLast>
+            <List>
+              <Link to="/">카카오프렌즈샵 안내</Link>
+            </List>
+            <MenuBanner>
+              <div>
+                <img
+                  src={menuBannerImg}
+                  alt="카톡 추가하고 프렌즈 소식을 받아보세요!"
+                />
+              </div>
+            </MenuBanner>
 
-          {/* 구분선 */}
-
-          <List>
-            <Link to="/">공지사항</Link>
-          </List>
-          <List>
-            <Link to="/">고객센터</Link>
-          </List>
-          <ListLast>
-            <Link to="/">
-              기프트카드 조회<span>·</span>환불
-            </Link>
-          </ListLast>
-
-          {/* 구분선 */}
-
-          <List>
-            <Link to="/">카카오프렌즈샵 안내</Link>
-          </List>
-          <MenuBanner>
-            <div>
-              <img
-                src={menuBannerImg}
-                alt="카톡 추가하고 프렌즈 소식을 받아보세요!"
-              />
-            </div>
-          </MenuBanner>
-
-          <LogInBox>
-            <div>
-              <SlLock />
-            </div>
-            로그인
-          </LogInBox>
-        </ListMenu>
-      </Container>
-    </Drawer>
+            {!isLoggedIn ? (
+              <LogInBox onClick={toggleSignModal}>
+                <div>
+                  <SlLock />
+                </div>
+                로그인
+              </LogInBox>
+            ) : (
+              <LogInBox onClick={onLogOutClick}>
+                <div>
+                  <SlLock />
+                </div>
+                로그아웃
+              </LogInBox>
+            )}
+          </ListMenu>
+        </Container>
+        {signModal && (
+          <AuthModal
+            signModal={signModal}
+            toggleSignModal={toggleSignModal}
+            toggleModal={toggleModal}
+          />
+        )}
+      </Drawer>
+    </>
   );
 };

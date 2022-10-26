@@ -275,6 +275,10 @@ export const Search = () => {
   const navigate = useNavigate();
   // const history = createBrowserHistory();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { data: dataList1, isLoading1 } = useQuery(
     "character",
     MenuCharacterListApi,

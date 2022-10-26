@@ -1,17 +1,16 @@
-import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
-import GlobalStyle from "./styles/GlobalStyle";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
-import { Reset } from "styled-reset";
-import { Header } from "./components/header/Header";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
 import { Best } from "./pages/Best";
 import { Contents } from "./pages/Contents";
-import { My } from "./pages/My";
+import { MyPage } from "./pages/MyPage";
 import { Footer } from "./components/Footer";
 import { TopButton } from "./components/button/TopButton";
 import { Search } from "./pages/Search";
+import { useEffect, useState } from "react";
+import { authService } from "./fbase";
+import { MyPageBasket } from "./components/myPage/MyPageBasket";
 
 const Container = styled.div`
   font-size: 14px;
@@ -34,25 +33,39 @@ const Container = styled.div`
 `;
 
 function App() {
+  const [init, setInit] = useState(false);
+  const [userObj, setUserObj] = useState(null);
+
+  useEffect(() => {
+    // 유저 상태 변화 추적(로그인, 로그아웃, 어플리케이션 초기화 시)
+    authService.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUserObj(user);
+      } else {
+        setUserObj(null);
+      }
+      setInit(true); // 어플리케이션이 언제 시작해도 onAuthStateChanged가 실행돼야 하기 때문에 true
+    });
+  }, []);
+
   return (
     <>
-      <BrowserRouter>
-        {/* <Reset /> */}
-        {/* <Global styles={GlobalStyle} /> */}
-        <Container>
-          <TopButton />
-          {/* <Header /> */}
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/event" element={<Event />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/best" element={<Best />} />
-            <Route path="/contents" element={<Contents />} />
-            <Route path="/my" element={<My />} />
-          </Routes>
-          <Footer />
-        </Container>
-      </BrowserRouter>
+      {init && (
+        <BrowserRouter>
+          <Container>
+            <TopButton />
+            <Routes>
+              <Route path="/" element={<Main userObj={userObj} />} />
+              <Route path="/event" element={<Event />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/best" element={<Best />} />
+              <Route path="/contents" element={<Contents />} />
+              <Route path="/mypage/*" element={<MyPage />} />
+            </Routes>
+            <Footer />
+          </Container>
+        </BrowserRouter>
+      )}
     </>
   );
 }

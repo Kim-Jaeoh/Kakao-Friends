@@ -195,16 +195,16 @@ export const MainCharacterItemList = ({
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
 
-  const { size } = useHandleISize(); // 사이즈 체크 커스텀 훅
+  const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
   // 모바일 사이즈 시 리스트 4개만 보이도록 (총 6개)
   useEffect(() => {
-    if (size <= 640) {
+    if (resize) {
       const copy = [...listData];
       copy.splice(copy.length - 2, 2);
       setResizeItem(copy);
     }
-  }, [listData, size]);
+  }, [listData, resize]);
 
   const toggleIcon = useCallback(
     (index) => {
@@ -220,7 +220,8 @@ export const MainCharacterItemList = ({
   );
 
   return (
-    <Wrapper style={{ width: size >= 640 ? "640px" : size + "px" }}>
+    // <Wrapper>
+    <Wrapper style={{ width: !resize ? "640px" : size + "px" }}>
       <Title style={{ backgroundImage: `url(${titleBanner})` }}>
         <strong>
           {titleText} <br /> {subText}
@@ -230,7 +231,7 @@ export const MainCharacterItemList = ({
       <SlideBox>
         <SliderItemBox>
           {listData &&
-            (size >= 640 ? listData : resizeItem).map((list, index) => (
+            (!resize ? listData : resizeItem).map((list, index) => (
               <SliderItemList key={list.id}>
                 <SliderItem>
                   <Link to="/">

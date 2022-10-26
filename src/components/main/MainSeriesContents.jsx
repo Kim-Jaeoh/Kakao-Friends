@@ -195,25 +195,23 @@ const BagButton = styled.button`
 
 export const MainSeriesContents = () => {
   const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [hover, setHover] = useState(false);
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
-  // const [dataList, setDataList] = useState(null);
-
-  // useEffect(() => {
-  //   axios.get("http://localhost:4000/mainContentsSeriesList").then((res) => {
-  //     setDataList(res.data);
-  //   });
-  // }, []);
 
   const { data: dataList, isLoading } = useQuery("seriesList", SeriesListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
   });
 
+  // 영상 autoPlay 시 아이콘 숨김
+  useEffect(() => {
+    setHover(true);
+  }, []);
+
   const togglePlay = () => {
-    if (videoRef.current.paused) {
+    if (!isPlaying) {
       videoRef.current.play();
       setIsPlaying(true);
     } else {
@@ -256,6 +254,7 @@ export const MainSeriesContents = () => {
           <VideoButton
             onClick={togglePlay}
             hover={hover}
+            isPlaying={isPlaying}
             onMouseEnter={onMouseOverButton}
           >
             {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
@@ -264,6 +263,8 @@ export const MainSeriesContents = () => {
             ref={videoRef}
             muted
             loop
+            autoPlay
+            playsinline
             src={videoContents}
             type="video/mp4"
             onMouseOut={onMouseOutButton}

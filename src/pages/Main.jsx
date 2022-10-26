@@ -34,15 +34,16 @@ const BeltBanner = styled.div`
 
 const BennerContents = styled.img`
   display: block;
-  width: ${(props) => (props.resize ? "350px" : "530px")};
+  width: ${(props) =>
+    props.resize ? `calc(${props.checkSize}px - 32px)` : "530px"};
+  max-width: 530px;
   min-width: 320px;
   margin: 0 auto;
   border-radius: 8px;
 `;
 
 export const Main = () => {
-  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
-
+  const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
   return (
     <>
       <Header />
@@ -54,6 +55,7 @@ export const Main = () => {
           <BeltBanner>
             <BennerContents
               resize={resize}
+              checkSize={size}
               src={resize ? beltbannerMo : beltbannerPc}
               alt="5만원 이상 구매하고 할로윈 가랜드 득템!"
             />

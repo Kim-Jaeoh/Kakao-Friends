@@ -70,7 +70,7 @@ export const Category = () => {
         <CategoryMenuBtn
           num={5}
           selected={selected}
-          url={"/my"}
+          url={"/mypage/basket"}
           text={"마이"}
           onSelected={onSelected}
         />

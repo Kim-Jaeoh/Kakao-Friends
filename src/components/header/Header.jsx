@@ -11,6 +11,8 @@ import { Menubar } from "../modal/Menubar";
 import { Reset } from "styled-reset";
 import { useQuery } from "react-query";
 import { CategoryListApi, MenuCharacterListApi } from "../../apis/dataApi";
+import { AuthModal } from "../modal/AuthModal";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   position: sticky;
@@ -79,14 +81,21 @@ const Logo = styled.div`
 export const Header = () => {
   const [menuModal, setMemuModal] = useState(false);
   // const [searchModal, setSearchModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const toggleModal = () => {
     setMemuModal((prev) => !prev);
   };
 
-  // const toggleSearch = () => {
-  //   setSearchModal((prev) => !prev);
-  // };
+  const loginToken = useSelector((state) => state.user.loginToken);
+
+  useEffect(() => {
+    if (loginToken === "logout") {
+      setIsLoggedIn(false);
+    } else if (loginToken === "login") {
+      setIsLoggedIn(true);
+    }
+  }, [loginToken]);
 
   return (
     <>
@@ -116,7 +125,11 @@ export const Header = () => {
         <Category />
       </Container>
 
-      <Menubar menuModal={menuModal} toggleModal={toggleModal} />
+      <Menubar
+        menuModal={menuModal}
+        toggleModal={toggleModal}
+        isLoggedIn={isLoggedIn}
+      />
     </>
   );
 };

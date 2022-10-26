@@ -105,7 +105,13 @@ export const MainContents = () => {
           <Container key={list.id}>
             <Link to={"/"}>
               {list.video ? (
-                <MainContentsVideo height={list.height} loop autoPlay muted>
+                <MainContentsVideo
+                  height={list.height}
+                  loop
+                  autoPlay
+                  playsinline
+                  muted
+                >
                   <source src={list.video} type="video/mp4" />
                 </MainContentsVideo>
               ) : (

@@ -11,9 +11,7 @@ import Flicking from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
-import { mainRestockList } from "../../data/mainContentsData";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import axios from "axios";
 import { useQuery } from "react-query";
 import { RestockListApi } from "../../apis/dataApi";
 

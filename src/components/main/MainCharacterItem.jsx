@@ -97,10 +97,6 @@ export const MainCharacterItem = () => {
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
-  const flickingOnChange = (e) => {
-    setSlideIndex(e);
-  };
-
   // 이미지 변경 시마다 리렌더링
   useEffect(() => {
     moveToFlicking(slideIndex);
@@ -181,37 +177,40 @@ export const MainCharacterItem = () => {
         autoResize={true}
         autoInit={true}
         ref={flickingRef}
-        onChange={flickingOnChange}
         onChanged={(e) => {
           setSlideIndex(e.index);
         }}
         changeOnHold={false}
         moveType={"strict"}
       >
-        <div>
-          <MainCharacterItemList
-            titleBanner={TitleBanner1}
-            titleText={"핑크핑크 어피치"}
-            subText={"예쁘기도 하지요"}
-            listData={!isLoading && data1?.data}
-          />
-        </div>
-        <div>
-          <MainCharacterItemList
-            titleBanner={TitleBanner2}
-            titleText={"오직 여기서만"}
-            subText={"온라인 전용상품 보기"}
-            listData={!isLoading && data2?.data}
-          />
-        </div>
-        <div>
-          <MainCharacterItemList
-            titleBanner={TitleBanner3}
-            titleText={"핑크핑크 어피치"}
-            subText={"예쁘기도 하지요"}
-            listData={!isLoading && data3?.data}
-          />
-        </div>
+        {!isLoading && (
+          <>
+            <div>
+              <MainCharacterItemList
+                titleBanner={TitleBanner1}
+                titleText={"핑크핑크 어피치"}
+                subText={"예쁘기도 하지요"}
+                listData={data1 && data1?.data}
+              />
+            </div>
+            <div>
+              <MainCharacterItemList
+                titleBanner={TitleBanner2}
+                titleText={"오직 여기서만"}
+                subText={"온라인 전용상품 보기"}
+                listData={data2 && data2?.data}
+              />
+            </div>
+            <div>
+              <MainCharacterItemList
+                titleBanner={TitleBanner3}
+                titleText={"핑크핑크 어피치"}
+                subText={"예쁘기도 하지요"}
+                listData={data3 && data3?.data}
+              />
+            </div>
+          </>
+        )}
       </Flicking>
       <PageInfoBox>
         <PageInfo>

@@ -215,7 +215,7 @@ export const Best = () => {
   const [clickIcon, setClickIcon] = useState(false);
   const [clickIconNumber, setClickIconNumber] = useState([]);
 
-  // 무한 스크롤 1번
+  // 무한 스크롤
   const [dataList, setDataList] = useState([]);
   const [hasNextPage, setHasNextPage] = useState(true);
   const page = useRef(1);

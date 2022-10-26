@@ -6,6 +6,8 @@ import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Footer } from "../components/Footer";
+import { HalloweenApi } from "../apis/dataApi";
+import { useQuery } from "react-query";
 
 const Header = styled.div`
   width: 100%;
@@ -114,17 +116,22 @@ const InfoText = styled.ul`
 `;
 
 export const Event = () => {
-  const [dataList, setDataList] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [dataList, setDataList] = useState(null);
+  // const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setIsLoading(true);
-    axios.get("https://kakao-friends.herokuapp.com/Halloween").then((res) => {
-      setDataList(res.data[0]);
-      setIsLoading(false);
-    });
-  }, []);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   axios.get("https://kakao-friends.herokuapp.com/Halloween").then((res) => {
+  //     setDataList(res.data[0]);
+  //     setIsLoading(false);
+  //   });
+  // }, []);
+
+  const { data: dataList, isLoading } = useQuery("halloween", HalloweenApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
   const goHome = () => {
     navigate("/");
@@ -161,28 +168,29 @@ export const Event = () => {
                   loop
                   autoPlay
                   muted
-                  src={dataList.video}
+                  playsinline
+                  src={dataList?.data[0].video}
                   type="video/mp4"
                 />
               </VideoBox>
               <ImageBox>
                 <img
-                  src={dataList.img1}
+                  src={dataList?.data[0].img1}
                   alt="라이언과 춘식이 할로윈캠핑 브릭피규어세트"
                 />
-                <img src={dataList.btn1} alt="구매하기" />
+                <img src={dataList?.data[0].btn1} alt="구매하기" />
                 <img
-                  src={dataList.img2}
+                  src={dataList?.data[0].img2}
                   alt="온라인 전용 할로윈 유령 춘식이 피규어 키링"
                 />
-                <img src={dataList.btn2} alt="구매하기" />
+                <img src={dataList?.data[0].btn2} alt="구매하기" />
                 <img
-                  src={dataList.img3}
+                  src={dataList?.data[0].img3}
                   alt="카카오프렌즈 할로윈 기프트 할로윈 LED 가랜드 증정"
                 />
-                <img src={dataList.btn3} alt="더 많은 상품 보러가기" />
-                <img src={dataList.img4} alt="별다꾸 스티커" />
-                <img src={dataList.btn4} alt="자세히 알아보기" />
+                <img src={dataList?.data[0].btn3} alt="더 많은 상품 보러가기" />
+                <img src={dataList?.data[0].img4} alt="별다꾸 스티커" />
+                <img src={dataList?.data[0].btn4} alt="자세히 알아보기" />
               </ImageBox>
               <InfoTextBox>
                 <strong>유의사항</strong>
