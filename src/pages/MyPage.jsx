@@ -50,6 +50,8 @@ const ListLink = styled(Link)`
   }
 `;
 
+console.log("test");
+
 export const MyPage = () => {
   const [selected, setSelected] = useState(3);
   const { pathname } = useLocation();
