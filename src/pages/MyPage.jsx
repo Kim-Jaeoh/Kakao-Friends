@@ -6,6 +6,9 @@ import { MyPageSeen } from "../components/myPage/MyPageSeen";
 import { MyPageAct } from "../components/myPage/MyPageAct";
 import { MyPageBasket } from "../components/myPage/MyPageBasket";
 import { MyPageOrderList } from "../components/myPage/MyPageOrderList";
+import { doc, onSnapshot } from "firebase/firestore";
+import { dbService } from "../fbase";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   position: relative;
@@ -50,7 +53,7 @@ const ListLink = styled(Link)`
   }
 `;
 
-export const MyPage = () => {
+export const MyPage = ({ userObj }) => {
   const [selected, setSelected] = useState(3);
   const { pathname } = useLocation();
 
@@ -96,7 +99,7 @@ export const MyPage = () => {
         <Routes>
           <Route path="/seen" element={<MyPageSeen />} />
           <Route path="/act" element={<MyPageAct />} />
-          <Route path="/basket" element={<MyPageBasket />} />
+          <Route path="/basket" element={<MyPageBasket userObj={userObj} />} />
           <Route path="/orderlist" element={<MyPageOrderList />} />
         </Routes>
       </Container>

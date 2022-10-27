@@ -4,7 +4,6 @@ import { Header } from "../header/Header";
 export const MyPageOrderList = () => {
   return (
     <>
-      <Header />
       <div>MyOrderList</div>
     </>
   );

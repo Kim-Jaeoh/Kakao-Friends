@@ -10,6 +10,7 @@ import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../../reducer/user";
 import { useNavigate } from "react-router-dom";
+import KakaoLogo from "../../assets/logo_foot_kakao.png";
 
 const Wrapper = styled.div`
   overflow-y: scroll;
@@ -214,7 +215,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
               displayName: user.email.split("@")[0],
               email: user.email,
               createdAtId: Date.now(),
-              cart: [],
+              cart: [{}],
               like: [],
             });
           }
@@ -226,7 +227,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
             displayName: user.email.split("@")[0],
             email: user.email,
             createdAtId: Date.now(),
-            cart: [],
+            cart: [{}],
             like: [],
           })
         );
@@ -292,7 +293,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
       <Wrapper>
         <Container>
           <LogoBox>
-            <Logo src="./image/logo_foot_kakao.png" alt="kakao" />
+            <Logo src={KakaoLogo} alt="kakao" />
           </LogoBox>
           <FormBox>
             <form onSubmit={SignUser}>

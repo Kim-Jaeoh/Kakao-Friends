@@ -362,7 +362,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
           displayName: "",
           email: "",
           createdAtId: "",
-          cart: [],
+          cart: [{}],
           like: [],
         })
       );

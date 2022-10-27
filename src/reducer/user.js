@@ -1,5 +1,6 @@
 export const SET_LOGIN_TOKEN = "SET_LOGIN_TOKEN";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
+export const SET_BASKET_COUNT = "SET_BASKET_COUNT";
 
 export const setLoginToken = (loginToken) => ({
   type: SET_LOGIN_TOKEN,
@@ -11,6 +12,11 @@ export const setCurrentUser = (currentUser) => ({
   payload: currentUser,
 });
 
+export const setBasketCount = (basketCount) => ({
+  type: SET_BASKET_COUNT,
+  payload: basketCount,
+});
+
 const initialState = {
   loginToken: "logout",
   currentUser: {
@@ -20,6 +26,9 @@ const initialState = {
     createdAtId: "",
     cart: [],
     like: [],
+  },
+  basketCount: {
+    count: [],
   },
 };
 
@@ -35,6 +44,12 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         currentUser: action.payload,
+      };
+
+    case SET_BASKET_COUNT:
+      return {
+        ...state,
+        basketCount: action.payload,
       };
 
     default:

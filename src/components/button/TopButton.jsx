@@ -57,7 +57,7 @@ export const TopButton = () => {
     const handleFollow = () => {
       setScrollY(window.pageYOffset);
 
-      if (scrollY > 800) {
+      if (scrollY > 1200) {
         setBtnStatus(true);
       } else {
         setBtnStatus(false);

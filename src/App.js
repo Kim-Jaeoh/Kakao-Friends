@@ -11,6 +11,8 @@ import { Search } from "./pages/Search";
 import { useEffect, useState } from "react";
 import { authService } from "./fbase";
 import { MyPageBasket } from "./components/myPage/MyPageBasket";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser } from "./reducer/user";
 
 const Container = styled.div`
   font-size: 14px;
@@ -60,7 +62,7 @@ function App() {
               <Route path="/search" element={<Search />} />
               <Route path="/best" element={<Best />} />
               <Route path="/contents" element={<Contents />} />
-              <Route path="/mypage/*" element={<MyPage />} />
+              <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
             </Routes>
             <Footer />
           </Container>

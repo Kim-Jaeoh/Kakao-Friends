@@ -13,6 +13,7 @@ import { useInView } from "react-intersection-observer";
 import { Header } from "../components/header/Header";
 import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { BestListApi } from "../apis/dataApi";
+import { useInfinityScroll } from "../hooks/useInfinityScroll";
 
 const Container = styled.main`
   position: relative;
@@ -215,32 +216,8 @@ export const Best = () => {
   const [clickIcon, setClickIcon] = useState(false);
   const [clickIconNumber, setClickIconNumber] = useState([]);
 
-  // 무한 스크롤
-  const [dataList, setDataList] = useState([]);
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const page = useRef(1);
-  const [ref, inView] = useInView();
-
-  const fetch = useCallback(async () => {
-    try {
-      const { data } = await axios.get(
-        `https://kakao-friends.herokuapp.com/BestListData?_limit=4&_page=${page.current}`
-      );
-      setDataList((prev) => [...prev, ...data]);
-      setHasNextPage(data.length === 4);
-      if (data.length) {
-        page.current += 1;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetch();
-    }
-  }, [fetch, hasNextPage, inView]);
+  const api = "https://kakao-friends.herokuapp.com/BestListData";
+  const { ref, dataList } = useInfinityScroll(api, 4); // 무한스크롤 커스텀 훅
 
   const toggleTab = (num) => {
     setClickTabNumber(num);
