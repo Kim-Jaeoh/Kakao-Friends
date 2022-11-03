@@ -14,8 +14,18 @@ import { BestListApi } from "../../apis/dataApi";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { dbService } from "../../fbase";
-import { setBasketCount } from "../../reducer/user";
+import {
+  CheckItem,
+  Decrement,
+  Increment,
+  InputChange,
+  setBasket,
+  setBasketCount,
+  setCurrentUser,
+  UnCheckItem,
+} from "../../reducer/user";
 import { list } from "firebase/storage";
+import { useMemo } from "react";
 
 const Container = styled.div``;
 
@@ -113,7 +123,9 @@ const DeliveryPriceGaugebox = styled.div`
 `;
 
 const DeliveryPriceGaugeBar = styled.div`
-  width: 12%;
+  /* overflow: hidden; */
+  width: ${(props) => props.totalProgress + "%"};
+  max-width: 100%;
   position: absolute;
   left: 0;
   top: 0;
@@ -197,14 +209,15 @@ const Check = styled.div`
   font-weight: bold;
 `;
 
-const CheckIcon = styled.div`
+const CheckIcon = styled.label`
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 6px;
+  cursor: pointer;
 
   svg {
-    color: #3c404b;
+    color: ${(props) => (props.check ? "#3c404b" : "#d8d9df")};
     width: 24px;
     height: 24px;
   }
@@ -236,20 +249,39 @@ const List = styled.li`
 
 const ListContents = styled.div`
   overflow: hidden;
-  position: relative;
+  /* position: relative; */
   padding-left: 29px;
 `;
 
-const ListCheckIcon = styled.span`
+const ListCheckIcon = styled.label`
   position: absolute;
   left: 0;
   top: 0;
+  cursor: pointer;
 
   svg {
-    color: #3c404b;
+    color: ${(props) => (props.check ? "#3c404b" : "#d8d9df")};
     width: 24px;
     height: 24px;
   }
+`;
+
+const CheckInput = styled.input`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  opacity: 0.001;
+  cursor: pointer;
 `;
 
 const ListImageBox = styled(Link)`
@@ -331,7 +363,8 @@ const ItemCounter = styled.div`
   padding: 0 28px;
   box-sizing: border-box;
 
-  input {
+  input,
+  div {
     display: block;
     width: 58px;
     height: 36px;
@@ -368,15 +401,19 @@ const QuanityButton = styled.button`
 
   :first-of-type {
     left: 0;
+    svg {
+      color: ${(props) => (props.amount > 1 ? "#3c404b" : "#dedfe0")};
+    }
   }
 
   :last-of-type {
     right: 0;
+    svg {
+      color: ${(props) => (props.amount >= 1 ? "#3c404b" : "#dedfe0")};
+    }
   }
 
   svg {
-    color: #dedfe0;
-    /* color: #3c404b; */
     width: 16px;
     height: 16px;
   }
@@ -384,6 +421,7 @@ const QuanityButton = styled.button`
 
 const ListDelete = styled.button`
   position: absolute;
+  z-index: 10;
   top: -3px;
   right: -7px;
   width: 30px;
@@ -447,8 +485,8 @@ const OrderButton = styled.button`
   width: 100%;
   height: 80px;
   color: #fff;
-  background-color: #fb2e45;
-
+  background-color: ${(props) => (props.noChecked ? "#d4d7e1" : "#fb2e45")};
+  cursor: ${(props) => (props.noChecked ? "default" : "pointer")};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -579,164 +617,303 @@ const BagButton = styled.button`
 `;
 
 export const MyPageBasket = ({ userObj }) => {
-  const [test, setTest] = useState(false);
-  const [clickIcon, setClickIcon] = useState(false);
-  const [clickNumber, setClickNumber] = useState([]);
-  const currentUser = useSelector((state) => state.user.currentUser);
-  const basketCount = useSelector((state) => state.user.basketCount);
-  const [myInfo, setmyInfo] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [cartPrice, setCartPrice] = useState("");
-  const [totalPrice, setTotalPrice] = useState("");
-  const dispatch = useDispatch();
-
   const { data: dataList } = useQuery("BestList", BestListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
   });
 
+  const [isFocus, setIsFocus] = useState(false);
+  const [checkItems, setCheckItems] = useState([]);
+  const [myInfo, setMyInfo] = useState({});
+  const [logIn, setLogIn] = useState(false);
+  const [cartPrice, setCartPrice] = useState("");
+  const [totalPrice, setTotalPrice] = useState("");
+  const [totalProgress, setTotalProgress] = useState(0);
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentBasKet = useSelector((state) => state.user.basket);
+  const userRef = doc(dbService, "users", currentUser.email);
+
+  // 유저 정보 있을 때
   useEffect(() => {
-    setCartPrice(
-      myInfo?.cart
-        ?.map((a) => Number(a.price.split(",").join("")))
-        .reduce((l, r) => l + r)
-    );
-  }, [myInfo.cart]);
+    if (userObj === undefined || null) return;
 
-  useEffect(() => {
-    setTotalPrice(
-      (cartPrice >= 30000 ? cartPrice : cartPrice + 3000)
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    );
-  }, [cartPrice]);
+    if (userObj) {
+      onSnapshot(doc(dbService, "users", userObj?.email), (doc) => {
+        setMyInfo(doc.data());
+        setLogIn(true);
+      });
+    }
+  }, [userObj]);
 
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setmyInfo(doc.data());
-      setIsLoading(false);
-    });
-  }, [userObj.email]);
-
-  // const Price = () => {
-  //   (cartPrice >= 30000 ? cartPrice : cartPrice + 3000)
-  //     .toString()
-  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  // };
-
-  const toggleIcon = useCallback(
-    async (index) => {
-      if (!myInfo?.cart?.filter((obj) => obj.id === index + 1).length > 0) {
-        const userRef = doc(dbService, "users", currentUser.email);
-        await updateDoc(userRef, {
-          cart: [...myInfo.cart, dataList?.data[index]],
-        });
-        setClickNumber((prev) => [...prev, index]);
-        // setClickIcon(true);
-        dispatch(
-          setBasketCount({
-            count: [...basketCount.count, index],
-          })
-        );
-      } else if (
-        myInfo?.cart?.filter((obj) => obj.id === index + 1).length > 0
-      ) {
-        setClickNumber(clickNumber.filter((id) => id !== index));
-        // setClickIcon(false);
-        const filter = myInfo?.cart.filter((cart) => cart.id !== index + 1);
-        const filter2 = basketCount.count.filter((obj) => obj !== index);
-        const userRef = doc(dbService, "users", currentUser.email);
-        await updateDoc(userRef, {
-          cart: filter,
-        });
-        dispatch(
-          setBasketCount({
-            count: filter2,
-          })
-        );
-      }
+  // JSON Array 내 금액에 콤마가 있어서 인식하지 못하기에 split으로 콤마를 없앤 뒤 문자열로 변환 후 다시 콤마 생성
+  const PriceReComma = useCallback(
+    (price) => {
+      if (totalPrice || cartPrice !== 0) {
+        return price
+          ?.split(",")
+          .join("")
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      } else return;
     },
-    [
-      basketCount,
-      clickNumber,
-      currentUser.email,
-      dataList?.data,
-      dispatch,
-      myInfo.cart,
-    ]
+    [cartPrice, totalPrice]
   );
 
-  // const toggleIcon = useCallback(
-  //   (index) => {
-  //     setClickNumber((prev) => [...prev, index]);
-  //     setClickIcon(true);
+  const PriceDeleteComma = useCallback(
+    (price) => {
+      if (totalPrice || cartPrice !== 0) {
+        return price?.split(",").join("");
+      } else return;
+    },
+    [cartPrice, totalPrice]
+  );
 
-  //     if (clickIcon && clickNumber.includes(index)) {
-  //       setClickNumber(clickNumber.filter((id) => id !== index));
-  //       setClickIcon(false);
-  //     }
-  //   },
-  //   [clickIcon, clickNumber]
-  // );
+  const PriceComma = useCallback(
+    (price) => {
+      if (totalPrice || cartPrice !== 0) {
+        return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      } else return;
+    },
+    [cartPrice, totalPrice]
+  );
+
+  // 상품 가격
+  useEffect(() => {
+    if (currentBasKet?.length === 0) return;
+
+    // 체크된 것들만 계산
+    const checkItem = currentBasKet.filter((item) => item.check);
+
+    if (checkItem.length !== 0) {
+      setCartPrice(
+        checkItem
+          ?.map((item) => PriceDeleteComma(item.price) * item.amount)
+          ?.reduce((l, r) => l + r)
+      );
+    } else {
+      setCartPrice(0);
+    }
+  }, [currentBasKet]);
+
+  // 전체 가격
+  useEffect(() => {
+    if (cartPrice === 0) {
+      setTotalPrice("3,000");
+    } else {
+      setTotalPrice(
+        PriceComma(cartPrice >= 30000 ? cartPrice : cartPrice + 3000)
+      );
+    }
+  }, [cartPrice]);
+
+  // 배송 금액 바
+  useEffect(() => {
+    setTotalProgress(Math.round((cartPrice / 30000) * 100));
+  }, [cartPrice, totalProgress]);
+
+  const toggleIcon = useCallback(
+    async (itemId, index) => {
+      // dispatch(setBasket([])) // 초기화;
+
+      const finded = currentBasKet?.find((item) => item.id === itemId);
+      if (finded === undefined) {
+        setCheckItems((prev) => [...prev, itemId]);
+        dispatch(
+          setBasket([
+            ...currentBasKet,
+            {
+              id: dataList?.data[index].id,
+              title: dataList?.data[index].title,
+              price: dataList?.data[index].price,
+              image: dataList?.data[index].image,
+              amount: 1,
+              check: true,
+            },
+          ])
+        );
+      } else {
+        setCheckItems(checkItems.filter((el) => el !== itemId));
+        const filter = currentBasKet?.filter((item) => item.id !== itemId);
+        dispatch(setBasket(filter));
+      }
+    },
+    [checkItems, currentBasKet, dataList?.data, dispatch]
+  );
+
+  // 장바구니 개별 삭제
+  const BasketDeleteItem = (itemId) => {
+    const filter = currentBasKet?.filter((item) => item.id !== itemId);
+    dispatch(setBasket(filter));
+  };
+
+  // 선택 삭제
+  const selectDelete = () => {
+    const filter = currentBasKet?.filter(
+      (item) => !checkItems.includes(item.id)
+    );
+    setCheckItems(filter);
+    dispatch(setBasket(filter));
+  };
+
+  const onChange = useCallback(
+    (list, value) => {
+      if (isFocus === true) {
+        dispatch(InputChange(list, +value.replace(/(^0+)/, "")));
+      }
+    },
+    [dispatch, isFocus]
+  );
+
+  // 개별 선택
+  const checkHandler = (check, itemId) => {
+    if (check) {
+      dispatch(CheckItem(itemId));
+      setCheckItems((prev) => [...prev, itemId.id]);
+    } else {
+      dispatch(UnCheckItem(itemId));
+      setCheckItems(checkItems.filter((item) => item !== itemId.id));
+    }
+  };
+
+  // 전체 선택
+  function checkAllHandler(checked) {
+    if (checked) {
+      // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
+      const idArray = [];
+      currentBasKet.map((obj) => {
+        idArray.push(obj.id);
+        return dispatch(CheckItem(obj));
+      });
+      setCheckItems(idArray);
+    } else {
+      // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
+      currentBasKet.map((obj) => {
+        return dispatch(UnCheckItem(obj));
+      });
+      setCheckItems([]);
+    }
+  }
+
+  // 페이지 이탈 시 전체 체크 활성화
+  useEffect(() => {
+    // 첫 렌더링 시 체크됐던 목록 담기
+    setCheckItems(currentBasKet.map((obj) => obj.id));
+
+    return () => {
+      console.log("리셋");
+      currentBasKet.map((obj) => {
+        return dispatch(CheckItem(obj));
+      });
+    };
+  }, []);
 
   return (
     <>
-      {!isLoading && myInfo && (
-        <Container>
-          {test ? (
-            <EmptyBasketBox>
-              <EmptyBasketCharacter>
-                <img
-                  src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221026/104605/assets/images/m960/ico_cart_empty.png"
-                  alt=""
-                />
-              </EmptyBasketCharacter>
-              <EmptyText>
-                아직 관심 상품이 없네요!
-                <br />
-                귀여운 프렌즈 상품을 추천드릴게요
-              </EmptyText>
-              <BestItemViewBtn>인기 상품 보기</BestItemViewBtn>
-            </EmptyBasketBox>
-          ) : (
-            <BasketBox>
-              <BasketList>
-                <DeliveryInfoBox>
-                  <DeliveryInfo>
-                    <DeliveryFreeTextBox>
-                      <span>13,000</span>원 추가 시 무료배송
-                    </DeliveryFreeTextBox>
-                    <DeliveryPriceSave>
-                      배송비 절약하기
-                      <span>
-                        <IoIosArrowForward />
-                      </span>
-                    </DeliveryPriceSave>
-                  </DeliveryInfo>
-                  <DeliveryPriceGaugebox>
-                    <DeliveryPriceGaugeBar>
-                      <DeliveryPriceGaugeCircleBox>
-                        <DeliveryPriceGaugeCircle>
-                          <div />
-                        </DeliveryPriceGaugeCircle>
-                      </DeliveryPriceGaugeCircleBox>
-                    </DeliveryPriceGaugeBar>
-                  </DeliveryPriceGaugebox>
-                </DeliveryInfoBox>
-                <CheckBox>
-                  <Check>
-                    <CheckIcon>
-                      <IoCheckmarkCircleSharp />
-                    </CheckIcon>
-                    전체 3
-                  </Check>
-                  <SelectDelete type="button">선택 삭제</SelectDelete>
-                </CheckBox>
-                <ListCart>
-                  {myInfo?.cart?.map((list, index) => (
+      <Container>
+        {!logIn || currentBasKet?.length === 0 ? (
+          <EmptyBasketBox>
+            <EmptyBasketCharacter>
+              <img
+                src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221026/104605/assets/images/m960/ico_cart_empty.png"
+                alt=""
+              />
+            </EmptyBasketCharacter>
+            <EmptyText>
+              아직 관심 상품이 없네요!
+              <br />
+              귀여운 프렌즈 상품을 추천드릴게요
+            </EmptyText>
+            <BestItemViewBtn>인기 상품 보기</BestItemViewBtn>
+          </EmptyBasketBox>
+        ) : (
+          <BasketBox>
+            <BasketList>
+              <DeliveryInfoBox>
+                <DeliveryInfo>
+                  <DeliveryFreeTextBox>
+                    {PriceDeleteComma(totalPrice) >= 30000 ? (
+                      <span>무료 배송</span>
+                    ) : (
+                      <>
+                        <span>
+                          {PriceComma(33000 - PriceDeleteComma(totalPrice))}
+                        </span>
+                        원 추가 시 무료 배송
+                      </>
+                    )}
+                  </DeliveryFreeTextBox>
+                  <DeliveryPriceSave>
+                    배송비 절약하기
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </DeliveryPriceSave>
+                </DeliveryInfo>
+                <DeliveryPriceGaugebox>
+                  <DeliveryPriceGaugeBar totalProgress={totalProgress}>
+                    <DeliveryPriceGaugeCircleBox>
+                      <DeliveryPriceGaugeCircle>
+                        <div />
+                      </DeliveryPriceGaugeCircle>
+                    </DeliveryPriceGaugeCircleBox>
+                  </DeliveryPriceGaugeBar>
+                </DeliveryPriceGaugebox>
+              </DeliveryInfoBox>
+              <CheckBox>
+                <Check>
+                  <CheckIcon
+                    htmlFor="AllcheckBox"
+                    name="AllcheckBox"
+                    check={
+                      checkItems.length === currentBasKet.length &&
+                      currentBasKet.filter((item) => item.check).length > 0
+                        ? true
+                        : false
+                    }
+                  >
+                    <CheckInput
+                      id="AllcheckBox"
+                      type="checkBox"
+                      checked={
+                        checkItems.length === currentBasKet.length &&
+                        currentBasKet.filter((item) => item.check).length > 0
+                          ? true
+                          : false
+                      }
+                      onChange={(e) => {
+                        checkAllHandler(e.target.checked);
+                      }}
+                    />
+                    <IoCheckmarkCircleSharp />
+                  </CheckIcon>
+                  전체 {currentBasKet.filter((item) => item.check).length}
+                </Check>
+                <SelectDelete type="button" onClick={selectDelete}>
+                  선택 삭제
+                </SelectDelete>
+              </CheckBox>
+              <ListCart>
+                {currentBasKet?.map((list, index) => {
+                  return (
                     <List key={list.id}>
                       <ListContents>
-                        <ListCheckIcon>
+                        <ListCheckIcon
+                          htmlFor={`checkItem-${list.id}`}
+                          name={`select-${list.id}`}
+                          check={list.check}
+                        >
+                          <CheckInput
+                            id={`checkItem-${list.id}`}
+                            name={`select-${list.id}`}
+                            type="checkbox"
+                            checked={
+                              checkItems.includes(list.id) ? true : false
+                            }
+                            onChange={(e) => {
+                              checkHandler(e.target.checked, list);
+                            }}
+                          />
                           <IoCheckmarkCircleSharp />
                         </ListCheckIcon>
                         <ListImageBox>
@@ -745,114 +922,105 @@ export const MyPageBasket = ({ userObj }) => {
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox>
-                          <ListTitle>
-                            {list.title}
-                            {/* [온라인 전용] 할로윈 유령 춘식이 피규어 키링 */}
-                          </ListTitle>
+                          <ListTitle>{list.title}</ListTitle>
                           <ListPriceBox>
                             <ListPrice>
-                              <span>
-                                {list.price
-                                  .split(",")
-                                  .join("")
-                                  .toString()
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                              </span>
-                              원
+                              <span>{PriceReComma(list.price)}</span>원
                             </ListPrice>
                           </ListPriceBox>
                           <ItemCounterBox>
                             <ItemCounter>
-                              <QuanityButton type="button">
+                              <QuanityButton
+                                amount={list.amount}
+                                type="button"
+                                onClick={(e) => dispatch(Decrement(list))}
+                              >
                                 <BiMinus />
                               </QuanityButton>
                               <input
                                 type="number"
+                                value={list.amount}
+                                onFocus={() => setIsFocus(true)}
+                                onBlur={() => setIsFocus(false)}
+                                min="1"
+                                max="99"
+                                onChange={(e) => onChange(list, e.target.value)}
                                 onWheel={(e) => e.target.blur()}
                               />
-                              <QuanityButton type="button">
+                              <QuanityButton
+                                amount={list.amount}
+                                type="button"
+                                onClick={(e) => dispatch(Increment(list))}
+                              >
                                 <BiPlus />
                               </QuanityButton>
                             </ItemCounter>
                           </ItemCounterBox>
                         </ListInfoBox>
-                        <ListDelete>
+                        <ListDelete onClick={() => BasketDeleteItem(list.id)}>
                           <IoCloseOutline />
                         </ListDelete>
                       </ListContents>
                     </List>
-                  ))}
-                </ListCart>
-              </BasketList>
-              <BasketBillBox>
-                <BasketListTotalPrice>
-                  <BasketListPrice>
-                    <span>상품 금액</span>
-                    <span>
-                      {cartPrice &&
-                        cartPrice
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                      원
-                    </span>
-                  </BasketListPrice>
-                  <BasketListPrice>
-                    <span>배송비</span>
-                    <span>
-                      {(cartPrice && cartPrice >= 30000 ? "무료" : "3000원")
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                    </span>
-                  </BasketListPrice>
-                  <BasketListPrice>
-                    <strong>총 결제금액</strong>
-                    <strong>{totalPrice}원</strong>
-                  </BasketListPrice>
-                </BasketListTotalPrice>
-                <DescCart>장바구니 상품은 최대 90일까지 보관됩니다.</DescCart>
-              </BasketBillBox>
-              <BasketBottomButton>
-                <OrderButton>{totalPrice}원 주문하기</OrderButton>
-              </BasketBottomButton>
-            </BasketBox>
-          )}
-          <BasketRecommendBox>
-            <strong>잠깐만, 이 제품은 어때요?</strong>
-            <BasketRecommendListBox>
-              {!isLoading &&
-                dataList?.data?.slice(0, 8).map((list, index) => (
-                  <BasketRecommendList key={list.id}>
-                    <RecommendListBox>
-                      <RecommendListImage>
-                        <img src={list.image} alt={list.title} />
-                      </RecommendListImage>
-                      <RecommendListText>
-                        <strong>{list.title}</strong>
-                        <RecomendListPrice>
-                          <span>
-                            {list.price
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                          </span>
-                          원
-                        </RecomendListPrice>
-                        <BagButton onClick={(e) => toggleIcon(index, e)}>
-                          {/* {clickIcon ? <BsBagFill /> : <BsBag />} */}
-                          {myInfo?.cart?.filter((obj) => obj.id === index + 1)
-                            .length > 0 ? (
-                            <BsBagFill />
-                          ) : (
-                            <BsBag />
-                          )}
-                        </BagButton>
-                      </RecommendListText>
-                    </RecommendListBox>
-                  </BasketRecommendList>
-                ))}
-            </BasketRecommendListBox>
-          </BasketRecommendBox>
-        </Container>
-      )}
+                  );
+                })}
+              </ListCart>
+            </BasketList>
+            <BasketBillBox>
+              <BasketListTotalPrice>
+                <BasketListPrice>
+                  <span>상품 금액</span>
+                  <span>{cartPrice && PriceComma(cartPrice)}원</span>
+                </BasketListPrice>
+                <BasketListPrice>
+                  <span>배송비</span>
+                  <span>
+                    {PriceDeleteComma(totalPrice) >= 30000 ? "무료" : "3,000원"}
+                  </span>
+                </BasketListPrice>
+                <BasketListPrice>
+                  <strong>총 결제금액</strong>
+                  <strong>{totalPrice}원</strong>
+                </BasketListPrice>
+              </BasketListTotalPrice>
+              <DescCart>장바구니 상품은 최대 90일까지 보관됩니다.</DescCart>
+            </BasketBillBox>
+            <BasketBottomButton>
+              <OrderButton noChecked={cartPrice === 0}>
+                {cartPrice === 0 ? "주문하기" : `${totalPrice}원 주문하기`}
+              </OrderButton>
+            </BasketBottomButton>
+          </BasketBox>
+        )}
+        <BasketRecommendBox>
+          <strong>잠깐만, 이 제품은 어때요?</strong>
+          <BasketRecommendListBox>
+            {dataList?.data?.slice(0, 8).map((list, index) => (
+              <BasketRecommendList key={list.id}>
+                <RecommendListBox>
+                  <RecommendListImage>
+                    <img src={list.image} alt={list.title} />
+                  </RecommendListImage>
+                  <RecommendListText>
+                    <strong>{list.title}</strong>
+                    <RecomendListPrice>
+                      <span>{PriceComma(list.price)}</span>원
+                    </RecomendListPrice>
+                    <BagButton onClick={(e) => toggleIcon(list.id, index)}>
+                      {currentBasKet?.filter((obj) => obj.id === list.id)
+                        .length > 0 ? (
+                        <BsBagFill />
+                      ) : (
+                        <BsBag />
+                      )}
+                    </BagButton>
+                  </RecommendListText>
+                </RecommendListBox>
+              </BasketRecommendList>
+            ))}
+          </BasketRecommendListBox>
+        </BasketRecommendBox>
+      </Container>
     </>
   );
 };

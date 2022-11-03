@@ -504,7 +504,7 @@
       "title": "2023 탁상용 캘린더",
       "price": "6,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 2,
@@ -513,7 +513,8 @@
       "image": "/image/product02.jpg",
       "title": "춘식이 허그 목쿠션",
       "price": "16,000",
-      "BasketCart": null
+      "view": null,
+      "amount": 1
     },
     {
       "id": 3,
@@ -523,7 +524,7 @@
       "title": "죠르디 수면 바지",
       "price": "19,900",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 4,
@@ -533,7 +534,7 @@
       "title": "죠르디 수면 가운",
       "price": "49,900",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 5,
@@ -543,7 +544,7 @@
       "title": "최고심 춘식이 행복과 행운 스티커",
       "price": "2,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 6,
@@ -553,7 +554,7 @@
       "title": "최고심 춘식이 다재다능 스티커",
       "price": "2,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 7,
@@ -563,7 +564,7 @@
       "title": "최고심 춘식이 피규어스탬프_화가",
       "price": "12,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 8,
@@ -573,7 +574,7 @@
       "title": "최고심 춘식이 만년 다이어리",
       "price": "10,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 9,
@@ -583,7 +584,7 @@
       "title": "최고심 춘식이 떡메모지",
       "price": "3,500",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 10,
@@ -593,7 +594,7 @@
       "title": "최고심 춘식이 짱 젤펜",
       "price": "4,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 11,
@@ -603,7 +604,7 @@
       "title": "최고심 춘식이 잘했어요 젤펜",
       "price": "4,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 12,
@@ -613,7 +614,7 @@
       "title": "최고심 춘식이 행복 젤펜",
       "price": "4,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 13,
@@ -623,7 +624,7 @@
       "title": "2023 니니즈 다이어리",
       "price": "15,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     },
     {
       "id": 14,
@@ -633,7 +634,7 @@
       "title": "춘식이 봉투파일 발바닥",
       "price": "2,000",
       "view": null,
-      "BasketCart": null
+      "amount": 1
     }
   ],
 
