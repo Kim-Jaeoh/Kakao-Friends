@@ -632,19 +632,20 @@ export const MyPageBasket = ({ userObj }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentBasKet = useSelector((state) => state.user.basket);
-  const userRef = doc(dbService, "users", currentUser.email);
 
-  // 유저 정보 있을 때
-  useEffect(() => {
-    if (userObj === undefined || null) return;
+  // const userRef = doc(dbService, "users", currentUser.email);
 
-    if (userObj) {
-      onSnapshot(doc(dbService, "users", userObj?.email), (doc) => {
-        setMyInfo(doc.data());
-        setLogIn(true);
-      });
-    }
-  }, [userObj]);
+  // // 유저 정보 있을 때
+  // useEffect(() => {
+  //   if (userObj === undefined || null) return;
+
+  //   if (userObj) {
+  //     onSnapshot(doc(dbService, "users", userObj?.email), (doc) => {
+  //       setMyInfo(doc.data());
+  //       setLogIn(true);
+  //     });
+  //   }
+  // }, [userObj]);
 
   // JSON Array 내 금액에 콤마가 있어서 인식하지 못하기에 split으로 콤마를 없앤 뒤 문자열로 변환 후 다시 콤마 생성
   const PriceReComma = useCallback(
@@ -811,7 +812,7 @@ export const MyPageBasket = ({ userObj }) => {
   return (
     <>
       <Container>
-        {!logIn || currentBasKet?.length === 0 ? (
+        {currentBasKet?.length === 0 ? (
           <EmptyBasketBox>
             <EmptyBasketCharacter>
               <img

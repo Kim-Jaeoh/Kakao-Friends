@@ -15,7 +15,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { authService, dbService } from "../../fbase";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentUser, setLoginToken } from "../../reducer/user";
+import { setBasket, setCurrentUser, setLoginToken } from "../../reducer/user";
 
 const Container = styled.div`
   overflow-y: scroll;
@@ -366,6 +366,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
           like: [],
         })
       );
+      dispatch(setBasket([]));
       toggleModal();
       navigate("/");
     }

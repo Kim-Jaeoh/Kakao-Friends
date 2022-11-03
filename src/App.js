@@ -52,22 +52,22 @@ function App() {
 
   return (
     <>
-      {init && (
-        <BrowserRouter>
-          <Container>
-            <TopButton />
-            <Routes>
-              <Route path="/" element={<Main userObj={userObj} />} />
-              <Route path="/event" element={<Event />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/best" element={<Best />} />
-              <Route path="/contents" element={<Contents />} />
-              <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
-            </Routes>
-            <Footer />
-          </Container>
-        </BrowserRouter>
-      )}
+      {/* {init && ( */}
+      <BrowserRouter>
+        <Container>
+          <TopButton />
+          <Routes>
+            <Route path="/" element={<Main userObj={userObj} />} />
+            <Route path="/event" element={<Event />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/best" element={<Best />} />
+            <Route path="/contents" element={<Contents />} />
+            <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
+          </Routes>
+          <Footer />
+        </Container>
+      </BrowserRouter>
+      {/* // )} */}
     </>
   );
 }
