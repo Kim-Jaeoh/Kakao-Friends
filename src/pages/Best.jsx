@@ -14,6 +14,7 @@ import { Header } from "../components/header/Header";
 import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { BestListApi } from "../apis/dataApi";
 import { useInfinityScroll } from "../hooks/useInfinityScroll";
+import { Footer } from "../components/Footer";
 
 const Container = styled.main`
   position: relative;
@@ -217,6 +218,7 @@ export const Best = () => {
   const [clickIconNumber, setClickIconNumber] = useState([]);
 
   const api = "https://kakao-friends.herokuapp.com/BestListData";
+
   const { ref, dataList } = useInfinityScroll(api, 4); // 무한스크롤 커스텀 훅
 
   const toggleTab = (num) => {
@@ -294,9 +296,10 @@ export const Best = () => {
                   </ProductBox>
                 </ListItem>
               ))}
-            <div ref={ref} style={{ position: "absolute", bottom: "100px" }} />
+            <div ref={ref} style={{ position: "absolute", bottom: "250px" }} />
           </ListBox>
         </Wrapper>
+        <Footer />
       </Container>
     </>
   );

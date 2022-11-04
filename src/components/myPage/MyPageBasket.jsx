@@ -54,7 +54,7 @@ const EmptyText = styled.span`
   letter-spacing: -0.025em;
 `;
 
-const BestItemViewBtn = styled.div`
+const BestItemViewBtn = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,7 +64,7 @@ const BestItemViewBtn = styled.div`
   padding-bottom: 2px;
   background-color: #3c404b;
   border-radius: 8px;
-  color: #fff;
+  color: #fff !important;
   cursor: pointer;
 `;
 
@@ -624,13 +624,11 @@ export const MyPageBasket = ({ userObj }) => {
 
   const [isFocus, setIsFocus] = useState(false);
   const [checkItems, setCheckItems] = useState([]);
-  const [myInfo, setMyInfo] = useState({});
-  const [logIn, setLogIn] = useState(false);
+  const [CheckBasketList, setCheckBasketList] = useState();
   const [cartPrice, setCartPrice] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
   const [totalProgress, setTotalProgress] = useState(0);
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.currentUser);
   const currentBasKet = useSelector((state) => state.user.basket);
 
   // const userRef = doc(dbService, "users", currentUser.email);
@@ -713,6 +711,24 @@ export const MyPageBasket = ({ userObj }) => {
     setTotalProgress(Math.round((cartPrice / 30000) * 100));
   }, [cartPrice, totalProgress]);
 
+  // 페이지 이탈 시 전체 체크 활성화
+  useEffect(() => {
+    // 첫 렌더링 시 체크됐던 목록 담기
+    setCheckItems(currentBasKet.map((obj) => obj.id));
+
+    return () => {
+      console.log("리셋");
+      currentBasKet.map((obj) => {
+        return dispatch(CheckItem(obj));
+      });
+    };
+  }, []);
+
+  // 체크된 목록 숫자
+  useEffect(() => {
+    setCheckBasketList(currentBasKet.filter((item) => item.check).length);
+  }, [currentBasKet]);
+
   const toggleIcon = useCallback(
     async (itemId, index) => {
       // dispatch(setBasket([])) // 초기화;
@@ -778,7 +794,7 @@ export const MyPageBasket = ({ userObj }) => {
   };
 
   // 전체 선택
-  function checkAllHandler(checked) {
+  const checkAllHandler = (checked) => {
     if (checked) {
       // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
       const idArray = [];
@@ -794,20 +810,7 @@ export const MyPageBasket = ({ userObj }) => {
       });
       setCheckItems([]);
     }
-  }
-
-  // 페이지 이탈 시 전체 체크 활성화
-  useEffect(() => {
-    // 첫 렌더링 시 체크됐던 목록 담기
-    setCheckItems(currentBasKet.map((obj) => obj.id));
-
-    return () => {
-      console.log("리셋");
-      currentBasKet.map((obj) => {
-        return dispatch(CheckItem(obj));
-      });
-    };
-  }, []);
+  };
 
   return (
     <>
@@ -825,7 +828,7 @@ export const MyPageBasket = ({ userObj }) => {
               <br />
               귀여운 프렌즈 상품을 추천드릴게요
             </EmptyText>
-            <BestItemViewBtn>인기 상품 보기</BestItemViewBtn>
+            <BestItemViewBtn to="/best">인기 상품 보기</BestItemViewBtn>
           </EmptyBasketBox>
         ) : (
           <BasketBox>
@@ -868,7 +871,7 @@ export const MyPageBasket = ({ userObj }) => {
                     name="AllcheckBox"
                     check={
                       checkItems.length === currentBasKet.length &&
-                      currentBasKet.filter((item) => item.check).length > 0
+                      CheckBasketList > 0
                         ? true
                         : false
                     }
@@ -878,7 +881,7 @@ export const MyPageBasket = ({ userObj }) => {
                       type="checkBox"
                       checked={
                         checkItems.length === currentBasKet.length &&
-                        currentBasKet.filter((item) => item.check).length > 0
+                        CheckBasketList > 0
                           ? true
                           : false
                       }
@@ -888,7 +891,7 @@ export const MyPageBasket = ({ userObj }) => {
                     />
                     <IoCheckmarkCircleSharp />
                   </CheckIcon>
-                  전체 {currentBasKet.filter((item) => item.check).length}
+                  전체 {CheckBasketList}
                 </Check>
                 <SelectDelete type="button" onClick={selectDelete}>
                   선택 삭제
