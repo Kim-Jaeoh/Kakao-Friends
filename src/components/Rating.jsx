@@ -66,18 +66,18 @@ export const Rating = ({ productId, rate }) => {
     console.log(rate);
   }, [clicked, rate]); //컨디마 컨디업
 
-  const addTodo = async (newTodo) => {
-    const API = "http://localhost:4000/BestListData";
-    const { data } = await axios.post(`${API}?id=${productId}`, newTodo);
-    return data;
-  };
+  // const addTodo = async (newTodo) => {
+  //   const API = "http://localhost:4000/BestListData";
+  //   const { data } = await axios.post(`${API}?id=${productId}`, newTodo);
+  //   return data;
+  // };
 
-  const { mutate, isLoading, isError, error, isSuccess } = useMutation(
-    addTodo
-    // {
-    //   onSuccess: (e) => console.log(e),
-    // }
-  );
+  // const { mutate, isLoading, isError, error, isSuccess } = useMutation(
+  //   addTodo
+  //   // {
+  //   //   onSuccess: (e) => console.log(e),
+  //   // }
+  // );
 
   const sendReview = () => {
     let score = clicked.filter(Boolean).length;
