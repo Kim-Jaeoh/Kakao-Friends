@@ -176,7 +176,6 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
     toggleSignModal();
     toggleModal();
     navigate("/");
-    window.scrollTo(0, 0);
   }, [navigate, toggleModal, toggleSignModal]);
 
   const SignUser = async (e) => {

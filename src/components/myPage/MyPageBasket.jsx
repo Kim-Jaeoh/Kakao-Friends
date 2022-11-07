@@ -729,6 +729,7 @@ export const MyPageBasket = ({ userObj }) => {
     setCheckBasketList(currentBasKet.filter((item) => item.check).length);
   }, [currentBasKet]);
 
+  // 장바구니 dispatch
   const toggleIcon = useCallback(
     async (itemId, index) => {
       // dispatch(setBasket([])) // 초기화;
@@ -920,13 +921,15 @@ export const MyPageBasket = ({ userObj }) => {
                           />
                           <IoCheckmarkCircleSharp />
                         </ListCheckIcon>
-                        <ListImageBox>
+                        <ListImageBox to={`/product/${list.id}`}>
                           <ListImage>
                             <img src={list.image} alt={list.title} />
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox>
-                          <ListTitle>{list.title}</ListTitle>
+                          <ListTitle to={`/product/${list.id}`}>
+                            {list.title}
+                          </ListTitle>
                           <ListPriceBox>
                             <ListPrice>
                               <span>{PriceReComma(list.price)}</span>원
@@ -1001,7 +1004,7 @@ export const MyPageBasket = ({ userObj }) => {
           <BasketRecommendListBox>
             {dataList?.data?.slice(0, 8).map((list, index) => (
               <BasketRecommendList key={list.id}>
-                <RecommendListBox>
+                <RecommendListBox to={`/product/${list.id}`}>
                   <RecommendListImage>
                     <img src={list.image} alt={list.title} />
                   </RecommendListImage>

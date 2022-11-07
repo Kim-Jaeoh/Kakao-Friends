@@ -66,11 +66,12 @@ const Icons = styled.div`
   right: 12px;
 `;
 
-const Logo = styled.div`
+const Logo = styled(Link)`
   display: block;
   width: 167px;
   height: 46px;
   margin: 0 auto;
+  cursor: pointer;
 
   img {
     display: block;
@@ -107,7 +108,7 @@ export const Header = () => {
           >
             <AiOutlineMenu />
           </IconBox>
-          <Logo>
+          <Logo to="/">
             <img alt="KAKAO FRIENDS" src={logo} />
           </Logo>
           <Icons>

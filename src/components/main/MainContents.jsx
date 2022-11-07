@@ -108,8 +108,9 @@ export const MainContents = () => {
                 <MainContentsVideo
                   height={list.height}
                   loop
+                  // controls
                   autoPlay
-                  playsinline
+                  playsInline
                   muted
                 >
                   <source src={list.video} type="video/mp4" />

@@ -207,9 +207,6 @@ const ListTab = styled(MuiAccordionSummary)`
 
   div {
     margin: 0;
-  }
-
-  a {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -429,12 +426,12 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
               onChange={handleChange("panel1")}
             >
               <ListTab aria-controls="panel1d-content" id="panel1d-header">
-                <Link to="/">
+                <div>
                   캐릭터
-                  <div>
+                  <span>
                     <IoIosArrowDown />
-                  </div>
-                </Link>
+                  </span>
+                </div>
               </ListTab>
               <ListContents>
                 <CharacterListBox>
@@ -462,17 +459,16 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
               onChange={handleChange("panel2")}
             >
               <ListTab aria-controls="panel1d-content" id="panel1d-header">
-                <Link to="/">
+                <div>
                   카테고리
-                  <div>
+                  <span>
                     <IoIosArrowDown />
-                  </div>
-                </Link>
+                  </span>
+                </div>
               </ListTab>
               <ListContents>
                 <CategoryListBox>
                   {!isLoading &&
-                    // dataList2 &&
                     dataList2?.data.map((list) => (
                       <CategoryList key={list.id}>
                         <Link>{list.title}</Link>

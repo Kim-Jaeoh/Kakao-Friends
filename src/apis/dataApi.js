@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API = "https://kakao-friends.herokuapp.com";
+// const API = "https://kakao-friends.herokuapp.com";
+const API = "http://localhost:4000";
 
 export const BannerListApi = () => axios.get(`${API}/mainContentsBannerList`);
 

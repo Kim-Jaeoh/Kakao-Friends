@@ -136,8 +136,8 @@ const ListImage = styled.span`
   overflow: hidden;
   float: left;
   position: relative;
-  width: 70px;
-  height: 70px;
+  max-width: 70px;
+  max-height: 70px;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -264,7 +264,7 @@ export const MainSeriesContents = () => {
             muted
             loop
             autoPlay
-            playsinline
+            playsInline
             src={videoContents}
             type="video/mp4"
             onMouseOut={onMouseOutButton}

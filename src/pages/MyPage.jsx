@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Header } from "../components/header/Header";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { MyPageSeen } from "../components/myPage/MyPageSeen";
 import { MyPageAct } from "../components/myPage/MyPageAct";
 import { MyPageBasket } from "../components/myPage/MyPageBasket";

@@ -11,6 +11,7 @@ import { CiSearch } from "react-icons/ci";
 import { Footer } from "../components/Footer";
 import { useQuery } from "react-query";
 import { CategoryListApi, MenuCharacterListApi } from "../apis/dataApi";
+import { RouterHeader } from "../components/header/RouterHeader";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  overflow-y: scroll;
+  /* overflow-y: scroll;
 
   -ms-overflow-style: none; // 인터넷 익스플로러
   scrollbar-width: none; // 파이어폭스
@@ -41,7 +42,16 @@ const Container = styled.div`
 
   @media screen and (min-width: 640px) {
     width: 640px;
-  }
+  } */
+`;
+
+const Header = styled.div`
+  width: 100%;
+  position: relative;
+  z-index: 20;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
 `;
 
 const HeaderBox = styled.div`
@@ -273,11 +283,6 @@ const SearchCategoryText = styled.li`
 
 export const Search = () => {
   const navigate = useNavigate();
-  // const history = createBrowserHistory();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const { data: dataList1, isLoading1 } = useQuery(
     "character",
@@ -297,39 +302,11 @@ export const Search = () => {
     }
   );
 
-  const goHome = () => {
-    navigate("/");
-    window.scrollTo(0, 0);
-  };
-
   return (
     <>
-      {/* <Modal
-        open={searchModal}
-        onClose={handleClose}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-        style={{ overflowY: "scroll" }}
-        hideBackdrop={true}
-      > */}
       <Wrapper>
         <Container>
-          <HeaderBox>
-            <IconBox>
-              <Icon onClick={() => navigate(-1)}>
-                <IoIosArrowBack />
-              </Icon>
-              <Icon onClick={goHome}>
-                <FiHome />
-              </Icon>
-            </IconBox>
-
-            <HeaderName>검색</HeaderName>
-
-            <Icon>
-              <TbWorld />
-            </Icon>
-          </HeaderBox>
+          <RouterHeader title={"검색"} />
 
           <SearchBox>
             <SearchForm>
@@ -368,7 +345,7 @@ export const Search = () => {
               <span>카테고리</span>
               <SearchCategoryTextList>
                 {!isLoading2 &&
-                  dataList2.data.map((list, index) => (
+                  dataList2?.data.map((list, index) => (
                     <SearchCategoryText key={list.id}>
                       <Link to="/">{list.title}</Link>
                     </SearchCategoryText>
@@ -379,7 +356,6 @@ export const Search = () => {
           <Footer />
         </Container>
       </Wrapper>
-      {/* </Modal> */}
     </>
   );
 };

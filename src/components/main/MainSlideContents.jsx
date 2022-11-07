@@ -213,6 +213,9 @@ const PaginationButton = styled.div`
   user-select: none;
 
   span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     span {
       border-radius: 100%;
       display: inline-block;
@@ -235,7 +238,7 @@ const PaginationButton = styled.div`
 `;
 
 export const MainSlideContents = () => {
-  const videoRef = useRef([] || null);
+  const videoRef = useRef([]);
   const flickingRef = useRef(null);
   const buttonRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -356,38 +359,39 @@ export const MainSlideContents = () => {
 
   return (
     <>
-      {!isLoading && (
-        <Container>
-          <Title>
-            <strong>신박한 프렌즈템</strong>
-          </Title>
+      <Container>
+        <Title>
+          <strong>신박한 프렌즈템</strong>
+        </Title>
 
-          <SliderBox>
-            {!resize && (
-              <ArrowBox>
-                <ArrowButton onClick={onClickArrowBackButton}>
-                  <IoIosArrowBack />
-                </ArrowButton>
-                <ArrowButton onClick={onClickArrowForwardButton}>
-                  <IoIosArrowForward />
-                </ArrowButton>
-              </ArrowBox>
-            )}
+        <SliderBox>
+          {!resize && (
+            <ArrowBox>
+              <ArrowButton onClick={onClickArrowBackButton}>
+                <IoIosArrowBack />
+              </ArrowButton>
+              <ArrowButton onClick={onClickArrowForwardButton}>
+                <IoIosArrowForward />
+              </ArrowButton>
+            </ArrowBox>
+          )}
 
-            <Flicking
-              circular={true}
-              duration={500}
-              autoResize={true}
-              autoInit={true}
-              ref={flickingRef}
-              onChanged={(e) => {
-                setSlideIndex(e.index);
-                videoRef?.current[slideIndex]?.pause();
-              }}
-              changeOnHold={false}
-              moveType={"strict"}
-            >
-              {dataList?.data.map((list, index) => (
+          <Flicking
+            circular={true}
+            duration={500}
+            autoResize={true}
+            autoInit={true}
+            defaultIndex={0}
+            ref={flickingRef}
+            onChanged={(e) => {
+              setSlideIndex(e.index);
+              videoRef?.current[slideIndex]?.pause();
+            }}
+            changeOnHold={false}
+            moveType={"strict"}
+          >
+            {!isLoading &&
+              dataList?.data.map((list, index) => (
                 <SliderItem key={list.id}>
                   <SlideVideoBox>
                     {index === slideIndex && (
@@ -408,8 +412,7 @@ export const MainSlideContents = () => {
                       }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
                       loop
                       muted
-                      preload="auto"
-                      playsinline
+                      playsInline
                       src={list.video}
                       type="video/mp4"
                       onMouseOut={onMouseOutButton}
@@ -428,9 +431,9 @@ export const MainSlideContents = () => {
                   </SlideInfo>
                 </SliderItem>
               ))}
-            </Flicking>
+          </Flicking>
 
-            {/* <Swiper
+          {/* <Swiper
           modules={[Navigation, A11y]}
           spaceBetween={6}
           slidesPerView={3}
@@ -483,19 +486,18 @@ export const MainSlideContents = () => {
             );
           })}
         </Swiper> */}
-          </SliderBox>
-          {resize && (
-            <PaginationButton slideIndex={slideIndex}>
-              {!isLoading &&
-                dataList?.data.map((list, index) => (
-                  <span key={list.id}>
-                    <span />
-                  </span>
-                ))}
-            </PaginationButton>
-          )}
-        </Container>
-      )}
+        </SliderBox>
+        {resize && (
+          <PaginationButton slideIndex={slideIndex}>
+            {!isLoading &&
+              dataList?.data.map((list, index) => (
+                <span key={list.id}>
+                  <span />
+                </span>
+              ))}
+          </PaginationButton>
+        )}
+      </Container>
     </>
   );
 };
