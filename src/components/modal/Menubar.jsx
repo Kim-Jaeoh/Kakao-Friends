@@ -15,7 +15,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { authService, dbService } from "../../fbase";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentUser, setLoginToken } from "../../reducer/user";
+import { setBasket, setCurrentUser, setLoginToken } from "../../reducer/user";
 
 const Container = styled.div`
   overflow-y: scroll;
@@ -207,9 +207,6 @@ const ListTab = styled(MuiAccordionSummary)`
 
   div {
     margin: 0;
-  }
-
-  a {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -316,6 +313,9 @@ const CategoryList = styled.li`
 export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
   const [expanded, setExpanded] = useState("");
   const [signModal, setSignModal] = useState(false);
+  const toggleSignModal = () => setSignModal((prev) => !prev);
+
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -348,9 +348,6 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
     return () => clearTimeout();
   }, [menuModal]);
 
-  const toggleSignModal = () => setSignModal((prev) => !prev);
-  const currentUser = useSelector((state) => state.user.currentUser);
-
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
     if (ok) {
@@ -362,12 +359,13 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
           displayName: "",
           email: "",
           createdAtId: "",
-          cart: [],
+          cart: [{}],
           like: [],
         })
       );
+      dispatch(setBasket([]));
       toggleModal();
-      navigate("/");
+      navigate(0);
     }
   };
 
@@ -428,12 +426,12 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
               onChange={handleChange("panel1")}
             >
               <ListTab aria-controls="panel1d-content" id="panel1d-header">
-                <Link to="/">
+                <div>
                   캐릭터
-                  <div>
+                  <span>
                     <IoIosArrowDown />
-                  </div>
-                </Link>
+                  </span>
+                </div>
               </ListTab>
               <ListContents>
                 <CharacterListBox>
@@ -461,17 +459,16 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
               onChange={handleChange("panel2")}
             >
               <ListTab aria-controls="panel1d-content" id="panel1d-header">
-                <Link to="/">
+                <div>
                   카테고리
-                  <div>
+                  <span>
                     <IoIosArrowDown />
-                  </div>
-                </Link>
+                  </span>
+                </div>
               </ListTab>
               <ListContents>
                 <CategoryListBox>
                   {!isLoading &&
-                    // dataList2 &&
                     dataList2?.data.map((list) => (
                       <CategoryList key={list.id}>
                         <Link>{list.title}</Link>

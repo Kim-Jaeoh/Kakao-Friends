@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Header } from "../components/header/Header";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { MyPageSeen } from "../components/myPage/MyPageSeen";
 import { MyPageAct } from "../components/myPage/MyPageAct";
 import { MyPageBasket } from "../components/myPage/MyPageBasket";
 import { MyPageOrderList } from "../components/myPage/MyPageOrderList";
+import { doc, onSnapshot } from "firebase/firestore";
+import { dbService } from "../fbase";
+import { useSelector } from "react-redux";
+import { Footer } from "../components/Footer";
 
 const Container = styled.div`
   position: relative;
@@ -41,20 +45,51 @@ const ListLink = styled(Link)`
   min-height: 44px;
   padding: 13px 0;
   box-sizing: border-box;
+  position: relative;
 
-  span {
-    position: relative;
+  span:first-of-type {
     line-height: 16px;
     color: ${(props) => (props.selected === props.num ? "#000" : "#909092")};
     font-weight: ${(props) => (props.selected === props.num ? 700 : "normal")};
   }
 `;
 
+<<<<<<< HEAD
 console.log("test");
 
 export const MyPage = () => {
+=======
+const TabListNumber = styled.span`
+  font-size: 11px;
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  margin-left: 5px;
+  border-radius: 50%;
+  color: #fff;
+  background-color: #ff447f;
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const MyPage = ({ userObj }) => {
+>>>>>>> d60dd70311cc7c692524ceca6f0069c739e0a58b
   const [selected, setSelected] = useState(3);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { pathname } = useLocation();
+  const currentBasket = useSelector((state) => state.user.basket);
+  const loginToken = useSelector((state) => state.user.loginToken);
+
+  useEffect(() => {
+    if (loginToken === "logout") {
+      setIsLoggedIn(false);
+    } else if (loginToken === "login") {
+      setIsLoggedIn(true);
+    }
+  }, [loginToken]);
 
   useEffect(() => {
     if (pathname.includes("/seen")) {
@@ -86,6 +121,9 @@ export const MyPage = () => {
           <TabList>
             <ListLink to="/mypage/basket" num={3} selected={selected}>
               <span>장바구니</span>
+              {currentBasket.length !== 0 && (
+                <TabListNumber>{currentBasket.length}</TabListNumber>
+              )}
             </ListLink>
           </TabList>
           <TabList>
@@ -97,10 +135,11 @@ export const MyPage = () => {
 
         <Routes>
           <Route path="/seen" element={<MyPageSeen />} />
-          <Route path="/act" element={<MyPageAct />} />
-          <Route path="/basket" element={<MyPageBasket />} />
+          <Route path="/act" element={<MyPageAct isLoggedIn={isLoggedIn} />} />
+          <Route path="/basket" element={<MyPageBasket userObj={userObj} />} />
           <Route path="/orderlist" element={<MyPageOrderList />} />
         </Routes>
+        {!pathname.includes("/basket") && <Footer />}
       </Container>
     </>
   );

@@ -11,6 +11,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { useQuery } from "react-query";
 import { SlideListApi } from "../../apis/dataApi";
+import { useBasketToggle } from "../../hooks/useBasketToggle";
 
 const Container = styled.div`
   position: relative;
@@ -109,12 +110,25 @@ const SliderItem = styled.div`
   height: 412px;
   margin: 0 6px;
   border-radius: 10px;
-  /* isolation: isolate; */
+  isolation: isolate;
 `;
 
 const SlideVideoBox = styled.div`
   position: relative;
   height: 355px;
+
+  ::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    border: 1px solid #dedfe0;
+    border-bottom: 0;
+    border-radius: 10px 10px 0 0;
+    content: "";
+  }
 `;
 
 const SlideVideo = styled.video`
@@ -124,8 +138,7 @@ const SlideVideo = styled.video`
   width: 100%;
   min-height: 100%;
   transform: translate(-50%, -50%);
-  /* display: block;
-  width: 100%; */
+  object-fit: contain;
 `;
 
 const SlideVideoButton = styled.button`
@@ -213,6 +226,9 @@ const PaginationButton = styled.div`
   user-select: none;
 
   span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     span {
       border-radius: 100%;
       display: inline-block;
@@ -235,14 +251,11 @@ const PaginationButton = styled.div`
 `;
 
 export const MainSlideContents = () => {
-  const videoRef = useRef([] || null);
+  const videoRef = useRef([]);
   const flickingRef = useRef(null);
-  const buttonRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
   const [hover, setHover] = useState(false);
-  const [clickIcon, setClickIcon] = useState(false);
-  const [clickNumber, setClickNumber] = useState([]);
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
@@ -341,27 +354,15 @@ export const MainSlideContents = () => {
     }
   };
 
-  const toggleIcon = useCallback(
-    (index) => {
-      setClickNumber((prev) => [...prev, index]);
-      setClickIcon(true);
-
-      if (clickIcon && clickNumber.includes(index)) {
-        setClickNumber(clickNumber.filter((id) => id !== index));
-        setClickIcon(false);
-      }
-    },
-    [clickIcon, clickNumber]
-  );
+  const { toggleIcon, currentBasKet } = useBasketToggle();
 
   return (
     <>
-      {!isLoading && (
-        <Container>
-          <Title>
-            <strong>신박한 프렌즈템</strong>
-          </Title>
-
+      <Container>
+        <Title>
+          <strong>신박한 프렌즈템</strong>
+        </Title>
+        {!isLoading && (
           <SliderBox>
             {!resize && (
               <ArrowBox>
@@ -377,22 +378,19 @@ export const MainSlideContents = () => {
             <Flicking
               circular={true}
               duration={500}
-              autoResize={true}
-              autoInit={true}
+              defaultIndex={0}
               ref={flickingRef}
               onChanged={(e) => {
                 setSlideIndex(e.index);
                 videoRef?.current[slideIndex]?.pause();
               }}
-              changeOnHold={false}
               moveType={"strict"}
             >
               {dataList?.data.map((list, index) => (
-                <SliderItem key={list.id}>
+                <SliderItem key={list.product}>
                   <SlideVideoBox>
                     {index === slideIndex && (
                       <SlideVideoButton
-                        ref={buttonRef}
                         onClick={togglePlay}
                         hover={hover}
                         onMouseEnter={onMouseOverButton}
@@ -408,9 +406,9 @@ export const MainSlideContents = () => {
                       }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
                       loop
                       muted
-                      preload="auto"
-                      playsinline
+                      playsInline
                       src={list.video}
+                      poster={list.poster}
                       type="video/mp4"
                       onMouseOut={onMouseOutButton}
                     />
@@ -418,12 +416,18 @@ export const MainSlideContents = () => {
 
                   <SlideInfo>
                     <SlideInfoText>
-                      <Link to={list.url}>
+                      <Link to={`/product/${list.product}`}>
                         <strong>{list.title}</strong>
                       </Link>
                     </SlideInfoText>
-                    <BagButton onClick={(e) => toggleIcon(index, e)}>
-                      {clickNumber.includes(index) ? <BsBagFill /> : <BsBag />}
+                    <BagButton onClick={(e) => toggleIcon(list, index)}>
+                      {currentBasKet?.filter(
+                        (obj) => obj.product === list.product
+                      ).length > 0 ? (
+                        <BsBagFill />
+                      ) : (
+                        <BsBag />
+                      )}
                     </BagButton>
                   </SlideInfo>
                 </SliderItem>
@@ -484,18 +488,19 @@ export const MainSlideContents = () => {
           })}
         </Swiper> */}
           </SliderBox>
-          {resize && (
-            <PaginationButton slideIndex={slideIndex}>
-              {!isLoading &&
-                dataList?.data.map((list, index) => (
-                  <span key={list.id}>
-                    <span />
-                  </span>
-                ))}
-            </PaginationButton>
-          )}
-        </Container>
-      )}
+        )}
+
+        {resize && (
+          <PaginationButton slideIndex={slideIndex}>
+            {!isLoading &&
+              dataList?.data.map((list, index) => (
+                <span key={list.id}>
+                  <span />
+                </span>
+              ))}
+          </PaginationButton>
+        )}
+      </Container>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
 import { Best } from "./pages/Best";
@@ -10,7 +10,8 @@ import { TopButton } from "./components/button/TopButton";
 import { Search } from "./pages/Search";
 import { useEffect, useState } from "react";
 import { authService } from "./fbase";
-import { MyPageBasket } from "./components/myPage/MyPageBasket";
+import ScrollToTop from "./hooks/useScrollToTop";
+import { Product } from "./pages/Product";
 
 const Container = styled.div`
   font-size: 14px;
@@ -50,22 +51,24 @@ function App() {
 
   return (
     <>
-      {init && (
-        <BrowserRouter>
-          <Container>
-            <TopButton />
-            <Routes>
-              <Route path="/" element={<Main userObj={userObj} />} />
-              <Route path="/event" element={<Event />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/best" element={<Best />} />
-              <Route path="/contents" element={<Contents />} />
-              <Route path="/mypage/*" element={<MyPage />} />
-            </Routes>
-            <Footer />
-          </Container>
-        </BrowserRouter>
-      )}
+      {/* {init && ( */}
+      <BrowserRouter>
+        <ScrollToTop />
+        <Container>
+          <TopButton />
+          <Routes>
+            <Route path="/" element={<Main userObj={userObj} />} />
+            <Route path="/event" element={<Event />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/best" element={<Best />} />
+            <Route path="/contents" element={<Contents />} />
+            <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
+            <Route path="/product/:id" element={<Product />} />
+            <Route path="/*" element={<Navigate replace to="/" />} />
+          </Routes>
+        </Container>
+      </BrowserRouter>
+      {/* // )} */}
     </>
   );
 }

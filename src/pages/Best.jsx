@@ -1,18 +1,13 @@
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { BsBag, BsBagFill } from "react-icons/bs";
-import { BestListData } from "../data/mainContentsData";
-import axios from "axios";
-import { useInView } from "react-intersection-observer";
 import { Header } from "../components/header/Header";
-import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
-import { BestListApi } from "../apis/dataApi";
+import { useInfinityScroll } from "../hooks/useInfinityScroll";
+import { Footer } from "../components/Footer";
+import { Link, useParams } from "react-router-dom";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useBasketToggle } from "../hooks/useBasketToggle";
+import { useSelector } from "react-redux";
 
 const Container = styled.main`
   position: relative;
@@ -140,6 +135,7 @@ const ProductImage = styled.div`
   position: relative;
   border-radius: 6px;
   padding-top: 100%;
+  cursor: pointer;
 
   ::after {
     position: absolute;
@@ -212,52 +208,17 @@ const ProductBag = styled.button`
 
 export const Best = () => {
   const [clickTabNumber, setClickTabNumber] = useState(1);
-  const [clickIcon, setClickIcon] = useState(false);
-  const [clickIconNumber, setClickIconNumber] = useState([]);
 
-  // 무한 스크롤
-  const [dataList, setDataList] = useState([]);
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const page = useRef(1);
-  const [ref, inView] = useInView();
+  const api = "https://kakao-friends.herokuapp.com/ProductListData";
+  // const api = "http://localhost:4000/ProductListData";
 
-  const fetch = useCallback(async () => {
-    try {
-      const { data } = await axios.get(
-        `https://kakao-friends.herokuapp.com/BestListData?_limit=4&_page=${page.current}`
-      );
-      setDataList((prev) => [...prev, ...data]);
-      setHasNextPage(data.length === 4);
-      if (data.length) {
-        page.current += 1;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetch();
-    }
-  }, [fetch, hasNextPage, inView]);
+  const { ref, dataList } = useInfinityScroll(api, 4); // 무한스크롤 커스텀 훅
 
   const toggleTab = (num) => {
     setClickTabNumber(num);
   };
 
-  const toggleIcon = useCallback(
-    (index) => {
-      setClickIconNumber((prev) => [...prev, index]);
-      setClickIcon(true);
-
-      if (clickIcon && clickIconNumber.includes(index)) {
-        setClickIconNumber(clickIconNumber.filter((id) => id !== index));
-        setClickIcon(false);
-      }
-    },
-    [clickIcon, clickIconNumber]
-  );
+  const { toggleIcon, currentBasKet } = useBasketToggle();
 
   return (
     <>
@@ -296,9 +257,11 @@ export const Best = () => {
                     )}
                   </ListItemNumberBox>
                   <ProductBox>
-                    <ProductImage>
-                      <img src={list.image} alt={list.title} />
-                    </ProductImage>
+                    <Link to={`/product/${list.product}`}>
+                      <ProductImage>
+                        <img src={list.img} alt={list.title} />
+                      </ProductImage>
+                    </Link>
                     <ProductTextBox>
                       <ProductText>
                         <strong>{list.title}</strong>
@@ -306,8 +269,10 @@ export const Best = () => {
                       <ProductPrice>
                         <span>{list.price}</span>원
                       </ProductPrice>
-                      <ProductBag onClick={(e) => toggleIcon(index, e)}>
-                        {clickIconNumber.includes(index) ? (
+                      <ProductBag onClick={() => toggleIcon(list, index)}>
+                        {currentBasKet?.filter(
+                          (obj) => obj.product === list.product
+                        ).length > 0 ? (
                           <BsBagFill />
                         ) : (
                           <BsBag />
@@ -317,9 +282,10 @@ export const Best = () => {
                   </ProductBox>
                 </ListItem>
               ))}
-            <div ref={ref} style={{ position: "absolute", bottom: "100px" }} />
+            <div ref={ref} style={{ position: "absolute", bottom: "250px" }} />
           </ListBox>
         </Wrapper>
+        <Footer />
       </Container>
     </>
   );

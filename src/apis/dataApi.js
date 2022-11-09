@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API = "https://kakao-friends.herokuapp.com";
+// const API = "http://localhost:4000";
 
 export const BannerListApi = () => axios.get(`${API}/mainContentsBannerList`);
 
@@ -21,6 +22,6 @@ export const MenuCharacterListApi = () =>
 
 export const CategoryListApi = () => axios.get(`${API}/menuCategoryListData`);
 
-export const BestListApi = () => axios.get(`${API}/BestListData`);
+export const ProductListApi = () => axios.get(`${API}/ProductListData`);
 
 export const HalloweenApi = () => axios.get(`${API}/Halloween`);

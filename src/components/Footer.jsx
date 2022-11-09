@@ -5,6 +5,7 @@ import kakaoLogo from "../assets/logo_foot_kakao.png";
 import markLogo from "../assets/mark_info.png";
 
 const Container = styled.footer`
+  margin-top: 100px;
   line-height: 18px;
   font-family: "Nanum Gothic", sans-serif !important;
   background-color: #fafafa;

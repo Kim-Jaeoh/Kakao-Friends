@@ -28,7 +28,13 @@
   src: url("../src/styles/fonts/SpoqaHanSansNeo-Bold.otf") format("opentype");
 }
 
-body {
+body,
+th,
+td,
+input,
+select,
+textarea,
+button {
   font-family: "Inter", "Spoqa Han Sans Neo", Apple SD Gothic Neo, Malgun Gothic,
     sans-serif !important;
   font-style: normal;

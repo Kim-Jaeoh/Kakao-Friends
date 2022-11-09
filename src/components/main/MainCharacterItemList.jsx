@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { BsBag } from "react-icons/bs";
 import { IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
+import { useBasketToggle } from "../../hooks/useBasketToggle";
 
 const Wrapper = styled.div`
   max-width: 640px;
@@ -206,18 +207,7 @@ export const MainCharacterItemList = ({
     }
   }, [listData, resize]);
 
-  const toggleIcon = useCallback(
-    (index) => {
-      setClickNumber((prev) => [...prev, index]);
-      setClickIcon(true);
-
-      if (clickIcon && clickNumber.includes(index)) {
-        setClickNumber(clickNumber.filter((id) => id !== index));
-        setClickIcon(false);
-      }
-    },
-    [clickIcon, clickNumber]
-  );
+  const { toggleIcon, currentBasKet } = useBasketToggle();
 
   return (
     // <Wrapper>
@@ -234,14 +224,14 @@ export const MainCharacterItemList = ({
             (!resize ? listData : resizeItem).map((list, index) => (
               <SliderItemList key={list.id}>
                 <SliderItem>
-                  <Link to="/">
+                  <Link to={`/product/${list.product}`}>
                     <SliderImage>
-                      <img src={list.image} alt="제품" />
+                      <img src={list.img} alt="제품" />
                     </SliderImage>
                   </Link>
 
                   <SliderItemInfo>
-                    <Link to="/">
+                    <Link to={`/product/${list.product}`}>
                       <strong>{list.title}</strong>
                       <em>
                         <span>{list.price}</span>원
@@ -250,11 +240,14 @@ export const MainCharacterItemList = ({
                   </SliderItemInfo>
 
                   <BagButton
-                    onClick={(e) => toggleIcon(index, e)}
+                    onClick={(e) => toggleIcon(list, index)}
                     style={{
-                      backgroundColor: clickNumber.includes(index)
-                        ? "#ff477E"
-                        : "#bbb",
+                      backgroundColor:
+                        currentBasKet?.filter(
+                          (obj) => obj.product === list.product
+                        ).length > 0
+                          ? "#ff477E"
+                          : "#bbb",
                     }}
                   >
                     <BsBag />
