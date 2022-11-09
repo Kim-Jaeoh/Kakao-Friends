@@ -13,6 +13,7 @@ import { BsBag, BsFillPauseFill, BsPlayFill, BsBagFill } from "react-icons/bs";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { SeriesListApi } from "../../apis/dataApi";
+import { useBasketToggle } from "../../hooks/useBasketToggle";
 
 const Container = styled.div``;
 
@@ -231,18 +232,7 @@ export const MainSeriesContents = () => {
     }
   };
 
-  const toggleIcon = useCallback(
-    (index) => {
-      setClickNumber((prev) => [...prev, index]);
-      setClickIcon(true);
-
-      if (clickIcon && clickNumber.includes(index)) {
-        setClickNumber(clickNumber.filter((id) => id !== index));
-        setClickIcon(false);
-      }
-    },
-    [clickIcon, clickNumber]
-  );
+  const { toggleIcon, currentBasKet } = useBasketToggle();
 
   return (
     <Container>
@@ -282,9 +272,9 @@ export const MainSeriesContents = () => {
             {!isLoading &&
               dataList?.data.map((list, index) => (
                 <List key={list.id}>
-                  <ListLink to={"/"}>
+                  <ListLink to={`/product/${list.product}`}>
                     <ListImage>
-                      <img src={list.image} alt={list.title} />
+                      <img src={list.img} alt={list.title} />
                     </ListImage>
                     <ListText>
                       <ListTitle>{list.title}</ListTitle>
@@ -294,8 +284,14 @@ export const MainSeriesContents = () => {
                     </ListText>
                   </ListLink>
 
-                  <BagButton onClick={(e) => toggleIcon(index, e)}>
-                    {clickNumber.includes(index) ? <BsBagFill /> : <BsBag />}
+                  <BagButton onClick={(e) => toggleIcon(list, index)}>
+                    {currentBasKet?.filter(
+                      (obj) => obj.product === list.product
+                    ).length > 0 ? (
+                      <BsBagFill />
+                    ) : (
+                      <BsBag />
+                    )}
                   </BagButton>
                 </List>
               ))}

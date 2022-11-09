@@ -22,6 +22,6 @@ export const MenuCharacterListApi = () =>
 
 export const CategoryListApi = () => axios.get(`${API}/menuCategoryListData`);
 
-export const BestListApi = () => axios.get(`${API}/BestListData`);
+export const ProductListApi = () => axios.get(`${API}/ProductListData`);
 
 export const HalloweenApi = () => axios.get(`${API}/Halloween`);

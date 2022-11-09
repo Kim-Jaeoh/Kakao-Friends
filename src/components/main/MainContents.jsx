@@ -103,7 +103,7 @@ export const MainContents = () => {
       {!isLoading &&
         dataList?.data.map((list) => (
           <Container key={list.id}>
-            <Link to={"/"}>
+            <Link to={`/product/${list.product}`}>
               {list.video ? (
                 <MainContentsVideo
                   height={list.height}
@@ -112,6 +112,7 @@ export const MainContents = () => {
                   autoPlay
                   playsInline
                   muted
+                  poster={list.img}
                 >
                   <source src={list.video} type="video/mp4" />
                 </MainContentsVideo>
@@ -119,7 +120,13 @@ export const MainContents = () => {
                 <MainContentsImage src={list.img} height={list.height} />
               )}
               <MainContentsText>
-                <strong>{list.title}</strong>
+                {list.title2 ? (
+                  <strong>
+                    {list.title} <br /> {list.title2}
+                  </strong>
+                ) : (
+                  <strong>{list.title}</strong>
+                )}
                 <span>
                   {list.sub1}
                   <br />

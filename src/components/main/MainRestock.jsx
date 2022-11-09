@@ -14,6 +14,7 @@ import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useQuery } from "react-query";
 import { RestockListApi } from "../../apis/dataApi";
+import { useBasketToggle } from "../../hooks/useBasketToggle";
 
 const Container = styled.div`
   /* position: relative; */
@@ -275,18 +276,7 @@ export const MainRestock = () => {
     }
   }, [dataList?.data, slideIndex]);
 
-  const toggleIcon = useCallback(
-    (index) => {
-      setClickNumber((prev) => [...prev, index]);
-      setClickIcon(true);
-
-      if (clickIcon && clickNumber.includes(index)) {
-        setClickNumber(clickNumber.filter((id) => id !== index));
-        setClickIcon(false);
-      }
-    },
-    [clickIcon, clickNumber]
-  );
+  const { toggleIcon, currentBasKet } = useBasketToggle();
 
   return (
     <Container>
@@ -329,12 +319,14 @@ export const MainRestock = () => {
             dataList?.data.map((list, index) => (
               <div key={list.id}>
                 <ListBox>
-                  <Link to="/">
-                    <ListImage src={list.image} alt={list.title} />
+                  <Link to={`/product/${list.product}`}>
+                    <ListImage src={list.img} alt={list.title} />
                     <ListTitle>{list.title}</ListTitle>
                   </Link>
-                  <BellButton onClick={(e) => toggleIcon(index, e)}>
-                    {clickNumber.includes(index) ? (
+                  <BellButton onClick={(e) => toggleIcon(list, index)}>
+                    {currentBasKet?.filter(
+                      (obj) => obj.product === list.product
+                    ).length > 0 ? (
                       <AiFillBell />
                     ) : (
                       <AiOutlineBell />

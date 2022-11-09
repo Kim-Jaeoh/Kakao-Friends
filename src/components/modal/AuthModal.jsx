@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../../reducer/user";
 import { useNavigate } from "react-router-dom";
 import KakaoLogo from "../../assets/logo_foot_kakao.png";
+import { IoCloseOutline } from "react-icons/io5";
 
 const Wrapper = styled.div`
   overflow-y: scroll;
@@ -46,7 +47,7 @@ const Container = styled.div`
   background: #fff;
   border-radius: 16px;
   text-align: center;
-  padding-bottom: 24px;
+  /* padding-bottom: 24px; */
 
   @media screen and (min-width: 640px) {
     width: 500px;
@@ -71,6 +72,7 @@ const FormBox = styled.article`
   position: relative;
   width: 90%;
   margin: 24px auto;
+  border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   font-size: 12px;
 
@@ -162,6 +164,22 @@ const ErrorText = styled.p`
   /* margin: 24px 0 24px; */
 `;
 
+const ListDelete = styled.button`
+  position: absolute;
+  z-index: 10;
+  padding: 9px;
+  top: 0px;
+  right: 0px;
+
+  svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #bdbdbd;
+  }
+`;
+
 export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -175,7 +193,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
   const reloadState = useCallback(() => {
     toggleSignModal();
     toggleModal();
-    navigate("/");
+    navigate(0);
   }, [navigate, toggleModal, toggleSignModal]);
 
   const SignUser = async (e) => {
@@ -294,6 +312,9 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
           <LogoBox>
             <Logo src={KakaoLogo} alt="kakao" />
           </LogoBox>
+          <ListDelete onClick={toggleSignModal}>
+            <IoCloseOutline />
+          </ListDelete>
           <FormBox>
             <form onSubmit={SignUser}>
               <EmailBox>
@@ -305,9 +326,6 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
                   value={email}
                   onChange={onChange}
                   select={select}
-                  // className={`${styled.authInput} ${
-                  //   select === "email" && styled.select
-                  // }`}
                   onFocus={() => setSelect("email")}
                   onBlur={() => setSelect("")}
                 />

@@ -8,8 +8,8 @@ const TopButtonBox = styled.div`
   right: 24px;
   bottom: 24px;
   z-index: 100;
-  opacity: ${(props) => (props.btnStatus ? "100" : "0")};
-  transition: all 0.3s ease-in;
+  opacity: ${(props) => (props.btnStatus ? 100 : 0)};
+  transition: all 0.15s ease-in-out;
 
   @media screen and (min-width: 640px) {
     right: 50%;
@@ -55,13 +55,12 @@ export const TopButton = () => {
 
   useEffect(() => {
     const handleFollow = () => {
-      setScrollY(window.pageYOffset);
-
-      if (scrollY > 1200) {
+      if (window.pageYOffset > 1600) {
         setBtnStatus(true);
       } else {
         setBtnStatus(false);
       }
+      setScrollY(window.pageYOffset);
     };
 
     window.addEventListener("scroll", handleFollow);

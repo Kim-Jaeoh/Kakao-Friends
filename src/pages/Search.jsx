@@ -333,7 +333,7 @@ export const Search = () => {
                   <SearchCharacterList key={list.id}>
                     <div>
                       <SearchCharacterImage
-                        image={list.image}
+                        image={list.img}
                         imageH={list.imageHover}
                       />
                       <SearchCharacterText>{list.title}</SearchCharacterText>

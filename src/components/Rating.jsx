@@ -63,8 +63,7 @@ export const Rating = ({ productId, rate }) => {
 
   useEffect(() => {
     sendReview();
-    console.log(rate);
-  }, [clicked, rate]); //컨디마 컨디업
+  }, [clicked]); //컨디마 컨디업
 
   // const addTodo = async (newTodo) => {
   //   const API = "http://localhost:4000/BestListData";
@@ -108,7 +107,7 @@ export const Rating = ({ productId, rate }) => {
           );
         })}
       </Stars>
-      <RatingText>(7건)</RatingText>
+      <RatingText></RatingText>
     </Wrap>
   );
 };

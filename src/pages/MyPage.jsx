@@ -72,8 +72,18 @@ const TabListNumber = styled.span`
 
 export const MyPage = ({ userObj }) => {
   const [selected, setSelected] = useState(3);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { pathname } = useLocation();
   const currentBasket = useSelector((state) => state.user.basket);
+  const loginToken = useSelector((state) => state.user.loginToken);
+
+  useEffect(() => {
+    if (loginToken === "logout") {
+      setIsLoggedIn(false);
+    } else if (loginToken === "login") {
+      setIsLoggedIn(true);
+    }
+  }, [loginToken]);
 
   useEffect(() => {
     if (pathname.includes("/seen")) {
@@ -119,7 +129,7 @@ export const MyPage = ({ userObj }) => {
 
         <Routes>
           <Route path="/seen" element={<MyPageSeen />} />
-          <Route path="/act" element={<MyPageAct />} />
+          <Route path="/act" element={<MyPageAct isLoggedIn={isLoggedIn} />} />
           <Route path="/basket" element={<MyPageBasket userObj={userObj} />} />
           <Route path="/orderlist" element={<MyPageOrderList />} />
         </Routes>

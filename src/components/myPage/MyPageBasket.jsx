@@ -1,33 +1,29 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
-import { IoIosArrowForward, IoMdCloseCircle } from "react-icons/io";
-import { BsBag, BsFillPauseFill, BsPlayFill, BsBagFill } from "react-icons/bs";
+import { IoIosArrowForward } from "react-icons/io";
+import { BsBag, BsBagFill } from "react-icons/bs";
 import { BiMinus, BiPlus } from "react-icons/bi";
-import {
-  IoCheckmarkCircleSharp,
-  IoCloseOutline,
-  IoCheckmarkCircleOutline,
-} from "react-icons/io5";
+import { IoCheckmarkCircleSharp, IoCloseOutline } from "react-icons/io5";
 import { useQuery } from "react-query";
-import { BestListApi } from "../../apis/dataApi";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { ProductListApi } from "../../apis/dataApi";
 import { useDispatch, useSelector } from "react-redux";
-import { dbService } from "../../fbase";
 import {
   CheckItem,
   Decrement,
   Increment,
   InputChange,
   setBasket,
-  setBasketCount,
-  setCurrentUser,
   UnCheckItem,
 } from "../../reducer/user";
-import { list } from "firebase/storage";
-import { useMemo } from "react";
+import { useBasketToggle } from "../../hooks/useBasketToggle";
 
-const Container = styled.div``;
+const Container = styled.div`
+  padding-bottom: 80px;
+  @media screen and (min-width: 375px) {
+    padding-bottom: 80px;
+  }
+`;
 
 const EmptyBasketBox = styled.div`
   padding: 30% 0;
@@ -533,9 +529,10 @@ const BasketRecommendList = styled.li`
   }
 `;
 
-const RecommendListBox = styled(Link)``;
+const RecommendListBox = styled.div``;
 
-const RecommendListImage = styled.div`
+const RecommendListImage = styled(Link)`
+  display: block;
   overflow: hidden;
   position: relative;
   border-radius: 6px;
@@ -617,19 +614,22 @@ const BagButton = styled.button`
 `;
 
 export const MyPageBasket = ({ userObj }) => {
-  const { data: dataList } = useQuery("BestList", BestListApi, {
+  const { data: dataList } = useQuery("ProductList", ProductListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
   });
 
   const [isFocus, setIsFocus] = useState(false);
-  const [checkItems, setCheckItems] = useState([]);
-  const [CheckBasketList, setCheckBasketList] = useState();
+  const [randomItem, setRandomITem] = useState([]);
+  const [CheckBasketList, setCheckBasketList] = useState(0);
   const [cartPrice, setCartPrice] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
   const [totalProgress, setTotalProgress] = useState(0);
   const dispatch = useDispatch();
-  const currentBasKet = useSelector((state) => state.user.basket);
+  // const currentBasKet = useSelector((state) => state.user.basket);
+
+  const { toggleIcon, checkItems, setCheckItems, currentBasKet } =
+    useBasketToggle(); //장바구니 커스텀 훅
 
   // const userRef = doc(dbService, "users", currentUser.email);
 
@@ -714,10 +714,9 @@ export const MyPageBasket = ({ userObj }) => {
   // 페이지 이탈 시 전체 체크 활성화
   useEffect(() => {
     // 첫 렌더링 시 체크됐던 목록 담기
-    setCheckItems(currentBasKet.map((obj) => obj.id));
+    setCheckItems(currentBasKet.map((obj) => obj.product));
 
     return () => {
-      console.log("리셋");
       currentBasKet.map((obj) => {
         return dispatch(CheckItem(obj));
       });
@@ -729,51 +728,51 @@ export const MyPageBasket = ({ userObj }) => {
     setCheckBasketList(currentBasKet.filter((item) => item.check).length);
   }, [currentBasKet]);
 
-  // 장바구니 dispatch
-  const toggleIcon = useCallback(
-    async (itemId, index) => {
-      // dispatch(setBasket([])) // 초기화;
+  useEffect(() => {
+    const arr = dataList?.data;
 
-      const finded = currentBasKet?.find((item) => item.id === itemId);
-      if (finded === undefined) {
-        setCheckItems((prev) => [...prev, itemId]);
-        dispatch(
-          setBasket([
-            ...currentBasKet,
-            {
-              id: dataList?.data[index].id,
-              title: dataList?.data[index].title,
-              price: dataList?.data[index].price,
-              image: dataList?.data[index].image,
-              amount: 1,
-              check: true,
-            },
-          ])
-        );
-      } else {
-        setCheckItems(checkItems.filter((el) => el !== itemId));
-        const filter = currentBasKet?.filter((item) => item.id !== itemId);
-        dispatch(setBasket(filter));
+    const randomArray = (array) => {
+      // - 방법 1
+      // array.sort(() => Math.floor(Math.random() - 0.5));
+
+      // - ✔ 방법 2 (피셔-예이츠)
+      for (let index = array?.length - 1; index > 0; index--) {
+        // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+        const randomPosition = Math.floor(Math.random() * (index + 1));
+
+        // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+        const temporary = array[index];
+        array[index] = array[randomPosition];
+        array[randomPosition] = temporary;
       }
-    },
-    [checkItems, currentBasKet, dataList?.data, dispatch]
-  );
+    };
+
+    randomArray(arr);
+    setRandomITem(arr);
+  }, [dataList?.data]);
 
   // 장바구니 개별 삭제
   const BasketDeleteItem = (itemId) => {
-    const filter = currentBasKet?.filter((item) => item.id !== itemId);
+    const filter = currentBasKet?.filter((item) => item.product !== itemId);
     dispatch(setBasket(filter));
   };
+
+  useEffect(() => {
+    console.log(
+      currentBasKet.filter((asd) => checkItems.includes(asd.product))
+    );
+  }, [checkItems, currentBasKet]);
 
   // 선택 삭제
   const selectDelete = () => {
     const filter = currentBasKet?.filter(
-      (item) => !checkItems.includes(item.id)
+      (item) => !checkItems.includes(item.product)
     );
     setCheckItems(filter);
     dispatch(setBasket(filter));
   };
 
+  // 수량 변경
   const onChange = useCallback(
     (list, value) => {
       if (isFocus === true) {
@@ -787,10 +786,10 @@ export const MyPageBasket = ({ userObj }) => {
   const checkHandler = (check, itemId) => {
     if (check) {
       dispatch(CheckItem(itemId));
-      setCheckItems((prev) => [...prev, itemId.id]);
+      setCheckItems((prev) => [...prev, itemId.product]);
     } else {
       dispatch(UnCheckItem(itemId));
-      setCheckItems(checkItems.filter((item) => item !== itemId.id));
+      setCheckItems(checkItems.filter((item) => item !== itemId.product));
     }
   };
 
@@ -800,7 +799,7 @@ export const MyPageBasket = ({ userObj }) => {
       // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
       const idArray = [];
       currentBasKet.map((obj) => {
-        idArray.push(obj.id);
+        idArray.push(obj.product);
         return dispatch(CheckItem(obj));
       });
       setCheckItems(idArray);
@@ -901,19 +900,19 @@ export const MyPageBasket = ({ userObj }) => {
               <ListCart>
                 {currentBasKet?.map((list, index) => {
                   return (
-                    <List key={list.id}>
+                    <List key={list.product}>
                       <ListContents>
                         <ListCheckIcon
-                          htmlFor={`checkItem-${list.id}`}
-                          name={`select-${list.id}`}
+                          htmlFor={`checkItem-${list.product}`}
+                          name={`select-${list.product}`}
                           check={list.check}
                         >
                           <CheckInput
-                            id={`checkItem-${list.id}`}
-                            name={`select-${list.id}`}
+                            id={`checkItem-${list.product}`}
+                            name={`select-${list.product}`}
                             type="checkbox"
                             checked={
-                              checkItems.includes(list.id) ? true : false
+                              checkItems.includes(list.product) ? true : false
                             }
                             onChange={(e) => {
                               checkHandler(e.target.checked, list);
@@ -921,13 +920,13 @@ export const MyPageBasket = ({ userObj }) => {
                           />
                           <IoCheckmarkCircleSharp />
                         </ListCheckIcon>
-                        <ListImageBox to={`/product/${list.id}`}>
+                        <ListImageBox to={`/product/${list.product}`}>
                           <ListImage>
-                            <img src={list.image} alt={list.title} />
+                            <img src={list.img} alt={list.title} />
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox>
-                          <ListTitle to={`/product/${list.id}`}>
+                          <ListTitle to={`/product/${list.product}`}>
                             {list.title}
                           </ListTitle>
                           <ListPriceBox>
@@ -964,7 +963,9 @@ export const MyPageBasket = ({ userObj }) => {
                             </ItemCounter>
                           </ItemCounterBox>
                         </ListInfoBox>
-                        <ListDelete onClick={() => BasketDeleteItem(list.id)}>
+                        <ListDelete
+                          onClick={() => BasketDeleteItem(list.product)}
+                        >
                           <IoCloseOutline />
                         </ListDelete>
                       </ListContents>
@@ -1002,20 +1003,21 @@ export const MyPageBasket = ({ userObj }) => {
         <BasketRecommendBox>
           <strong>잠깐만, 이 제품은 어때요?</strong>
           <BasketRecommendListBox>
-            {dataList?.data?.slice(0, 8).map((list, index) => (
-              <BasketRecommendList key={list.id}>
-                <RecommendListBox to={`/product/${list.id}`}>
-                  <RecommendListImage>
-                    <img src={list.image} alt={list.title} />
+            {randomItem?.slice(0, 8).map((list, index) => (
+              <BasketRecommendList key={list.product}>
+                <RecommendListBox>
+                  <RecommendListImage to={`/product/${list.product}`}>
+                    <img src={list.img} alt={list.title} />
                   </RecommendListImage>
                   <RecommendListText>
                     <strong>{list.title}</strong>
                     <RecomendListPrice>
                       <span>{PriceComma(list.price)}</span>원
                     </RecomendListPrice>
-                    <BagButton onClick={(e) => toggleIcon(list.id, index)}>
-                      {currentBasKet?.filter((obj) => obj.id === list.id)
-                        .length > 0 ? (
+                    <BagButton onClick={(e) => toggleIcon(list, index)}>
+                      {currentBasKet?.filter(
+                        (obj) => obj.product === list.product
+                      ).length > 0 ? (
                         <BsBagFill />
                       ) : (
                         <BsBag />

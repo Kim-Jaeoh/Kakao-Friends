@@ -313,6 +313,9 @@ const CategoryList = styled.li`
 export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
   const [expanded, setExpanded] = useState("");
   const [signModal, setSignModal] = useState(false);
+  const toggleSignModal = () => setSignModal((prev) => !prev);
+
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -345,9 +348,6 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
     return () => clearTimeout();
   }, [menuModal]);
 
-  const toggleSignModal = () => setSignModal((prev) => !prev);
-  const currentUser = useSelector((state) => state.user.currentUser);
-
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
     if (ok) {
@@ -365,7 +365,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
       );
       dispatch(setBasket([]));
       toggleModal();
-      navigate("/");
+      navigate(0);
     }
   };
 
