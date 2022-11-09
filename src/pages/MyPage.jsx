@@ -54,11 +54,6 @@ const ListLink = styled(Link)`
   }
 `;
 
-<<<<<<< HEAD
-console.log("test");
-
-export const MyPage = () => {
-=======
 const TabListNumber = styled.span`
   font-size: 11px;
   width: 18px;
@@ -76,7 +71,6 @@ const TabListNumber = styled.span`
 `;
 
 export const MyPage = ({ userObj }) => {
->>>>>>> d60dd70311cc7c692524ceca6f0069c739e0a58b
   const [selected, setSelected] = useState(3);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { pathname } = useLocation();
