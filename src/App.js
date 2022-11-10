@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
-import { Best } from "./pages/Best";
 import { Contents } from "./pages/Contents";
 import { MyPage } from "./pages/MyPage";
 import { Footer } from "./components/Footer";
@@ -12,6 +11,7 @@ import { useEffect, useState } from "react";
 import { authService } from "./fbase";
 import ScrollToTop from "./hooks/useScrollToTop";
 import { Product } from "./pages/Product";
+import Best from "./pages/Best";
 
 const Container = styled.div`
   font-size: 14px;
@@ -60,7 +60,7 @@ function App() {
             <Route path="/" element={<Main userObj={userObj} />} />
             <Route path="/event" element={<Event />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/best" element={<Best />} />
+            <Route path="/best/*" element={<Best />} />
             <Route path="/contents" element={<Contents />} />
             <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
             <Route path="/product/:id" element={<Product />} />

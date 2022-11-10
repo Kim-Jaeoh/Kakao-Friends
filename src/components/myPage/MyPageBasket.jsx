@@ -757,12 +757,6 @@ export const MyPageBasket = ({ userObj }) => {
     dispatch(setBasket(filter));
   };
 
-  useEffect(() => {
-    console.log(
-      currentBasKet.filter((asd) => checkItems.includes(asd.product))
-    );
-  }, [checkItems, currentBasKet]);
-
   // 선택 삭제
   const selectDelete = () => {
     const filter = currentBasKet?.filter(

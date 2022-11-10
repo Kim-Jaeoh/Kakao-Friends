@@ -33,7 +33,6 @@ export const Category = () => {
 
   const onSelected = (num) => {
     setSelected(num);
-    window.scrollTo(0, 0);
   };
 
   return (

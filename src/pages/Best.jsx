@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { Header } from "../components/header/Header";
-import { useInfinityScroll } from "../hooks/useInfinityScroll";
 import { Footer } from "../components/Footer";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useBasketToggle } from "../hooks/useBasketToggle";
 import { useSelector } from "react-redux";
+import useInfinityScroll from "../hooks/useInfinityScroll";
+import { useMemo } from "react";
+import useScrollMove from "../hooks/useScrollMove";
 
 const Container = styled.main`
   position: relative;
@@ -206,24 +208,51 @@ const ProductBag = styled.button`
   }
 `;
 
-export const Best = () => {
+const Best = () => {
   const [clickTabNumber, setClickTabNumber] = useState(1);
+  const [dataArr, setDataArr] = useState([]);
+  const { id } = useParams();
+  const domRef = useRef([]);
 
-  const api = "https://kakao-friends.herokuapp.com/ProductListData";
-  // const api = "http://localhost:4000/ProductListData";
+  // const api = "https://kakao-friends.herokuapp.com/ProductListData";
+  const api = "http://localhost:4000/ProductListData";
 
   const { ref, dataList } = useInfinityScroll(api, 4); // 무한스크롤 커스텀 훅
+
+  const { scrollInfos, scrollRemove } = useScrollMove({
+    page: `best`,
+    path: `/best/`,
+    dom: domRef,
+  });
+
+  useEffect(() => {
+    if (scrollInfos && id?.isExact) {
+      window.scrollTo(0, scrollInfos);
+      const scrollTop = Math.max(
+        document.documentElement.scrollTop,
+        document.body.scrollTop
+      );
+      //현재위치와 복구위치가 같다면
+      if (scrollTop == scrollInfos) {
+        scrollRemove();
+      }
+    }
+    //의존성 배열에 fetching 해오는 데이터를 넣어준다.
+  }, [scrollInfos, scrollRemove, id]);
 
   const toggleTab = (num) => {
     setClickTabNumber(num);
   };
 
-  const { toggleIcon, currentBasKet } = useBasketToggle();
+  const { toggleIcon, currentBasKet } = useBasketToggle(); // 장바구니 커스텀 훅
+
+  // const { pathname } = useLocation();
+  // console.log(pathname);
 
   return (
     <>
-      <Header />
       <Container>
+        <Header />
         <Wrapper>
           <WrapperTitle>
             <strong>지금 인기있는</strong>
@@ -248,7 +277,10 @@ export const Best = () => {
           <ListBox>
             {dataList &&
               dataList?.map((list, index) => (
-                <ListItem key={list.id}>
+                <ListItem
+                  key={list.id}
+                  ref={(e) => (domRef.current[index] = e)}
+                >
                   <ListItemNumberBox>
                     {list.id < 4 ? (
                       <ListItemRank>{list.id}</ListItemRank>
@@ -290,3 +322,5 @@ export const Best = () => {
     </>
   );
 };
+
+export default React.memo(Best);

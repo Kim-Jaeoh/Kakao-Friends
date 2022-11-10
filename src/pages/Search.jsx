@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { createBrowserHistory } from "history";
 import { Modal } from "@mui/material";
@@ -10,8 +10,14 @@ import { CiSearch } from "react-icons/ci";
 
 import { Footer } from "../components/Footer";
 import { useQuery } from "react-query";
-import { CategoryListApi, MenuCharacterListApi } from "../apis/dataApi";
+import {
+  CategoryListApi,
+  MenuCharacterListApi,
+  ProductListApi,
+} from "../apis/dataApi";
 import { RouterHeader } from "../components/header/RouterHeader";
+import { debounce } from "lodash";
+import { useRef } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -159,14 +165,11 @@ const ResetButton = styled.div`
   align-items: center;
   justify-content: center;
   right: 7px;
-  /* top: 6px; */
+  cursor: pointer;
   width: 30px;
   height: 30px;
 
   span {
-    /* width: 24px; */
-    /* height: 24px; */
-    /* margin: 0 auto; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -281,8 +284,43 @@ const SearchCategoryText = styled.li`
   }
 `;
 
+const ResultBox = styled.div`
+  padding: 0 0 80px;
+`;
+
+const ResultListBox = styled.ul`
+  padding-top: 16px;
+`;
+
+const ResultList = styled.li`
+  a {
+    display: block;
+    padding: 6px 20px;
+    font-size: 16px;
+
+    /* :hover, */
+    :active {
+      background-color: #f7f7f7;
+    }
+  }
+`;
+
+const NotResultBox = styled.div`
+  padding: 22px 20px;
+
+  p {
+    font-size: 16px;
+    line-height: 20px;
+    color: #aeaeaf;
+  }
+`;
+
 export const Search = () => {
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [focus, setFocus] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [resultText, setResultText] = useState([]);
+  const [color, setColor] = useState([]);
 
   const { data: dataList1, isLoading1 } = useQuery(
     "character",
@@ -302,6 +340,39 @@ export const Search = () => {
     }
   );
 
+  const { data: dataList3, isLoading3 } = useQuery(
+    "productList",
+    ProductListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
+
+  useEffect(() => {
+    if (focus && searchText !== "") {
+      const filter = dataList3.data.filter((obj) =>
+        obj.title.includes(searchText)
+      );
+      setLoading(true);
+      setResultText(filter);
+    } else {
+      setLoading(false);
+      setResultText([]);
+    }
+  }, [dataList3, focus, searchText]);
+
+  const onChangeText = debounce((e) => {
+    setSearchText(e.target.value);
+  }, 200);
+
+  const inputRef = useRef();
+
+  const searchDelete = () => {
+    setSearchText("");
+    inputRef.current.value = "";
+  };
+
   return (
     <>
       <Wrapper>
@@ -316,43 +387,79 @@ export const Search = () => {
                     <CiSearch />
                   </div>
                 </SearchIcon>
-                <SearchInput />
-                <ResetButton>
-                  <span>
-                    <IoMdCloseCircle />
-                  </span>
-                </ResetButton>
+                <SearchInput
+                  type="text"
+                  ref={inputRef}
+                  onChange={onChangeText}
+                  onFocus={() => setFocus(true)}
+                  // onBlur={() => setFocus(false)}
+                />
+                {searchText && (
+                  <ResetButton onClick={searchDelete}>
+                    <span>
+                      <IoMdCloseCircle />
+                    </span>
+                  </ResetButton>
+                )}
               </SearchContents>
             </SearchForm>
           </SearchBox>
 
-          <SearchCategoryBox>
-            <SearchCharacterListBox>
-              {!isLoading1 &&
-                dataList1?.data.map((list, index) => (
-                  <SearchCharacterList key={list.id}>
-                    <div>
-                      <SearchCharacterImage
-                        image={list.img}
-                        imageH={list.imageHover}
-                      />
-                      <SearchCharacterText>{list.title}</SearchCharacterText>
-                    </div>
-                  </SearchCharacterList>
-                ))}
-            </SearchCharacterListBox>
-            <SearchCategoryTextBox>
-              <span>카테고리</span>
-              <SearchCategoryTextList>
-                {!isLoading2 &&
-                  dataList2?.data.map((list, index) => (
-                    <SearchCategoryText key={list.id}>
-                      <Link to="/">{list.title}</Link>
-                    </SearchCategoryText>
+          {loading && resultText ? (
+            <ResultBox>
+              {resultText.length !== 0 ? (
+                <ResultListBox>
+                  {resultText?.map((list, index) => (
+                    <ResultList key={index}>
+                      <Link to={`/product/${list.product}`}>
+                        {list.title.includes(searchText) ? (
+                          <>
+                            {list.title.split(searchText)[0]}
+                            <em style={{ color: "#ff447f" }}>{searchText}</em>
+                            {list.title.split(searchText)[1]}
+                          </>
+                        ) : (
+                          list.title
+                        )}
+                      </Link>
+                    </ResultList>
                   ))}
-              </SearchCategoryTextList>
-            </SearchCategoryTextBox>
-          </SearchCategoryBox>
+                </ResultListBox>
+              ) : (
+                <NotResultBox>
+                  <p>검색 결과가 없습니다.</p>
+                </NotResultBox>
+              )}
+            </ResultBox>
+          ) : (
+            <SearchCategoryBox>
+              <SearchCharacterListBox>
+                {!isLoading1 &&
+                  dataList1?.data.map((list, index) => (
+                    <SearchCharacterList key={list.id}>
+                      <div>
+                        <SearchCharacterImage
+                          image={list.img}
+                          imageH={list.imageHover}
+                        />
+                        <SearchCharacterText>{list.title}</SearchCharacterText>
+                      </div>
+                    </SearchCharacterList>
+                  ))}
+              </SearchCharacterListBox>
+              <SearchCategoryTextBox>
+                <span>카테고리</span>
+                <SearchCategoryTextList>
+                  {!isLoading2 &&
+                    dataList2?.data.map((list, index) => (
+                      <SearchCategoryText key={list.id}>
+                        <Link to="/">{list.title}</Link>
+                      </SearchCategoryText>
+                    ))}
+                </SearchCategoryTextList>
+              </SearchCategoryTextBox>
+            </SearchCategoryBox>
+          )}
           <Footer />
         </Container>
       </Wrapper>

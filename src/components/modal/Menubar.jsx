@@ -440,7 +440,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
                       <CharacterList key={list.id}>
                         <Link>
                           <CharacterListImage
-                            image={list.image}
+                            image={list.img}
                             imageH={list.imageHover}
                           />
                           <CharacterListText>{list.title}</CharacterListText>

@@ -215,7 +215,7 @@ export const MyPageSeen = () => {
       view = JSON.parse(view);
     }
     setView(view);
-  }, [seenArray]);
+  }, []);
 
   useEffect(() => {
     // 본 순서대로 나열되게 새로 map을 이용하여 저장함
