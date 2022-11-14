@@ -29,35 +29,18 @@ const EmptyText = styled.span`
   letter-spacing: -0.025em;
 `;
 
-export const MyPageAct = ({ isLoggedIn }) => {
-  const [popupModal, setPopupModal] = useState(false);
-  const togglePopupModal = () => setPopupModal((prev) => !prev);
-
-  useEffect(() => {
-    if (isLoggedIn === false) {
-      setPopupModal(true);
-    }
-  }, [isLoggedIn]);
-
+export const MyPageAct = () => {
   return (
     <>
-      {isLoggedIn ? (
-        <EmptyBasketBox>
-          <EmptyBasketCharacter>
-            <img
-              src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/img_ryan4.png"
-              alt=""
-            />
-          </EmptyBasketCharacter>
-          <EmptyText>아직 활동 내역이 없어요.</EmptyText>
-        </EmptyBasketBox>
-      ) : (
-        <LoginPopupModal
-          popupModal={popupModal}
-          setPopupModal={setPopupModal}
-          togglePopupModal={togglePopupModal}
-        />
-      )}
+      <EmptyBasketBox>
+        <EmptyBasketCharacter>
+          <img
+            src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/img_ryan4.png"
+            alt=""
+          />
+        </EmptyBasketCharacter>
+        <EmptyText>아직 활동 내역이 없어요.</EmptyText>
+      </EmptyBasketBox>
     </>
   );
 };

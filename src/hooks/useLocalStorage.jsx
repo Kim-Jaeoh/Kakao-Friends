@@ -22,7 +22,7 @@ export const useLocalStorage = () => {
     }
 
     // 현재 상품 id를 view 저장한다.
-    if (view.length <= 3) {
+    if (view.length <= 20) {
       view.unshift(+id);
     } else {
       view.pop();

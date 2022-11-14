@@ -48,7 +48,7 @@
       "title": "초록 텐트에 워치 안착",
       "sub1": "캠핑 무드를 담은",
       "sub2": "애플워치 충전 거치대",
-      "height": "443px"
+      "height": "380px"
     },
     {
       "id": 5,
@@ -982,10 +982,10 @@
   "Halloween": [
     {
       "video": "/image/promotion_01.mp4",
-      "image1": "/image/promotion_02.jpg",
-      "image2": "/image/promotion_03.jpg",
-      "image3": "/image/promotion_04.jpg",
-      "image4": "/image/promotion_05.jpg",
+      "img1": "/image/promotion_02.jpg",
+      "img2": "/image/promotion_03.jpg",
+      "img3": "/image/promotion_04.jpg",
+      "img4": "/image/promotion_05.jpg",
       "btn1": "/image/promotion_btn1.jpg",
       "btn2": "/image/promotion_btn2.jpg",
       "btn3": "/image/promotion_btn3.jpg",

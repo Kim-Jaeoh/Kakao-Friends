@@ -210,14 +210,13 @@ const ProductBag = styled.button`
 
 const Best = () => {
   const [clickTabNumber, setClickTabNumber] = useState(1);
-  const [dataArr, setDataArr] = useState([]);
   const { id } = useParams();
   const domRef = useRef([]);
 
   // const api = "https://kakao-friends.herokuapp.com/ProductListData";
   const api = "http://localhost:4000/ProductListData";
 
-  const { ref, dataList } = useInfinityScroll(api, 4); // 무한스크롤 커스텀 훅
+  const { ref, dataList } = useInfinityScroll(api, 8); // 무한스크롤 커스텀 훅
 
   const { scrollInfos, scrollRemove } = useScrollMove({
     page: `best`,
@@ -245,14 +244,44 @@ const Best = () => {
   };
 
   const { toggleIcon, currentBasKet } = useBasketToggle(); // 장바구니 커스텀 훅
+  const [randomItem, setRandomITem] = useState([]);
+  const [isRandom, setIsRandom] = useState(false);
 
-  // const { pathname } = useLocation();
-  // console.log(pathname);
+  const randomArray = (array) => {
+    for (let index = array?.length - 1; index > 0; index--) {
+      // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+      const randomPosition = Math.floor(Math.random() * (index + 1));
+
+      // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+      const temporary = array[index];
+      array[index] = array[randomPosition];
+      array[randomPosition] = temporary;
+    }
+  };
+
+  useEffect(() => {
+    const arr = [...dataList];
+
+    // 가격순
+    const price = arr.sort((a, b) => {
+      return b.price.split(",").join("") - a.price.split(",").join("");
+    });
+    setRandomITem(price);
+
+    // setInterval(() => {
+    //   // randomArray(arr);
+    //   setRandomITem(arr);
+    //   console.log("냐");
+    //   // }, 1000 * 60 * 60);
+    // }, 2000);
+
+    // return () => clearInterval();
+  }, [dataList]);
 
   return (
     <>
       <Container>
-        <Header />
+        {/* <Header /> */}
         <Wrapper>
           <WrapperTitle>
             <strong>지금 인기있는</strong>
@@ -275,17 +304,14 @@ const Best = () => {
           </TabList>
 
           <ListBox>
-            {dataList &&
-              dataList?.map((list, index) => (
-                <ListItem
-                  key={list.id}
-                  ref={(e) => (domRef.current[index] = e)}
-                >
+            {randomItem &&
+              randomItem?.map((list, index) => (
+                <ListItem key={index} ref={(e) => (domRef.current[index] = e)}>
                   <ListItemNumberBox>
-                    {list.id < 4 ? (
-                      <ListItemRank>{list.id}</ListItemRank>
+                    {index + 1 < 4 ? (
+                      <ListItemRank>{index + 1}</ListItemRank>
                     ) : (
-                      <ListItemNumber>{list.id}</ListItemNumber>
+                      <ListItemNumber>{index + 1}</ListItemNumber>
                     )}
                   </ListItemNumberBox>
                   <ProductBox>

@@ -3,10 +3,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const useScrollMove = ({ page, path, dom }) => {
-  const navigate = useNavigate();
   const history = createBrowserHistory();
   const { id } = useParams();
-  // const history = useHistory();
+
   const [scrollInfos, setScrollInfos] = useState(() =>
     localStorage.getItem(`${page}_scroll_pos`)
   );

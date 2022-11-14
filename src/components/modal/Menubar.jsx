@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Drawer } from "@mui/material";
 import styled from "@emotion/styled";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { SlLock } from "react-icons/sl";
 import menuBannerImg from "../../assets/bn_addtalk.png";
@@ -369,6 +369,15 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
     }
   };
 
+  const { pathname } = useLocation();
+
+  // useEffect(() => {
+  //   if (menuModal) {
+  //     toggleModal();
+  //     console.log("ㅎ");
+  //   }
+  // }, [pathname]);
+
   return (
     <>
       <Drawer
@@ -407,11 +416,11 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
           </UserInfoBox>
 
           <ListMenu>
-            <List>
-              <Link to="/">장바구니 내역</Link>
+            <List onClick={toggleModal}>
+              <Link to="/mypage/basket">장바구니 내역</Link>
             </List>
-            <ListLast>
-              <Link to="/">
+            <ListLast onClick={toggleModal}>
+              <Link to="/mypage/orderlist">
                 주문<span>·</span>배송 내역
               </Link>
             </ListLast>

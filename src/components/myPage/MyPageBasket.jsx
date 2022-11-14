@@ -17,6 +17,7 @@ import {
   UnCheckItem,
 } from "../../reducer/user";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
+import axios from "axios";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -623,6 +624,7 @@ export const MyPageBasket = ({ userObj }) => {
   const [randomItem, setRandomITem] = useState([]);
   const [CheckBasketList, setCheckBasketList] = useState(0);
   const [cartPrice, setCartPrice] = useState("");
+  const [priceFreeDb, setPriceFreeDb] = useState(false);
   const [totalPrice, setTotalPrice] = useState("");
   const [totalProgress, setTotalProgress] = useState(0);
   const dispatch = useDispatch();
@@ -706,6 +708,15 @@ export const MyPageBasket = ({ userObj }) => {
     }
   }, [cartPrice]);
 
+  // 3만원 이상 시 상태 변화
+  useEffect(() => {
+    if (PriceDeleteComma(totalPrice) >= 30000) {
+      setPriceFreeDb(true);
+    } else {
+      setPriceFreeDb(false);
+    }
+  }, [PriceDeleteComma, totalPrice]);
+
   // 배송 금액 바
   useEffect(() => {
     setTotalProgress(Math.round((cartPrice / 30000) * 100));
@@ -728,6 +739,7 @@ export const MyPageBasket = ({ userObj }) => {
     setCheckBasketList(currentBasKet.filter((item) => item.check).length);
   }, [currentBasKet]);
 
+  // 추천 목록 랜덤화
   useEffect(() => {
     const arr = dataList?.data;
 
@@ -770,7 +782,8 @@ export const MyPageBasket = ({ userObj }) => {
   const onChange = useCallback(
     (list, value) => {
       if (isFocus === true) {
-        dispatch(InputChange(list, +value.replace(/(^0+)/, "")));
+        dispatch(InputChange(list, +value));
+        // dispatch(InputChange(list, +value.replace(/(^0+)/, "")));
       }
     },
     [dispatch, isFocus]
@@ -830,7 +843,7 @@ export const MyPageBasket = ({ userObj }) => {
               <DeliveryInfoBox>
                 <DeliveryInfo>
                   <DeliveryFreeTextBox>
-                    {PriceDeleteComma(totalPrice) >= 30000 ? (
+                    {priceFreeDb ? (
                       <span>무료 배송</span>
                     ) : (
                       <>
@@ -841,12 +854,14 @@ export const MyPageBasket = ({ userObj }) => {
                       </>
                     )}
                   </DeliveryFreeTextBox>
-                  <DeliveryPriceSave>
-                    배송비 절약하기
-                    <span>
-                      <IoIosArrowForward />
-                    </span>
-                  </DeliveryPriceSave>
+                  {!priceFreeDb && (
+                    <DeliveryPriceSave>
+                      배송비 절약하기
+                      <span>
+                        <IoIosArrowForward />
+                      </span>
+                    </DeliveryPriceSave>
+                  )}
                 </DeliveryInfo>
                 <DeliveryPriceGaugebox>
                   <DeliveryPriceGaugeBar totalProgress={totalProgress}>
@@ -945,7 +960,7 @@ export const MyPageBasket = ({ userObj }) => {
                                 min="1"
                                 max="99"
                                 onChange={(e) => onChange(list, e.target.value)}
-                                onWheel={(e) => e.target.blur()}
+                                onWheel={(e) => e.target.blur()} // 마우스 휠 막기
                               />
                               <QuanityButton
                                 amount={list.amount}
@@ -976,9 +991,7 @@ export const MyPageBasket = ({ userObj }) => {
                 </BasketListPrice>
                 <BasketListPrice>
                   <span>배송비</span>
-                  <span>
-                    {PriceDeleteComma(totalPrice) >= 30000 ? "무료" : "3,000원"}
-                  </span>
+                  <span>{priceFreeDb ? "무료" : "3,000원"}</span>
                 </BasketListPrice>
                 <BasketListPrice>
                   <strong>총 결제금액</strong>
@@ -1012,7 +1025,7 @@ export const MyPageBasket = ({ userObj }) => {
                       {currentBasKet?.filter(
                         (obj) => obj.product === list.product
                       ).length > 0 ? (
-                        <BsBagFill />
+                        <BsBagFill style={{ color: "#ff447f" }} />
                       ) : (
                         <BsBag />
                       )}

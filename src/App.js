@@ -1,5 +1,11 @@
 import styled from "@emotion/styled";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
 import { Contents } from "./pages/Contents";
@@ -12,6 +18,9 @@ import { authService } from "./fbase";
 import ScrollToTop from "./hooks/useScrollToTop";
 import { Product } from "./pages/Product";
 import Best from "./pages/Best";
+import { Header } from "./components/header/Header";
+import { MyPagePayReady } from "./components/myPage/MyPagePayReady";
+import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
 
 const Container = styled.div`
   font-size: 14px;
@@ -56,6 +65,7 @@ function App() {
         <ScrollToTop />
         <Container>
           <TopButton />
+          <Header />
           <Routes>
             <Route path="/" element={<Main userObj={userObj} />} />
             <Route path="/event" element={<Event />} />
@@ -63,6 +73,8 @@ function App() {
             <Route path="/best/*" element={<Best />} />
             <Route path="/contents" element={<Contents />} />
             <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
+            <Route path="/mypage/payready/*" element={<MyPagePayReady />} />
+            <Route path="/mypage/payresult/*" element={<MyPagePayResult />} />
             <Route path="/product/:id" element={<Product />} />
             <Route path="/*" element={<Navigate replace to="/" />} />
           </Routes>

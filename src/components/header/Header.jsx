@@ -3,7 +3,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo_halloween.gif";
 import { Category } from "./Category";
 import { Search } from "../../pages/Search";
@@ -80,15 +80,16 @@ const Logo = styled(Link)`
 `;
 
 export const Header = () => {
+  const { pathname } = useLocation();
+  const [showHeader, setShowHeader] = useState(true);
   const [menuModal, setMemuModal] = useState(false);
   // const [searchModal, setSearchModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const loginToken = useSelector((state) => state.user.loginToken);
 
   const toggleModal = () => {
     setMemuModal((prev) => !prev);
   };
-
-  const loginToken = useSelector((state) => state.user.loginToken);
 
   useEffect(() => {
     if (loginToken === "logout") {
@@ -98,39 +99,54 @@ export const Header = () => {
     }
   }, [loginToken]);
 
+  // 이벤트, 상세 페이지에서는 헤더 안 보이게
+  useEffect(() => {
+    if (pathname.includes("event")) {
+      setShowHeader(false);
+    } else if (pathname.includes("product")) {
+      setShowHeader(false);
+    } else {
+      setShowHeader(true);
+    }
+  }, [pathname]);
+
   return (
     <>
-      <Container>
-        <HeaderBox>
-          <IconBox
-            style={{ position: "absolute", left: "12px" }}
-            onClick={toggleModal}
-          >
-            <AiOutlineMenu />
-          </IconBox>
-          <Logo to="/">
-            <img alt="KAKAO FRIENDS" src={logo} />
-          </Logo>
-          <Icons>
-            <Link to="/search">
-              <IconBox>
-                <FiSearch />
+      {showHeader && (
+        <>
+          <Container>
+            <HeaderBox>
+              <IconBox
+                style={{ position: "absolute", left: "12px" }}
+                onClick={toggleModal}
+              >
+                <AiOutlineMenu />
               </IconBox>
-            </Link>
-            <IconBox>
-              <TbWorld />
-            </IconBox>
-          </Icons>
-        </HeaderBox>
+              <Logo to="/">
+                <img alt="KAKAO FRIENDS" src={logo} />
+              </Logo>
+              <Icons>
+                <Link to="/search">
+                  <IconBox>
+                    <FiSearch />
+                  </IconBox>
+                </Link>
+                <IconBox>
+                  <TbWorld />
+                </IconBox>
+              </Icons>
+            </HeaderBox>
 
-        <Category />
-      </Container>
+            <Category />
+          </Container>
 
-      <Menubar
-        menuModal={menuModal}
-        toggleModal={toggleModal}
-        isLoggedIn={isLoggedIn}
-      />
+          <Menubar
+            menuModal={menuModal}
+            toggleModal={toggleModal}
+            isLoggedIn={isLoggedIn}
+          />
+        </>
+      )}
     </>
   );
 };

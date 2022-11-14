@@ -107,7 +107,8 @@ const ListImage = styled.div`
   }
 `;
 
-const ListInfoBox = styled.div`
+const ListInfoBox = styled(Link)`
+  display: block;
   overflow: hidden;
   position: relative;
   height: 100%;
@@ -266,12 +267,12 @@ export const MyPageSeen = () => {
                   return (
                     <List key={index}>
                       <ListContents>
-                        <ListImageBox>
+                        <ListImageBox to={`/product/${list.product}`}>
                           <ListImage>
                             <img src={list?.img} alt={list?.title} />
                           </ListImage>
                         </ListImageBox>
-                        <ListInfoBox>
+                        <ListInfoBox to={`/product/${list.product}`}>
                           <ListTitle>{list?.title}</ListTitle>
                           <ListPriceBox>
                             <ListPrice>

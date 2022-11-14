@@ -47,7 +47,7 @@ export const Main = () => {
   const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Container>
         <Article>
           <MainBanner>

@@ -1,6 +1,7 @@
 export const SET_LOGIN_TOKEN = "SET_LOGIN_TOKEN";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const SET_BASKET = "SET_BASKET";
+export const SET_ORDER = "SET_ORDER";
 export const CHECK_ITEM = "CHECK_ITEM";
 export const UNCHECK_ITEM = "UNCHECK_ITEM";
 export const INCREMENT = "INCREMENT";
@@ -20,6 +21,11 @@ export const setCurrentUser = (currentUser) => ({
 export const setBasket = (basket) => ({
   type: SET_BASKET,
   payload: basket,
+});
+
+export const setOrder = (order) => ({
+  type: SET_BASKET,
+  payload: order,
 });
 
 export const CheckItem = (item) => ({
@@ -61,11 +67,22 @@ const initialState = {
   basket: [
     {
       id: "",
+      product: "",
       title: "",
       price: "",
       image: "",
       amount: "",
       check: true,
+    },
+  ],
+  order: [
+    {
+      id: "",
+      product: "",
+      title: "",
+      price: "",
+      image: "",
+      amount: "",
     },
   ],
 };
@@ -88,6 +105,12 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         basket: action.payload,
+      };
+
+    case SET_ORDER:
+      return {
+        ...state,
+        order: action.payload,
       };
 
     case CHECK_ITEM:
@@ -134,8 +157,6 @@ const user = (state = initialState, action) => {
 
     case INPUTCHANGE:
       const change = state.basket.find((item) => item.id === action.payload.id);
-      console.log(change);
-      console.log(action.value);
       if (change) {
         change.amount = action.value;
       }

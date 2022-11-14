@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Header } from "../components/header/Header";
-import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { MyPageSeen } from "../components/myPage/MyPageSeen";
 import { MyPageAct } from "../components/myPage/MyPageAct";
 import { MyPageBasket } from "../components/myPage/MyPageBasket";
@@ -10,6 +17,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../fbase";
 import { useSelector } from "react-redux";
 import { Footer } from "../components/Footer";
+import { LoginPopupModal } from "../components/modal/LoginPopupModal";
 
 const Container = styled.div`
   position: relative;
@@ -78,14 +86,6 @@ export const MyPage = ({ userObj }) => {
   const loginToken = useSelector((state) => state.user.loginToken);
 
   useEffect(() => {
-    if (loginToken === "logout") {
-      setIsLoggedIn(false);
-    } else if (loginToken === "login") {
-      setIsLoggedIn(true);
-    }
-  }, [loginToken]);
-
-  useEffect(() => {
     if (pathname.includes("/seen")) {
       setSelected(1);
     } else if (pathname.includes("/act")) {
@@ -97,10 +97,37 @@ export const MyPage = ({ userObj }) => {
     }
   }, [pathname]);
 
+  const [popupModal, setPopupModal] = useState(false);
+  const navigate = useNavigate();
+  const togglePopupModal = () => setPopupModal((prev) => !prev);
+
+  // useEffect(() => {
+  //   if (
+  //     (isLoggedIn === false && pathname.includes("/act")) ||
+  //     pathname.includes("/orderlist")
+  //   ) {
+  //     setPopupModal(true);
+  //   }
+  // }, [isLoggedIn, pathname]);
+
+  useEffect(() => {
+    if (loginToken === "logout") {
+      setIsLoggedIn(false);
+    } else if (loginToken === "login") {
+      setIsLoggedIn(true);
+    }
+  }, [loginToken]);
+
+  const click = () => {
+    if (isLoggedIn === false) {
+      setPopupModal(true);
+    }
+  };
+
   return (
     <>
       <Container>
-        <Header />
+        {/* <Header /> */}
         <TabListBox>
           <TabList>
             <ListLink to="/mypage/seen" num={1} selected={selected}>
@@ -108,7 +135,12 @@ export const MyPage = ({ userObj }) => {
             </ListLink>
           </TabList>
           <TabList>
-            <ListLink to="/mypage/act" num={2} selected={selected}>
+            <ListLink
+              onClick={click}
+              to={isLoggedIn && "/mypage/act"}
+              num={2}
+              selected={selected}
+            >
               <span>내 활동</span>
             </ListLink>
           </TabList>
@@ -121,7 +153,12 @@ export const MyPage = ({ userObj }) => {
             </ListLink>
           </TabList>
           <TabList>
-            <ListLink to="/mypage/orderlist" num={4} selected={selected}>
+            <ListLink
+              onClick={click}
+              to={isLoggedIn && "/mypage/orderlist"}
+              num={4}
+              selected={selected}
+            >
               <span>주문내역</span>
             </ListLink>
           </TabList>
@@ -133,6 +170,14 @@ export const MyPage = ({ userObj }) => {
           <Route path="/basket" element={<MyPageBasket userObj={userObj} />} />
           <Route path="/orderlist" element={<MyPageOrderList />} />
         </Routes>
+
+        {!isLoggedIn && (
+          <LoginPopupModal
+            popupModal={popupModal}
+            setPopupModal={setPopupModal}
+            togglePopupModal={togglePopupModal}
+          />
+        )}
         {!pathname.includes("/basket") && <Footer />}
       </Container>
     </>

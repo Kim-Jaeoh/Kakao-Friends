@@ -6,7 +6,7 @@ import { Header } from "../components/header/Header";
 export const Contents = () => {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div>Contents</div>
       <Footer />
     </>
