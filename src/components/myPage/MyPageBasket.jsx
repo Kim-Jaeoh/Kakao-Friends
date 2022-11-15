@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { BiMinus, BiPlus } from "react-icons/bi";
@@ -18,6 +18,7 @@ import {
 } from "../../reducer/user";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 import axios from "axios";
+import { MyPagePayReady } from "./MyPagePayReady";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -493,6 +494,10 @@ const OrderButton = styled.button`
   font-weight: 700;
   font-size: 18px;
   letter-spacing: -0.014em;
+
+  a {
+    color: #fff;
+  }
 `;
 
 const BasketRecommendBox = styled.div`
@@ -628,24 +633,11 @@ export const MyPageBasket = ({ userObj }) => {
   const [totalPrice, setTotalPrice] = useState("");
   const [totalProgress, setTotalProgress] = useState(0);
   const dispatch = useDispatch();
-  // const currentBasKet = useSelector((state) => state.user.basket);
 
-  const { toggleIcon, checkItems, setCheckItems, currentBasKet } =
+  const { next_redirect_pc_url: payReadyURL } = MyPagePayReady();
+
+  const { toggleIcon, checkItems, setCheckItems, currentBasket } =
     useBasketToggle(); //장바구니 커스텀 훅
-
-  // const userRef = doc(dbService, "users", currentUser.email);
-
-  // // 유저 정보 있을 때
-  // useEffect(() => {
-  //   if (userObj === undefined || null) return;
-
-  //   if (userObj) {
-  //     onSnapshot(doc(dbService, "users", userObj?.email), (doc) => {
-  //       setMyInfo(doc.data());
-  //       setLogIn(true);
-  //     });
-  //   }
-  // }, [userObj]);
 
   // JSON Array 내 금액에 콤마가 있어서 인식하지 못하기에 split으로 콤마를 없앤 뒤 문자열로 변환 후 다시 콤마 생성
   const PriceReComma = useCallback(
@@ -681,10 +673,10 @@ export const MyPageBasket = ({ userObj }) => {
 
   // 상품 가격
   useEffect(() => {
-    if (currentBasKet?.length === 0) return;
+    if (currentBasket?.length === 0) return;
 
     // 체크된 것들만 계산
-    const checkItem = currentBasKet.filter((item) => item.check);
+    const checkItem = currentBasket.filter((item) => item.check);
 
     if (checkItem.length !== 0) {
       setCartPrice(
@@ -695,7 +687,7 @@ export const MyPageBasket = ({ userObj }) => {
     } else {
       setCartPrice(0);
     }
-  }, [currentBasKet]);
+  }, [currentBasket]);
 
   // 전체 가격
   useEffect(() => {
@@ -725,10 +717,10 @@ export const MyPageBasket = ({ userObj }) => {
   // 페이지 이탈 시 전체 체크 활성화
   useEffect(() => {
     // 첫 렌더링 시 체크됐던 목록 담기
-    setCheckItems(currentBasKet.map((obj) => obj.product));
+    setCheckItems(currentBasket.map((obj) => obj.product));
 
     return () => {
-      currentBasKet.map((obj) => {
+      currentBasket.map((obj) => {
         return dispatch(CheckItem(obj));
       });
     };
@@ -736,8 +728,8 @@ export const MyPageBasket = ({ userObj }) => {
 
   // 체크된 목록 숫자
   useEffect(() => {
-    setCheckBasketList(currentBasKet.filter((item) => item.check).length);
-  }, [currentBasKet]);
+    setCheckBasketList(currentBasket.filter((item) => item.check).length);
+  }, [currentBasket]);
 
   // 추천 목록 랜덤화
   useEffect(() => {
@@ -745,18 +737,18 @@ export const MyPageBasket = ({ userObj }) => {
 
     const randomArray = (array) => {
       // - 방법 1
-      // array.sort(() => Math.floor(Math.random() - 0.5));
+      array?.sort(() => Math.floor(Math.random() - 0.5));
 
       // - ✔ 방법 2 (피셔-예이츠)
-      for (let index = array?.length - 1; index > 0; index--) {
-        // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
-        const randomPosition = Math.floor(Math.random() * (index + 1));
+      // for (let index = array?.length - 1; index > 0; index--) {
+      //   // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+      //   const randomPosition = Math.floor(Math.random() * (index + 1));
 
-        // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
-        const temporary = array[index];
-        array[index] = array[randomPosition];
-        array[randomPosition] = temporary;
-      }
+      //   // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+      //   const temporary = array[index];
+      //   array[index] = array[randomPosition];
+      //   array[randomPosition] = temporary;
+      // }
     };
 
     randomArray(arr);
@@ -765,13 +757,13 @@ export const MyPageBasket = ({ userObj }) => {
 
   // 장바구니 개별 삭제
   const BasketDeleteItem = (itemId) => {
-    const filter = currentBasKet?.filter((item) => item.product !== itemId);
+    const filter = currentBasket?.filter((item) => item.product !== itemId);
     dispatch(setBasket(filter));
   };
 
   // 선택 삭제
   const selectDelete = () => {
-    const filter = currentBasKet?.filter(
+    const filter = currentBasket?.filter(
       (item) => !checkItems.includes(item.product)
     );
     setCheckItems(filter);
@@ -805,24 +797,30 @@ export const MyPageBasket = ({ userObj }) => {
     if (checked) {
       // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
       const idArray = [];
-      currentBasKet.map((obj) => {
+      currentBasket.map((obj) => {
         idArray.push(obj.product);
         return dispatch(CheckItem(obj));
       });
       setCheckItems(idArray);
     } else {
       // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
-      currentBasKet.map((obj) => {
+      currentBasket.map((obj) => {
         return dispatch(UnCheckItem(obj));
       });
       setCheckItems([]);
     }
   };
 
+  const orderClick = () => {
+    if (cartPrice !== 0) {
+      window.location.href = `${payReadyURL}`;
+    }
+  };
+
   return (
     <>
       <Container>
-        {currentBasKet?.length === 0 ? (
+        {currentBasket?.length === 0 ? (
           <EmptyBasketBox>
             <EmptyBasketCharacter>
               <img
@@ -879,9 +877,9 @@ export const MyPageBasket = ({ userObj }) => {
                     htmlFor="AllcheckBox"
                     name="AllcheckBox"
                     check={
-                      checkItems.length === currentBasKet.length &&
-                      CheckBasketList > 0
-                        ? true
+                      CheckBasketList === currentBasket.length
+                        ? // && CheckBasketList > 0
+                          true
                         : false
                     }
                   >
@@ -889,9 +887,9 @@ export const MyPageBasket = ({ userObj }) => {
                       id="AllcheckBox"
                       type="checkBox"
                       checked={
-                        checkItems.length === currentBasKet.length &&
-                        CheckBasketList > 0
-                          ? true
+                        CheckBasketList === currentBasket.length
+                          ? // && CheckBasketList > 0
+                            true
                           : false
                       }
                       onChange={(e) => {
@@ -907,7 +905,7 @@ export const MyPageBasket = ({ userObj }) => {
                 </SelectDelete>
               </CheckBox>
               <ListCart>
-                {currentBasKet?.map((list, index) => {
+                {currentBasket?.map((list, index) => {
                   return (
                     <List key={list.product}>
                       <ListContents>
@@ -924,6 +922,7 @@ export const MyPageBasket = ({ userObj }) => {
                               checkItems.includes(list.product) ? true : false
                             }
                             onChange={(e) => {
+                              console.log(e.target.checked);
                               checkHandler(e.target.checked, list);
                             }}
                           />
@@ -1001,7 +1000,7 @@ export const MyPageBasket = ({ userObj }) => {
               <DescCart>장바구니 상품은 최대 90일까지 보관됩니다.</DescCart>
             </BasketBillBox>
             <BasketBottomButton>
-              <OrderButton noChecked={cartPrice === 0}>
+              <OrderButton noChecked={cartPrice === 0} onClick={orderClick}>
                 {cartPrice === 0 ? "주문하기" : `${totalPrice}원 주문하기`}
               </OrderButton>
             </BasketBottomButton>
@@ -1022,7 +1021,7 @@ export const MyPageBasket = ({ userObj }) => {
                       <span>{PriceComma(list.price)}</span>원
                     </RecomendListPrice>
                     <BagButton onClick={(e) => toggleIcon(list, index)}>
-                      {currentBasKet?.filter(
+                      {currentBasket?.filter(
                         (obj) => obj.product === list.product
                       ).length > 0 ? (
                         <BsBagFill style={{ color: "#ff447f" }} />

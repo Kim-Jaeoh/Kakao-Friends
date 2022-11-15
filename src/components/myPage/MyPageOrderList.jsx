@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
+import { orderListApi, TidApi } from "../../apis/dataApi";
+import { MyPageOrderItem } from "./MyPageOrderItem";
 
 const EmptyBasketBox = styled.div`
   padding: 30% 0;
@@ -30,87 +34,117 @@ const EmptyText = styled.span`
 `;
 
 export const MyPageOrderList = () => {
-  const [db, setDb] = useState(true);
+  const { data: dataList } = useQuery("orderList", orderListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e),
+  });
   const [orderList, setOrderList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [sortList, setSortList] = useState([]);
+  // const data = dataList?.data.sort((a, b) => b.created_at - a.created_at);
 
-  const params = {
-    cid: "TC0ONETIME",
-    tid: localStorage.getItem("tid"),
-  };
+  // const daa = () => {
+  //   dataList?.data?.map(
+  //     async (obj) =>
+  //       await axios
+  //         .get("/v1/payment/order", {
+  //           params: { cid: "TC0ONETIME", tid: obj.tid },
+  //           // params, // config 설정에 데이터를 담아 넘겨준다.
+  //           headers: {
+  //             Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
+  //             "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+  //           },
+  //         })
+  //         .then((r) => {
+  //           // console.log(r.data.sort((a, b) => b.created_at - a.created_at));
+  //           // console.log([r.data, ...orderList]);
+  //           setOrderList([r.data, ...orderList]);
+  //           // setIsLoading(true);
+  //         })
+  //   );
+  // };
 
   useEffect(() => {
-    const postKakaopay = async () => {
-      await axios({
-        // 프록시에 카카오 도메인을 설정했으므로 결제 준비 url만 주자
-        url: "/v1/payment/order",
-        // 결제 준비 API는 POST 메소드라고 한다.
-        method: "GET",
-        headers: {
-          // 카카오 developers에 등록한 admin키를 헤더에 줘야 한다.
-          Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
-          "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-        },
-        // 설정한 매개변수들
-        params,
-      }).then((response) => {
-        // 응답 data로 state 갱신
-        setOrderList(response.data);
-        console.log(response);
-      });
-    };
-    postKakaopay();
+    // dataList?.data.map((asd) => console.log(asd.orderInfo.map((aa) => aa)));
+    console.log(dataList?.data.map((asd) => asd.orderInfo));
+    // dataList?.data.map((asd) => console.log(asd));
+  }, [dataList?.data]);
 
-    // const postKakaopay = async () => {
-    //   const data = await axios
-    //     .post("/v1/payment/ready", null, {
-    //       headers: {
-    //         Authorization: `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
-    //         // Authorization: "KakaoAK de0e3076b485b703b1f1a40123456789",
-    //         "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-    //       },
-    //       params, // config 설정에 데이터를 담아 넘겨준다.
-    //     })
-    //     .catch((e) => console.log(e, "에러"));
+  // useEffect(() => {
+  //   setSortList(
+  //     orderList?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  //   );
+  // }, [orderList]);
 
-    //   console.log(data);
-    // };
-    // postKakaopay();
-  }, []);
-
-  const orderDay = new Date(orderList?.created_at);
-
-  const year = orderDay.getFullYear();
-  const month = ("0" + (orderDay.getMonth() + 1)).slice(-2);
-  const day = ("0" + orderDay.getDate()).slice(-2);
-  const hours = ("0" + orderDay.getHours()).slice(-2);
-  const minutes = ("0" + orderDay.getMinutes()).slice(-2);
-  const seconds = ("0" + orderDay.getSeconds()).slice(-2);
-
-  const ampm = hours < 12 ? "am" : "pm";
-
-  const dateString =
-    year +
-    "-" +
-    month +
-    "-" +
-    day +
-    " " +
-    hours +
-    ":" +
-    minutes +
-    ":" +
-    seconds +
-    " " +
-    ampm;
+  useEffect(() => {
+    dataList?.data?.map(
+      async (obj) =>
+        await axios
+          .get("/v1/payment/order", {
+            // config 설정에 데이터를 담아 넘겨준다.
+            params: { cid: "TC0ONETIME", tid: obj.tid },
+            headers: {
+              Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
+              "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+            },
+          })
+          .then((r) => {
+            // setOrderList((prev) => [r.data, ...new Set(prev)]);
+            setIsLoading(true);
+          })
+    );
+    // daa();
+  }, [dataList?.data]);
 
   return (
     <>
-      {db ? (
+      {dataList?.data.length !== 0 ? (
         <>
-          <div>{orderList?.item_name}</div>
-          <div>{orderList?.amount?.total}</div>
-          <div>{dateString}</div>
-          {/* <div>{orderList?.created_at}</div> */}
+          {dataList?.data.map((asd, index) => {
+            const order = asd.orderInfo;
+            const orderDay = new Date(asd?.created_at);
+
+            const year = orderDay.getFullYear();
+            const month = ("0" + (orderDay.getMonth() + 1)).slice(-2);
+            const day = ("0" + orderDay.getDate()).slice(-2);
+            const hours = ("0" + orderDay.getHours()).slice(-2);
+            const minutes = ("0" + orderDay.getMinutes()).slice(-2);
+            const seconds = ("0" + orderDay.getSeconds()).slice(-2);
+            const ampm = hours < 12 ? "am" : "pm";
+
+            const dateString =
+              year +
+              "-" +
+              month +
+              "-" +
+              day +
+              " " +
+              hours +
+              ":" +
+              minutes +
+              ":" +
+              seconds +
+              " " +
+              ampm;
+
+            return (
+              <div key={asd.tid}>
+                <div>주문번호 {asd.tid}</div>
+                {order.map((zxc, index) => {
+                  // console.log(zxc);
+                  return (
+                    <div key={asd.title}>
+                      <div>{zxc?.title}</div>
+                      <img src={zxc.image} alt="" />
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+          {/* {dataList?.data.map((obj) => (
+            <MyPageOrderItem key={obj.id} tid={obj.tid} />
+          ))} */}
         </>
       ) : (
         <EmptyBasketBox>

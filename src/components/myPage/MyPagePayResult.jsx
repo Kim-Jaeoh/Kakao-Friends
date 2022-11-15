@@ -1,12 +1,22 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
 export const MyPagePayResult = () => {
   const { search } = useLocation();
+  const [localTidId, setLocalTid] = useState("");
   const [result, setResult] = useState([]);
   const currentBasket = useSelector((state) => state.user.basket);
+
+  const { mutate: mutateTid } = useMutation((tid) => {
+    return axios.post("http://localhost:4000/tid", tid);
+  });
+
+  const { mutate: mutateOrderList } = useMutation((order) => {
+    return axios.post("http://localhost:4000/orderlist", order);
+  });
 
   const config = {
     params: {
@@ -18,20 +28,19 @@ export const MyPagePayResult = () => {
         price: item.price,
       })),
       cid: "TC0ONETIME",
-      // localstorage에서 tid값을 읽어온다.
       tid: localStorage.getItem("tid"),
       partner_order_id: "partner_order_id",
       partner_user_id: "partner_user_id",
-      pg_token: "",
+      pg_token: search.split("=")[1],
     },
   };
 
   const { params } = config;
-  params.pg_token = search.split("=")[1];
-
-  console.log(params);
 
   useEffect(() => {
+    // localstorage에서 tid값을 읽어온다.
+    setLocalTid(localStorage.getItem("tid"));
+
     const postKakaopay = async () => {
       await axios({
         url: "/v1/payment/approve",
@@ -45,14 +54,28 @@ export const MyPagePayResult = () => {
         .then((response) => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
-          console.log(response);
+
+          // tid 저장
+          mutateTid({ tid: params.tid });
+
+          // 주문 내역 저장
+          mutateOrderList({
+            tid: params.tid,
+            created_at: response.data.created_at,
+            orderInfo: currentBasket.map((asd) => ({
+              amount: asd.amount,
+              price: asd.price,
+              product: asd.product,
+              image: asd.img,
+              title: asd.title,
+            })),
+          });
         })
         .catch((e) => console.log(e));
     };
+
     postKakaopay();
   }, []);
-
-  // const date = new Date(result.created_at);
 
   return (
     <div>

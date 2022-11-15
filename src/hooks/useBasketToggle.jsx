@@ -1,25 +1,25 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBasket } from "../reducer/user";
 
 export const useBasketToggle = () => {
   const dispatch = useDispatch();
   const [checkItems, setCheckItems] = useState([]);
-  const currentBasKet = useSelector((state) => state.user.basket);
+  const currentBasket = useSelector((state) => state.user.basket);
 
   // 장바구니 dispatch
   const toggleIcon = useCallback(
-    async (itemId, index) => {
+    (itemId, index) => {
       // dispatch(setBasket([])); // 초기화;
 
-      const finded = currentBasKet?.find(
+      const finded = currentBasket?.find(
         (item) => item.product === itemId.product
       );
       if (finded === undefined) {
         setCheckItems((prev) => [...prev, itemId.product]);
         dispatch(
           setBasket([
-            ...currentBasKet,
+            ...currentBasket,
             {
               id: itemId.id,
               product: itemId.product,
@@ -33,14 +33,14 @@ export const useBasketToggle = () => {
         );
       } else {
         setCheckItems(checkItems.filter((el) => el !== itemId.id));
-        const filter = currentBasKet?.filter(
+        const filter = currentBasket?.filter(
           (item) => item.product !== itemId.product
         );
         dispatch(setBasket(filter));
       }
     },
-    [checkItems, currentBasKet, dispatch]
+    [checkItems, currentBasket, dispatch]
   );
 
-  return { toggleIcon, checkItems, setCheckItems, currentBasKet };
+  return { toggleIcon, checkItems, setCheckItems, currentBasket };
 };
