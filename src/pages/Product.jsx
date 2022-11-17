@@ -216,8 +216,8 @@ const Product = () => {
   const { id } = useParams();
   const domRef = useRef([]);
 
-  // const api = "https://kakao-friends.herokuapp.com/ProductListData";
-  const api = "http://localhost:4000/ProductListData";
+  const api = "https://kakao-friends.herokuapp.com/ProductListData";
+  // const api = "http://localhost:4000/ProductListData";
 
   const { ref, dataList } = useInfinityScroll(api, 8); // 무한스크롤 커스텀 훅
   const { toggleIcon, currentBasKet } = useBasketToggle(); // 장바구니 커스텀 훅

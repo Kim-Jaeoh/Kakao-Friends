@@ -11,7 +11,8 @@ export const MyPagePayResult = () => {
   const currentBasket = useSelector((state) => state.user.basket);
 
   const { mutate: mutateOrderList } = useMutation((order) => {
-    return axios.post("http://localhost:4000/orderlist", order);
+    // return axios.post("http://localhost:4000/orderlist", order);
+    return axios.post("https://kakao-friends.herokuapp.com/orderlist", order);
   });
 
   const config = {
