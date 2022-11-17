@@ -10,10 +10,6 @@ export const MyPagePayResult = () => {
   const [result, setResult] = useState([]);
   const currentBasket = useSelector((state) => state.user.basket);
 
-  const { mutate: mutateTid } = useMutation((tid) => {
-    return axios.post("http://localhost:4000/tid", tid);
-  });
-
   const { mutate: mutateOrderList } = useMutation((order) => {
     return axios.post("http://localhost:4000/orderlist", order);
   });
@@ -55,19 +51,16 @@ export const MyPagePayResult = () => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
 
-          // tid 저장
-          mutateTid({ tid: params.tid });
-
           // 주문 내역 저장
           mutateOrderList({
             tid: params.tid,
             created_at: response.data.created_at,
-            orderInfo: currentBasket.map((asd) => ({
-              amount: asd.amount,
-              price: asd.price,
-              product: asd.product,
-              image: asd.img,
-              title: asd.title,
+            orderInfo: currentBasket.map((order) => ({
+              amount: order.amount,
+              price: order.price,
+              product: order.product,
+              image: order.img,
+              title: order.title,
             })),
           });
         })

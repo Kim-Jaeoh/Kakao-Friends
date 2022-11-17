@@ -224,14 +224,14 @@ export const MainCharacterItemList = ({
             (!resize ? listData : resizeItem).map((list, index) => (
               <SliderItemList key={list.id}>
                 <SliderItem>
-                  <Link to={`/product/${list.product}`}>
+                  <Link to={`/detail/${list.product}`}>
                     <SliderImage>
                       <img src={list.img} alt="제품" />
                     </SliderImage>
                   </Link>
 
                   <SliderItemInfo>
-                    <Link to={`/product/${list.product}`}>
+                    <Link to={`/detail/${list.product}`}>
                       <strong>{list.title}</strong>
                       <em>
                         <span>{list.price}</span>원

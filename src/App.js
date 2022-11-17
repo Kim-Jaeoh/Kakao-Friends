@@ -10,17 +10,18 @@ import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
 import { Contents } from "./pages/Contents";
 import { MyPage } from "./pages/MyPage";
-import { Footer } from "./components/Footer";
+import { Footer } from "./components/utils/Footer";
 import { TopButton } from "./components/button/TopButton";
 import { Search } from "./pages/Search";
 import { useEffect, useState } from "react";
 import { authService } from "./fbase";
 import ScrollToTop from "./hooks/useScrollToTop";
-import { Product } from "./pages/Product";
-import Best from "./pages/Best";
+import { DetailProduct } from "./pages/DetailProduct";
+import Product from "./pages/Product";
 import { Header } from "./components/header/Header";
 import { MyPagePayReady } from "./components/myPage/MyPagePayReady";
 import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
+import { Promotion } from "./pages/Promotion";
 
 const Container = styled.div`
   font-size: 14px;
@@ -68,14 +69,14 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Main userObj={userObj} />} />
-            <Route path="/event" element={<Event />} />
+            {/* <Route path="/event" element={<Event />} /> */}
+            <Route path="/promotion/*" element={<Promotion />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/best/*" element={<Best />} />
-            <Route path="/contents" element={<Contents />} />
+            <Route path="/product" element={<Product />} />
+            <Route path="/detail/:id" element={<DetailProduct />} />
             <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
             <Route path="/mypage/payready/*" element={<MyPagePayReady />} />
             <Route path="/mypage/payresult/*" element={<MyPagePayResult />} />
-            <Route path="/product/:id" element={<Product />} />
             <Route path="/*" element={<Navigate replace to="/" />} />
           </Routes>
         </Container>

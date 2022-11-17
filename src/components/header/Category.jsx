@@ -20,14 +20,12 @@ export const Category = () => {
   useEffect(() => {
     if (pathname === "/") {
       setSelected(1);
-    } else if (pathname.includes("/event")) {
+    } else if (pathname.includes("/promotion")) {
       setSelected(2);
-    } else if (pathname.includes("/best")) {
+    } else if (pathname.includes("/product")) {
       setSelected(3);
-    } else if (pathname.includes("/contents")) {
-      setSelected(4);
     } else if (pathname.includes("/my")) {
-      setSelected(5);
+      setSelected(4);
     }
   }, [pathname]);
 
@@ -45,29 +43,29 @@ export const Category = () => {
           text={"홈"}
           onSelected={onSelected}
         />
-        <CategoryMenuBtn
+        {/* <CategoryMenuBtn
           num={2}
           selected={selected}
           url={"/event"}
           onSelected={onSelected}
           text={"할로윈이벤트"}
+        /> */}
+        <CategoryMenuBtn
+          num={2}
+          selected={selected}
+          url={"/promotion"}
+          onSelected={onSelected}
+          text={"기획전"}
         />
         <CategoryMenuBtn
           num={3}
           selected={selected}
-          url={"/best"}
-          text={"베스트"}
+          url={"/product"}
+          text={"상품"}
           onSelected={onSelected}
         />
         <CategoryMenuBtn
           num={4}
-          selected={selected}
-          url={"/contents"}
-          text={"콘텐츠"}
-          onSelected={onSelected}
-        />
-        <CategoryMenuBtn
-          num={5}
           selected={selected}
           url={"/mypage/basket"}
           text={"마이"}

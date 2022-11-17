@@ -2,25 +2,21 @@
   "mainContentsBannerList": [
     {
       "id": 1,
-      "product": 15,
-      "character": [
-        "춘식이"
-      ],
-      "url": "https://store.kakaofriends.com/products/8875",
+      "product": [51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61],
+      "character": ["라이언", "춘식이"],
+      "url": "/promotion",
       "img": "/image/main_banner_1.jpg",
       "video": "",
-      "title": "어떤 춘식이가 나올까?",
-      "sub1": "<춘식이는 최고야>에 등장한",
-      "sub2": "랜덤 피규어 지금 구매하세요!",
-      "height": ""
+      "title": "세상 달콤한 크리스마스",
+      "sub1": "마이 쿠키 크리스마스",
+      "sub2": "프렌즈 라인업 만나봐요",
+      "height": "500"
     },
     {
       "id": 2,
       "product": 16,
-      "character": [
-        "춘식이"
-      ],
-      "url": "https://store.kakaofriends.com/products/8874",
+      "character": ["춘식이"],
+      "url": "/detail/16",
       "img": "/image/main_banner_2.jpg",
       "video": "",
       "title": "고구마 박스 위에 착",
@@ -31,10 +27,8 @@
     {
       "id": 3,
       "product": 17,
-      "character": [
-        "죠르디"
-      ],
-      "url": "https://store.kakaofriends.com/promotions/795",
+      "character": ["죠르디"],
+      "url": "/detail/17",
       "img": "/image/main_banner_4.jpg",
       "video": "/image/main_banner_4.mp4",
       "title": "배를 누르면",
@@ -46,11 +40,8 @@
     {
       "id": 4,
       "product": 18,
-      "character": [
-        "라이언",
-        "어피치"
-      ],
-      "url": "https://store.kakaofriends.com/promotions/801",
+      "character": ["라이언", "어피치"],
+      "url": "/detail/18",
       "img": "/image/main_banner_5.jpg",
       "video": "",
       "title": "초록 텐트에 워치 안착",
@@ -61,10 +52,8 @@
     {
       "id": 5,
       "product": 19,
-      "character": [
-        "춘식이"
-      ],
-      "url": "https://store.kakaofriends.com/products/8876",
+      "character": ["춘식이"],
+      "url": "/detail/19",
       "img": "/image/main_banner_6.jpg",
       "video": "",
       "title": "대충 만들어서 귀여워",
@@ -77,10 +66,7 @@
     {
       "id": 1,
       "product": 20,
-      "character": [
-        "춘식이",
-        "라이언"
-      ],
+      "character": ["춘식이", "라이언"],
       "img": "/image/product20.jpg",
       "video": "/image/slide_contents_1.mp4",
       "poster": "/image/slide_contents_1_poster.jpg",
@@ -90,9 +76,7 @@
     {
       "id": 2,
       "product": 21,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product21.jpg",
       "video": "/image/slide_contents_2.mp4",
       "poster": "/image/slide_contents_2_poster.jpg",
@@ -102,9 +86,7 @@
     {
       "id": 3,
       "product": 22,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product22.jpg",
       "video": "/image/slide_contents_3.mp4",
       "poster": "/image/slide_contents_3_poster.jpg",
@@ -114,9 +96,7 @@
     {
       "id": 4,
       "product": 23,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product23.jpg",
       "video": "/image/slide_contents_4.mp4",
       "poster": "/image/slide_contents_4_poster.jpg",
@@ -128,9 +108,7 @@
     {
       "id": 1,
       "product": 24,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product24.jpg",
       "title": "EveryYay 납작 필로우_트민냥춘식이",
       "price": "22,000"
@@ -138,9 +116,7 @@
     {
       "id": 2,
       "product": 25,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product25.jpg",
       "title": "EveryYay 무릎담요_라이언",
       "price": "19,000"
@@ -148,9 +124,7 @@
     {
       "id": 3,
       "product": 26,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product26.jpg",
       "title": "EveryYay 체커보드고블렛_춘식이",
       "price": "18,000"
@@ -160,9 +134,7 @@
     {
       "id": 1,
       "product": 27,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product27.jpg",
       "title": "어피치 리틀 얼굴쿠션",
       "price": "16,000"
@@ -170,9 +142,7 @@
     {
       "id": 2,
       "product": 28,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product28.jpg",
       "title": "꿀잠 폭신바디필로우_어피치",
       "price": "35,000"
@@ -180,9 +150,7 @@
     {
       "id": 3,
       "product": 29,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product29.jpg",
       "title": "렛츠플레이 마우스패드_어피치",
       "price": "5,000"
@@ -190,9 +158,7 @@
     {
       "id": 4,
       "product": 30,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product30.jpg",
       "title": "스탠드형칫솔살균기_머그리틀어피치",
       "price": "29,000"
@@ -200,9 +166,7 @@
     {
       "id": 5,
       "product": 31,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product31.jpg",
       "title": "체크미니토트백_어피치",
       "price": "29,000"
@@ -210,9 +174,7 @@
     {
       "id": 6,
       "product": 32,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product32.jpg",
       "title": "브릭피규어 에펠탑_어피치",
       "price": "29,000"
@@ -222,9 +184,7 @@
     {
       "id": 1,
       "product": 33,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product33.jpg",
       "title": "[온라인 전용]할로윈 유령 춘식이 피규어 키링",
       "price": "12,000"
@@ -232,9 +192,7 @@
     {
       "id": 2,
       "product": 34,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product34.jpg",
       "title": "[온라인 전용] 머니건_라이언&춘식이",
       "price": "19,900"
@@ -242,9 +200,7 @@
     {
       "id": 3,
       "product": 35,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product35.jpg",
       "title": "[온라인 전용] 내몸에 꼭맞는 U자 바디필로우_춘식이",
       "price": "59,000"
@@ -252,9 +208,7 @@
     {
       "id": 4,
       "product": 36,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product36.jpg",
       "title": "[온라인 전용] 자이언트 소파쿠션_춘식이",
       "price": "299,000"
@@ -262,9 +216,7 @@
     {
       "id": 5,
       "product": 37,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product37.jpg",
       "title": "[온라인 전용] 미니온풍기_라이언&춘식이",
       "price": "49,000"
@@ -272,9 +224,7 @@
     {
       "id": 6,
       "product": 38,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product38.jpg",
       "title": "[온라인]2023 다이어리세트_어피치",
       "price": "27,000"
@@ -283,50 +233,40 @@
   "mainCharacterList3": [
     {
       "id": 1,
-      "product": 39,
-      "character": [
-        "춘식이"
-      ],
-      "img": "/image/product39.jpg",
+      "product": 1,
+      "character": ["춘식이"],
+      "img": "/image/product01.jpg",
       "title": "2023 탁상용 캘린더",
       "price": "6,000"
     },
     {
       "id": 2,
       "product": 40,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product40.jpg",
       "title": "최고심 춘식이 세컷 스티커",
       "price": "1,500"
     },
     {
       "id": 3,
-      "product": 41,
-      "character": [
-        "라이언"
-      ],
-      "img": "/image/product41.jpg",
+      "product": 11,
+      "character": ["라이언"],
+      "img": "/image/product11.jpg",
       "title": "최고심 춘식이 잘했어요 젤펜",
       "price": "4,000"
     },
     {
       "id": 4,
-      "product": 42,
-      "character": [
-        "라이언"
-      ],
-      "img": "/image/product42.jpg",
+      "product": 9,
+      "character": ["라이언"],
+      "img": "/image/product09.jpg",
       "title": "최고심 춘식이 떡메모지",
       "price": "3,500"
     },
     {
       "id": 5,
       "product": 43,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product43.jpg",
       "title": "2023 다이어리_라이언",
       "price": "16,000"
@@ -334,9 +274,7 @@
     {
       "id": 6,
       "product": 44,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product44.jpg",
       "title": "춘식이 4단 점착 메모지",
       "price": "3,000"
@@ -346,9 +284,7 @@
     {
       "id": 1,
       "product": 45,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product45.jpg",
       "title": "굿잠 수면안대 메가바디필로우_춘식이",
       "price": "99,000",
@@ -357,9 +293,7 @@
     {
       "id": 2,
       "product": 46,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product46.jpg",
       "title": "춘식이 원형 벽시계",
       "price": "12,000",
@@ -368,10 +302,7 @@
     {
       "id": 3,
       "product": 47,
-      "character": [
-        "춘식이",
-        "라이언"
-      ],
+      "character": ["춘식이", "라이언"],
       "img": "/image/product47.jpg",
       "title": "소파리모컨거치대_라이언&춘식이",
       "price": "29,000",
@@ -380,9 +311,7 @@
     {
       "id": 4,
       "product": 48,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product48.jpg",
       "title": "대충 만든 춘식인데요 투명스티커",
       "price": "1,900",
@@ -391,9 +320,7 @@
     {
       "id": 5,
       "product": 49,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product49.jpg",
       "title": "춘식이 베이직 카드 얼굴",
       "price": "1,000",
@@ -402,9 +329,7 @@
     {
       "id": 6,
       "product": 50,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product50.jpg",
       "title": "차량용방향제(통풍구형)사다리 2_라이언",
       "price": "13,900",
@@ -614,9 +539,7 @@
     {
       "id": 2,
       "product": 2,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product02.jpg",
       "title": "춘식이 허그 목쿠션",
       "amount": 100,
@@ -625,9 +548,7 @@
     {
       "id": 3,
       "product": 3,
-      "character": [
-        "죠르디"
-      ],
+      "character": ["죠르디"],
       "img": "/image/product03.jpg",
       "title": "죠르디 수면 바지",
       "amount": 100,
@@ -636,9 +557,7 @@
     {
       "id": 4,
       "product": 4,
-      "character": [
-        "죠르디"
-      ],
+      "character": ["죠르디"],
       "img": "/image/product04.jpg",
       "title": "죠르디 수면 가운",
       "amount": 100,
@@ -647,9 +566,7 @@
     {
       "id": 5,
       "product": 5,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product05.jpg",
       "title": "최고심 춘식이 행복과 행운 스티커",
       "amount": 100,
@@ -658,9 +575,7 @@
     {
       "id": 6,
       "product": 6,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product06.jpg",
       "title": "최고심 춘식이 다재다능 스티커",
       "amount": 100,
@@ -669,9 +584,7 @@
     {
       "id": 7,
       "product": 7,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product07.jpg",
       "title": "최고심 춘식이 피규어스탬프_화가",
       "amount": 100,
@@ -680,9 +593,7 @@
     {
       "id": 8,
       "product": 8,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product08.jpg",
       "title": "최고심 춘식이 만년 다이어리",
       "amount": 100,
@@ -691,9 +602,7 @@
     {
       "id": 9,
       "product": 9,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product09.jpg",
       "title": "최고심 춘식이 떡메모지",
       "amount": 100,
@@ -702,9 +611,7 @@
     {
       "id": 10,
       "product": 10,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product10.jpg",
       "title": "최고심 춘식이 짱 젤펜",
       "amount": 100,
@@ -713,9 +620,7 @@
     {
       "id": 11,
       "product": 11,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product11.jpg",
       "title": "최고심 춘식이 잘했어요 젤펜",
       "amount": 100,
@@ -724,9 +629,7 @@
     {
       "id": 12,
       "product": 12,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product12.jpg",
       "title": "최고심 춘식이 행복 젤펜",
       "amount": 100,
@@ -735,12 +638,7 @@
     {
       "id": 13,
       "product": 13,
-      "character": [
-        "니니즈",
-        "죠르디",
-        "앙몬드",
-        "빠냐"
-      ],
+      "character": ["니니즈", "죠르디", "앙몬드", "빠냐"],
       "img": "/image/product13.jpg",
       "title": "2023 니니즈 다이어리",
       "amount": 100,
@@ -749,9 +647,7 @@
     {
       "id": 14,
       "product": 14,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product14.jpg",
       "title": "춘식이 봉투파일 발바닥",
       "amount": 100,
@@ -760,20 +656,16 @@
     {
       "id": 15,
       "product": 15,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product15.jpg",
-      "title": "최고심 춘식이 피규어스탬프_화가",
+      "title": "춘식이 라이언 수면잠옷 인형",
       "amount": 100,
-      "price": "12,000"
+      "price": "19,000"
     },
     {
       "id": 16,
       "product": 16,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product16.jpg",
       "title": "휴대폰 태블릿 멀티거치대_라이언&춘식이",
       "amount": 100,
@@ -782,9 +674,7 @@
     {
       "id": 17,
       "product": 17,
-      "character": [
-        "죠르디"
-      ],
+      "character": ["죠르디"],
       "img": "/image/product17.jpg",
       "title": "피규어 무빙키링_표정부자 죠르디",
       "amount": 100,
@@ -793,10 +683,7 @@
     {
       "id": 18,
       "product": 18,
-      "character": [
-        "라이언",
-        "어피치"
-      ],
+      "character": ["라이언", "어피치"],
       "img": "/image/product18.jpg",
       "title": "휴대폰 태블릿 멀티거치대_라이언&춘식이",
       "amount": 100,
@@ -805,9 +692,7 @@
     {
       "id": 19,
       "product": 19,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product19.jpg",
       "title": "대충 만든 춘식인데요 롱팔인형",
       "amount": 100,
@@ -816,10 +701,7 @@
     {
       "id": 20,
       "product": 20,
-      "character": [
-        "춘식이",
-        "라이언"
-      ],
+      "character": ["춘식이", "라이언"],
       "img": "/image/product20.jpg",
       "title": "스마트워치 충전거치대_코인런드리",
       "amount": 100,
@@ -828,9 +710,7 @@
     {
       "id": 21,
       "product": 21,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product21.jpg",
       "title": "춘식이 페이스 스퀴즈볼_멘붕",
       "amount": 100,
@@ -839,9 +719,7 @@
     {
       "id": 22,
       "product": 22,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product22.jpg",
       "title": "춘식이 식빵 폭신 필로우",
       "amount": 100,
@@ -850,9 +728,7 @@
     {
       "id": 23,
       "product": 23,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product23.jpg",
       "title": "브릭피규어 자유의여신상_라이언",
       "amount": 100,
@@ -861,9 +737,7 @@
     {
       "id": 24,
       "product": 24,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product24.jpg",
       "title": "EveryYay 납작 필로우_트민냥춘식이",
       "amount": 100,
@@ -872,9 +746,7 @@
     {
       "id": 25,
       "product": 25,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product25.jpg",
       "title": "EveryYay 무릎담요_라이언",
       "amount": 100,
@@ -883,9 +755,7 @@
     {
       "id": 26,
       "product": 26,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product26.jpg",
       "title": "EveryYay 체커보드고블렛_춘식이",
       "amount": 100,
@@ -894,9 +764,7 @@
     {
       "id": 27,
       "product": 27,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product27.jpg",
       "title": "어피치 리틀 얼굴쿠션",
       "amount": 100,
@@ -905,9 +773,7 @@
     {
       "id": 28,
       "product": 28,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product28.jpg",
       "title": "꿀잠 폭신바디필로우_어피치",
       "amount": 100,
@@ -916,9 +782,7 @@
     {
       "id": 29,
       "product": 29,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product29.jpg",
       "title": "렛츠플레이 마우스패드_어피치",
       "amount": 100,
@@ -927,9 +791,7 @@
     {
       "id": 30,
       "product": 30,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product30.jpg",
       "title": "스탠드형칫솔살균기_머그리틀어피치",
       "amount": 100,
@@ -938,9 +800,7 @@
     {
       "id": 31,
       "product": 31,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product31.jpg",
       "title": "체크미니토트백_어피치",
       "amount": 100,
@@ -949,9 +809,7 @@
     {
       "id": 32,
       "product": 32,
-      "character": [
-        "어피치"
-      ],
+      "character": ["어피치"],
       "img": "/image/product32.jpg",
       "title": "브릭피규어 에펠탑_어피치",
       "amount": 100,
@@ -960,20 +818,16 @@
     {
       "id": 33,
       "product": 33,
-      "character": [
-        "라이언"
-      ],
+      "character": ["죠르디"],
       "img": "/image/product33.jpg",
-      "title": "[온라인 전용]할로윈 유령 춘식이 피규어 키링",
+      "title": "[온라인 전용] 매트튜브_죠르디",
       "amount": 100,
-      "price": "12,000"
+      "price": "39,000"
     },
     {
       "id": 34,
       "product": 34,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product34.jpg",
       "title": "[온라인 전용] 머니건_라이언&춘식이",
       "amount": 100,
@@ -982,9 +836,7 @@
     {
       "id": 35,
       "product": 35,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product35.jpg",
       "title": "[온라인 전용] 내몸에 꼭맞는 U자 바디필로우_춘식이",
       "amount": 100,
@@ -993,9 +845,7 @@
     {
       "id": 36,
       "product": 36,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product36.jpg",
       "title": "[온라인 전용] 자이언트 소파쿠션_춘식이",
       "amount": 100,
@@ -1004,9 +854,7 @@
     {
       "id": 37,
       "product": 37,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product37.jpg",
       "title": "[온라인 전용] 미니온풍기_라이언&춘식이",
       "amount": 100,
@@ -1015,31 +863,25 @@
     {
       "id": 38,
       "product": 38,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product38.jpg",
-      "title": "[온라인]2023 다이어리세트_어피치",
+      "title": "[온라인] 2023 다이어리세트_어피치",
       "amount": 100,
       "price": "27,000"
     },
     {
       "id": 39,
       "product": 39,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["제이지"],
       "img": "/image/product39.jpg",
-      "title": "2023 탁상용 캘린더",
+      "title": "[시그니처] 클래식인형_제이지",
       "amount": 100,
-      "price": "6,000"
+      "price": "35,000"
     },
     {
       "id": 40,
       "product": 40,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product40.jpg",
       "title": "최고심 춘식이 세컷 스티커",
       "amount": 100,
@@ -1048,31 +890,25 @@
     {
       "id": 41,
       "product": 41,
-      "character": [
-        "라이언"
-      ],
+      "character": ["네오"],
       "img": "/image/product41.jpg",
-      "title": "최고심 춘식이 잘했어요 젤펜",
+      "title": "러블리 엔젤 베이비필로우_네오",
       "amount": 100,
       "price": "4,000"
     },
     {
       "id": 42,
       "product": 42,
-      "character": [
-        "라이언"
-      ],
+      "character": ["무지"],
       "img": "/image/product42.jpg",
-      "title": "최고심 춘식이 떡메모지",
+      "title": "꿀잠 폭신바디필로우_무지",
       "amount": 100,
-      "price": "3,500"
+      "price": "35,000"
     },
     {
       "id": 43,
       "product": 43,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product43.jpg",
       "title": "2023 다이어리_라이언",
       "amount": 100,
@@ -1081,9 +917,7 @@
     {
       "id": 44,
       "product": 44,
-      "character": [
-        "라이언"
-      ],
+      "character": ["라이언"],
       "img": "/image/product44.jpg",
       "title": "춘식이 4단 점착 메모지",
       "amount": 100,
@@ -1092,69 +926,155 @@
     {
       "id": 45,
       "product": 45,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product45.jpg",
       "title": "굿잠 수면안대 메가바디필로우_춘식이",
-      "amount": 0,
+      "amount": 100,
       "price": "99,000"
     },
     {
       "id": 46,
       "product": 46,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product46.jpg",
       "title": "춘식이 원형 벽시계",
-      "amount": 0,
+      "amount": 100,
       "price": "12,000"
     },
     {
       "id": 47,
       "product": 47,
-      "character": [
-        "춘식이",
-        "라이언"
-      ],
+      "character": ["춘식이", "라이언"],
       "img": "/image/product47.jpg",
       "title": "소파리모컨거치대_라이언&춘식이",
-      "amount": 0,
+      "amount": 100,
       "price": "29,000"
     },
     {
       "id": 48,
       "product": 48,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product48.jpg",
       "title": "대충 만든 춘식인데요 투명스티커",
-      "amount": 0,
+      "amount": 100,
       "price": "1,900"
     },
     {
       "id": 49,
       "product": 49,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product49.jpg",
       "title": "춘식이 베이직 카드 얼굴",
-      "amount": 0,
+      "amount": 100,
       "price": "1,000"
     },
     {
       "id": 50,
       "product": 50,
-      "character": [
-        "춘식이"
-      ],
+      "character": ["춘식이"],
       "img": "/image/product50.jpg",
       "title": "차량용방향제(통풍구형)사다리 2_라이언",
-      "amount": 0,
+      "amount": 100,
       "price": "13,900"
+    },
+    {
+      "id": 51,
+      "product": 51,
+      "character": ["라이언"],
+      "img": "/image/product51.jpg",
+      "title": "[온라인 전용]마이크리스마스쿠키 마시멜로 라이언",
+      "amount": 100,
+      "price": "19,000"
+    },
+    {
+      "id": 52,
+      "product": 52,
+      "character": ["춘식이"],
+      "img": "/image/product52.jpg",
+      "title": "마이크리스마스쿠키 춘식이 무빙인형",
+      "amount": 100,
+      "price": "59,000"
+    },
+    {
+      "id": 53,
+      "product": 53,
+      "character": ["춘식이"],
+      "img": "/image/product53.jpg",
+      "title": "마이크리스마스쿠키 춘식이 파자마 인형",
+      "amount": 100,
+      "price": "39,000"
+    },
+    {
+      "id": 54,
+      "product": 54,
+      "character": ["춘식이"],
+      "img": "/image/product54.jpg",
+      "title": "화이트 에디션 눈사람 인형_춘식이",
+      "amount": 100,
+      "price": "35,000"
+    },
+    {
+      "id": 55,
+      "product": 55,
+      "character": ["라이언"],
+      "img": "/image/product55.jpg",
+      "title": "마이크리스마스쿠키 양말인형_라이언",
+      "amount": 100,
+      "price": "19,000"
+    },
+    {
+      "id": 56,
+      "product": 56,
+      "character": ["춘식이"],
+      "img": "/image/product56.jpg",
+      "title": "마이크리스마스쿠키 양말인형_춘식이",
+      "amount": 100,
+      "price": "19,000"
+    },
+    {
+      "id": 57,
+      "product": 57,
+      "character": ["라이언", "춘식이"],
+      "img": "/image/product57.jpg",
+      "title": "마이크리스마스쿠키 스노우볼",
+      "amount": 100,
+      "price": "29,000"
+    },
+    {
+      "id": 58,
+      "product": 58,
+      "character": ["라이언", "춘식이"],
+      "img": "/image/product58.jpg",
+      "title": "마이크리스마스쿠키 케이크토퍼세트",
+      "amount": 100,
+      "price": "4,900"
+    },
+    {
+      "id": 59,
+      "product": 59,
+      "character": ["라이언", "춘식이"],
+      "img": "/image/product59.jpg",
+      "title": "마이크리스마스쿠키 카드",
+      "amount": 100,
+      "price": "3,000"
+    },
+    {
+      "id": 60,
+      "product": 60,
+      "character": ["춘식이"],
+      "img": "/image/product60.jpg",
+      "title": "마이크리스마스쿠키 카드_마시멜로춘식이",
+      "amount": 100,
+      "price": "3,000"
+    },
+    {
+      "id": 61,
+      "product": 61,
+      "character": ["라이언"],
+      "img": "/image/product61.jpg",
+      "title": "마이크리스마스쿠키 카드_쿠키라이언",
+      "amount": 100,
+      "price": "3,000"
     }
   ],
   "Halloween": [
@@ -1168,6 +1088,23 @@
       "btn2": "/image/promotion_btn2.jpg",
       "btn3": "/image/promotion_btn3.jpg",
       "btn4": "/image/promotion_btn4.jpg"
+    }
+  ],
+  "promotion": [
+    {
+      "image1": "/image/promotion_01.jpg",
+      "image2": "/image/promotion_02.jpg",
+      "image3": "/image/promotion_03.jpg",
+      "image4": "/image/promotion_04.jpg",
+      "image5": "/image/promotion_05.jpg",
+      "image6": "/image/promotion_06.jpg",
+      "image7": "/image/promotion_07.jpg",
+      "image8": "/image/promotion_08.jpg",
+      "image9": "/image/promotion_09.jpg",
+      "image10": "/image/promotion_10.jpg",
+      "image11": "/image/promotion_11.jpg",
+      "image12": "/image/promotion_12.jpg",
+      "image13": "/image/promotion_13.jpg"
     }
   ],
   "orderList": [

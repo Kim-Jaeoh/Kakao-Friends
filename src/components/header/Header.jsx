@@ -4,7 +4,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
-import logo from "../../assets/logo_halloween.gif";
+import logo from "../../assets/main_logo.gif";
 import { Category } from "./Category";
 import { Search } from "../../pages/Search";
 import { Menubar } from "../modal/Menubar";
@@ -101,9 +101,12 @@ export const Header = () => {
 
   // 이벤트, 상세 페이지에서는 헤더 안 보이게
   useEffect(() => {
-    if (pathname.includes("event")) {
-      setShowHeader(false);
-    } else if (pathname.includes("product")) {
+    if (
+      pathname.includes("detail") ||
+      pathname.includes("search") ||
+      pathname.includes("event") ||
+      pathname.includes("promotion")
+    ) {
       setShowHeader(false);
     } else {
       setShowHeader(true);

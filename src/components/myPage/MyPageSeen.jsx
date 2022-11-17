@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { VscTrash } from "react-icons/vsc";
-import { FiTrash2 } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
-import { useMemo } from "react";
-import { useCallback } from "react";
+import { NotInfo } from "../utils/NotInfo";
 
 const Container = styled.div``;
 
@@ -168,32 +164,6 @@ const ListDelete = styled.button`
   }
 `;
 
-const EmptyBasketBox = styled.div`
-  padding: 30% 0;
-  margin-bottom: -100px;
-`;
-
-const EmptyBasketCharacter = styled.span`
-  display: block;
-  width: 192px;
-  height: 192px;
-  margin: 0 auto 12px;
-
-  img {
-    display: block;
-    width: 100%;
-  }
-`;
-
-const EmptyText = styled.span`
-  display: block;
-  font-size: 16px;
-  line-height: 24px;
-  color: #aeaeaf;
-  text-align: center;
-  letter-spacing: -0.025em;
-`;
-
 export const MyPageSeen = () => {
   const [seenArray, setSeenArray] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -220,7 +190,7 @@ export const MyPageSeen = () => {
 
   useEffect(() => {
     // 본 순서대로 나열되게 새로 map을 이용하여 저장함
-    let arr = view?.map((asd) => dataList?.data[asd - 1]);
+    let arr = view?.map((item) => dataList?.data[item - 1]);
     setSeenArray(arr);
   }, [dataList?.data, loading, view]);
 
@@ -239,17 +209,7 @@ export const MyPageSeen = () => {
 
   return (
     <Container>
-      {seenArray && seenArray?.length === 0 ? (
-        <EmptyBasketBox>
-          <EmptyBasketCharacter>
-            <img
-              src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/101144/assets/images/m960/ico_empty_ryan.png"
-              alt=""
-            />
-          </EmptyBasketCharacter>
-          <EmptyText>최근 본 상품이 없어요.</EmptyText>
-        </EmptyBasketBox>
-      ) : (
+      {seenArray && seenArray?.length !== 0 ? (
         <>
           <Wrapper>
             <DescRecent>최대 20개까지 저장됩니다.</DescRecent>
@@ -267,12 +227,12 @@ export const MyPageSeen = () => {
                   return (
                     <List key={index}>
                       <ListContents>
-                        <ListImageBox to={`/product/${list.product}`}>
+                        <ListImageBox to={`/detail/${list?.product}`}>
                           <ListImage>
                             <img src={list?.img} alt={list?.title} />
                           </ListImage>
                         </ListImageBox>
-                        <ListInfoBox to={`/product/${list.product}`}>
+                        <ListInfoBox to={`/detail/${list?.product}`}>
                           <ListTitle>{list?.title}</ListTitle>
                           <ListPriceBox>
                             <ListPrice>
@@ -290,6 +250,13 @@ export const MyPageSeen = () => {
               : null}
           </ListCart>
         </>
+      ) : (
+        <NotInfo
+          url={
+            "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/101144/assets/images/m960/ico_empty_ryan.png"
+          }
+          text={"최근 본 상품이 없어요."}
+        />
       )}
     </Container>
   );

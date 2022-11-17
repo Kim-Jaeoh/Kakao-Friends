@@ -1,87 +1,40 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
-import { orderListApi, TidApi } from "../../apis/dataApi";
-import { MyPageOrderItem } from "./MyPageOrderItem";
-
-const EmptyBasketBox = styled.div`
-  padding: 30% 0;
-  margin-bottom: -100px;
-  /* background-color: #f2f2f2; */
-`;
-
-const EmptyBasketCharacter = styled.span`
-  display: block;
-  width: 192px;
-  height: 192px;
-  margin: 0 auto 12px;
-
-  img {
-    display: block;
-    width: 100%;
-  }
-`;
-
-const EmptyText = styled.span`
-  display: block;
-  font-size: 16px;
-  line-height: 24px;
-  color: #aeaeaf;
-  text-align: center;
-  letter-spacing: -0.025em;
-`;
+import { orderListApi } from "../../apis/dataApi";
+import { IoIosArrowForward } from "react-icons/io";
+import { NotInfo } from "../utils/NotInfo";
+import { useTimeStamp } from "../../hooks/useTimeStamp";
+import { Link } from "react-router-dom";
 
 export const MyPageOrderList = () => {
-  const { data: dataList } = useQuery("orderList", orderListApi, {
+  const { data: dataList, isLoading } = useQuery("orderList", orderListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e),
   });
-  const [orderList, setOrderList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [sortList, setSortList] = useState([]);
-  // const data = dataList?.data.sort((a, b) => b.created_at - a.created_at);
 
-  // const daa = () => {
-  //   dataList?.data?.map(
-  //     async (obj) =>
-  //       await axios
-  //         .get("/v1/payment/order", {
-  //           params: { cid: "TC0ONETIME", tid: obj.tid },
-  //           // params, // config 설정에 데이터를 담아 넘겨준다.
-  //           headers: {
-  //             Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
-  //             "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-  //           },
-  //         })
-  //         .then((r) => {
-  //           // console.log(r.data.sort((a, b) => b.created_at - a.created_at));
-  //           // console.log([r.data, ...orderList]);
-  //           setOrderList([r.data, ...orderList]);
-  //           // setIsLoading(true);
-  //         })
-  //   );
-  // };
+  const { timeToString } = useTimeStamp(); // 시간 포멧 커스텀 훅
 
-  useEffect(() => {
-    // dataList?.data.map((asd) => console.log(asd.orderInfo.map((aa) => aa)));
-    console.log(dataList?.data.map((asd) => asd.orderInfo));
-    // dataList?.data.map((asd) => console.log(asd));
-  }, [dataList?.data]);
+  const [payStatus, setPayStatus] = useState("");
 
-  // useEffect(() => {
-  //   setSortList(
-  //     orderList?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-  //   );
-  // }, [orderList]);
+  const paymentMap = {
+    SUCCESS_PAYMENT: "결제 완료",
+    PART_CANCEL_PAYMENT: "부분 취소",
+    CANCEL_PAYMENT: "모두 취소",
+    QUIT_PAYMENT: "결제 중단",
+    FAIL_PAYMENT: "결제 승인 실패",
+  };
+
+  const executePayment = (paymentType) => {
+    return setPayStatus(paymentMap[paymentType]);
+  };
 
   useEffect(() => {
     dataList?.data?.map(
       async (obj) =>
         await axios
           .get("/v1/payment/order", {
-            // config 설정에 데이터를 담아 넘겨준다.
             params: { cid: "TC0ONETIME", tid: obj.tid },
             headers: {
               Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
@@ -89,74 +42,204 @@ export const MyPageOrderList = () => {
             },
           })
           .then((r) => {
-            // setOrderList((prev) => [r.data, ...new Set(prev)]);
-            setIsLoading(true);
+            executePayment(r.data.status);
           })
     );
-    // daa();
   }, [dataList?.data]);
 
   return (
-    <>
+    <Container>
       {dataList?.data.length !== 0 ? (
         <>
-          {dataList?.data.map((asd, index) => {
-            const order = asd.orderInfo;
-            const orderDay = new Date(asd?.created_at);
-
-            const year = orderDay.getFullYear();
-            const month = ("0" + (orderDay.getMonth() + 1)).slice(-2);
-            const day = ("0" + orderDay.getDate()).slice(-2);
-            const hours = ("0" + orderDay.getHours()).slice(-2);
-            const minutes = ("0" + orderDay.getMinutes()).slice(-2);
-            const seconds = ("0" + orderDay.getSeconds()).slice(-2);
-            const ampm = hours < 12 ? "am" : "pm";
-
-            const dateString =
-              year +
-              "-" +
-              month +
-              "-" +
-              day +
-              " " +
-              hours +
-              ":" +
-              minutes +
-              ":" +
-              seconds +
-              " " +
-              ampm;
-
+          {dataList?.data.map((order) => {
+            const orderList = order.orderInfo;
             return (
-              <div key={asd.tid}>
-                <div>주문번호 {asd.tid}</div>
-                {order.map((zxc, index) => {
-                  // console.log(zxc);
-                  return (
-                    <div key={asd.title}>
-                      <div>{zxc?.title}</div>
-                      <img src={zxc.image} alt="" />
-                    </div>
-                  );
-                })}
-              </div>
+              <Orderbox key={order.tid}>
+                <OrderInfo>
+                  <Link>
+                    주문번호 {order.tid}
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                  <p>{timeToString(order)}</p>
+                </OrderInfo>
+
+                <OrderListBox>
+                  {orderList?.map((list, index) => {
+                    return (
+                      <OrderList key={index}>
+                        <ListContents>
+                          <ListImageBox to={`/detail/${list.product}`}>
+                            <ListImage>
+                              <img src={list.image} alt={list.title} />
+                            </ListImage>
+                          </ListImageBox>
+                          <ListInfoBox to={`/detail/${list.product}`}>
+                            <ListInfo>
+                              <ListTitle>{list.title}</ListTitle>
+                              <ListPrice>
+                                <span>{list.price}</span>원&nbsp;/&nbsp;
+                                <span>{list.amount}</span>개
+                              </ListPrice>
+                            </ListInfo>
+                            {payStatus && <ListStatus>{payStatus}</ListStatus>}
+                          </ListInfoBox>
+                        </ListContents>
+                      </OrderList>
+                    );
+                  })}
+                </OrderListBox>
+              </Orderbox>
             );
           })}
-          {/* {dataList?.data.map((obj) => (
-            <MyPageOrderItem key={obj.id} tid={obj.tid} />
-          ))} */}
         </>
       ) : (
-        <EmptyBasketBox>
-          <EmptyBasketCharacter>
-            <img
-              src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/ico_empty_ryan.png"
-              alt=""
-            />
-          </EmptyBasketCharacter>
-          <EmptyText>아직 주문 내역이 없어요.</EmptyText>
-        </EmptyBasketBox>
+        <NotInfo
+          url={
+            "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/ico_empty_ryan.png"
+          }
+          text={"아직 주문 내역이 없어요."}
+        />
       )}
-    </>
+    </Container>
   );
 };
+
+export const Container = styled.div`
+  padding: 20px;
+  margin-bottom: -100px;
+  background-color: #f2f2f2;
+`;
+
+export const Orderbox = styled.div`
+  position: relative;
+  background-color: #fff;
+
+  :first-of-type {
+    margin-bottom: 20px;
+  }
+`;
+
+export const OrderInfo = styled.div`
+  padding: 15px 20px;
+  border-bottom: 1px solid #f7f7f7;
+
+  > a {
+    display: block;
+    margin-bottom: 1.5px;
+    display: flex;
+    font-weight: 500;
+    align-items: center;
+
+    span {
+      margin-left: 2px;
+      svg {
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  > p {
+    font-size: 13px;
+    color: #747475;
+  }
+`;
+
+export const OrderListBox = styled.ul`
+  overflow: hidden;
+  border-bottom: 2px solid #f7f7f7;
+`;
+
+export const OrderList = styled.li`
+  position: relative;
+  margin: 20px 20px 0;
+  padding: 0 28px 20px 0;
+
+  :first-of-type {
+    border-bottom: 1px solid #f7f7f7;
+  }
+`;
+
+const ListContents = styled.div`
+  overflow: hidden;
+  height: 100px;
+`;
+
+const ListImageBox = styled(Link)`
+  float: left;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 6px;
+
+  ::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.02);
+    content: "";
+  }
+`;
+
+const ListImage = styled.div`
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
+
+  img {
+    display: block;
+    width: 100%;
+  }
+`;
+
+const ListInfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  padding: 4px 0 0 16px;
+  box-sizing: border-box;
+`;
+
+const ListInfo = styled(Link)`
+  display: block;
+`;
+
+const ListTitle = styled.strong`
+  display: block;
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  max-height: 40px;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+`;
+
+const ListPrice = styled.div`
+  padding-top: 4px;
+  font-size: 15px;
+  line-height: 24px;
+  vertical-align: top;
+
+  span {
+    font-size: 16px;
+  }
+`;
+
+const ListStatus = styled.p`
+  color: #747475;
+  user-select: none;
+`;

@@ -8,7 +8,7 @@ import { TbWorld } from "react-icons/tb";
 import { FiHome } from "react-icons/fi";
 import { CiSearch } from "react-icons/ci";
 
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/utils/Footer";
 import { useQuery } from "react-query";
 import {
   CategoryListApi,

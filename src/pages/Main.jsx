@@ -10,7 +10,7 @@ import { MainCharacterItem } from "../components/main/MainCharacterItem";
 import { MainRecommend } from "../components/main/MainRecommend";
 import { MainRestock } from "../components/main/MainRestock";
 import { Header } from "../components/header/Header";
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/utils/Footer";
 
 const Container = styled.main`
   position: relative;

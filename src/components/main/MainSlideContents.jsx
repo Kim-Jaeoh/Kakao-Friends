@@ -416,7 +416,7 @@ export const MainSlideContents = () => {
 
                   <SlideInfo>
                     <SlideInfoText>
-                      <Link to={`/product/${list.product}`}>
+                      <Link to={`/detail/${list.product}`}>
                         <strong>{list.title}</strong>
                       </Link>
                     </SlideInfoText>

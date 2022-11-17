@@ -19,6 +19,10 @@ import {
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 import axios from "axios";
 import { MyPagePayReady } from "./MyPagePayReady";
+import { memo } from "react";
+import { NotInfo } from "../utils/NotInfo";
+import { usePriceComma } from "../../hooks/usePriceComma";
+import { ProductRecommend } from "../utils/ProductRecommend";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -619,14 +623,8 @@ const BagButton = styled.button`
   } */
 `;
 
-export const MyPageBasket = ({ userObj }) => {
-  const { data: dataList } = useQuery("ProductList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
+const MyPageBasket = ({ userObj }) => {
   const [isFocus, setIsFocus] = useState(false);
-  const [randomItem, setRandomITem] = useState([]);
   const [CheckBasketList, setCheckBasketList] = useState(0);
   const [cartPrice, setCartPrice] = useState("");
   const [priceFreeDb, setPriceFreeDb] = useState(false);
@@ -636,40 +634,9 @@ export const MyPageBasket = ({ userObj }) => {
 
   const { next_redirect_pc_url: payReadyURL } = MyPagePayReady();
 
-  const { toggleIcon, checkItems, setCheckItems, currentBasket } =
-    useBasketToggle(); //장바구니 커스텀 훅
+  const { checkItems, setCheckItems, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
-  // JSON Array 내 금액에 콤마가 있어서 인식하지 못하기에 split으로 콤마를 없앤 뒤 문자열로 변환 후 다시 콤마 생성
-  const PriceReComma = useCallback(
-    (price) => {
-      if (totalPrice || cartPrice !== 0) {
-        return price
-          ?.split(",")
-          .join("")
-          .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      } else return;
-    },
-    [cartPrice, totalPrice]
-  );
-
-  const PriceDeleteComma = useCallback(
-    (price) => {
-      if (totalPrice || cartPrice !== 0) {
-        return price?.split(",").join("");
-      } else return;
-    },
-    [cartPrice, totalPrice]
-  );
-
-  const PriceComma = useCallback(
-    (price) => {
-      if (totalPrice || cartPrice !== 0) {
-        return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      } else return;
-    },
-    [cartPrice, totalPrice]
-  );
+  const { PriceReComma, PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
 
   // 상품 가격
   useEffect(() => {
@@ -687,7 +654,7 @@ export const MyPageBasket = ({ userObj }) => {
     } else {
       setCartPrice(0);
     }
-  }, [currentBasket]);
+  }, [PriceDeleteComma, currentBasket]);
 
   // 전체 가격
   useEffect(() => {
@@ -698,16 +665,16 @@ export const MyPageBasket = ({ userObj }) => {
         PriceComma(cartPrice >= 30000 ? cartPrice : cartPrice + 3000)
       );
     }
-  }, [cartPrice]);
+  }, [PriceComma, cartPrice]);
 
   // 3만원 이상 시 상태 변화
   useEffect(() => {
-    if (PriceDeleteComma(totalPrice) >= 30000) {
+    if (cartPrice >= 30000) {
       setPriceFreeDb(true);
     } else {
       setPriceFreeDb(false);
     }
-  }, [PriceDeleteComma, totalPrice]);
+  }, [PriceDeleteComma, cartPrice]);
 
   // 배송 금액 바
   useEffect(() => {
@@ -730,30 +697,6 @@ export const MyPageBasket = ({ userObj }) => {
   useEffect(() => {
     setCheckBasketList(currentBasket.filter((item) => item.check).length);
   }, [currentBasket]);
-
-  // 추천 목록 랜덤화
-  useEffect(() => {
-    const arr = dataList?.data;
-
-    const randomArray = (array) => {
-      // - 방법 1
-      array?.sort(() => Math.floor(Math.random() - 0.5));
-
-      // - ✔ 방법 2 (피셔-예이츠)
-      // for (let index = array?.length - 1; index > 0; index--) {
-      //   // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
-      //   const randomPosition = Math.floor(Math.random() * (index + 1));
-
-      //   // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
-      //   const temporary = array[index];
-      //   array[index] = array[randomPosition];
-      //   array[randomPosition] = temporary;
-      // }
-    };
-
-    randomArray(arr);
-    setRandomITem(arr);
-  }, [dataList?.data]);
 
   // 장바구니 개별 삭제
   const BasketDeleteItem = (itemId) => {
@@ -812,7 +755,7 @@ export const MyPageBasket = ({ userObj }) => {
   };
 
   const orderClick = () => {
-    if (cartPrice !== 0) {
+    if (cartPrice !== 0 && currentBasket?.length !== 0) {
       window.location.href = `${payReadyURL}`;
     }
   };
@@ -821,20 +764,14 @@ export const MyPageBasket = ({ userObj }) => {
     <>
       <Container>
         {currentBasket?.length === 0 ? (
-          <EmptyBasketBox>
-            <EmptyBasketCharacter>
-              <img
-                src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221026/104605/assets/images/m960/ico_cart_empty.png"
-                alt=""
-              />
-            </EmptyBasketCharacter>
-            <EmptyText>
-              아직 관심 상품이 없네요!
-              <br />
-              귀여운 프렌즈 상품을 추천드릴게요
-            </EmptyText>
-            <BestItemViewBtn to="/best">인기 상품 보기</BestItemViewBtn>
-          </EmptyBasketBox>
+          <NotInfo
+            url={
+              "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221026/104605/assets/images/m960/ico_cart_empty.png"
+            }
+            text={"아직 관심 상품이 없네요!"}
+            text2={"귀여운 프렌즈 상품을 추천드릴게요"}
+            btn={true}
+          />
         ) : (
           <BasketBox>
             <BasketList>
@@ -928,13 +865,13 @@ export const MyPageBasket = ({ userObj }) => {
                           />
                           <IoCheckmarkCircleSharp />
                         </ListCheckIcon>
-                        <ListImageBox to={`/product/${list.product}`}>
+                        <ListImageBox to={`/detail/${list.product}`}>
                           <ListImage>
                             <img src={list.img} alt={list.title} />
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox>
-                          <ListTitle to={`/product/${list.product}`}>
+                          <ListTitle to={`/detail/${list.product}`}>
                             {list.title}
                           </ListTitle>
                           <ListPriceBox>
@@ -1006,36 +943,10 @@ export const MyPageBasket = ({ userObj }) => {
             </BasketBottomButton>
           </BasketBox>
         )}
-        <BasketRecommendBox>
-          <strong>잠깐만, 이 제품은 어때요?</strong>
-          <BasketRecommendListBox>
-            {randomItem?.slice(0, 8).map((list, index) => (
-              <BasketRecommendList key={list.product}>
-                <RecommendListBox>
-                  <RecommendListImage to={`/product/${list.product}`}>
-                    <img src={list.img} alt={list.title} />
-                  </RecommendListImage>
-                  <RecommendListText>
-                    <strong>{list.title}</strong>
-                    <RecomendListPrice>
-                      <span>{PriceComma(list.price)}</span>원
-                    </RecomendListPrice>
-                    <BagButton onClick={(e) => toggleIcon(list, index)}>
-                      {currentBasket?.filter(
-                        (obj) => obj.product === list.product
-                      ).length > 0 ? (
-                        <BsBagFill style={{ color: "#ff447f" }} />
-                      ) : (
-                        <BsBag />
-                      )}
-                    </BagButton>
-                  </RecommendListText>
-                </RecommendListBox>
-              </BasketRecommendList>
-            ))}
-          </BasketRecommendListBox>
-        </BasketRecommendBox>
+        <ProductRecommend />
       </Container>
     </>
   );
 };
+
+export default MyPageBasket;

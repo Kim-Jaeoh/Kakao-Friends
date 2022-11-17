@@ -33,13 +33,18 @@ const Container = styled.div`
   }
 `;
 
+const MainContentsImageBox = styled(Link)`
+  display: block;
+  position: relative;
+`;
+
 const MainContentsImage = styled.img`
   display: block;
-  /* border: 0 none; */
   position: relative;
   left: 50%;
   width: 600px;
   transform: translate(-50%);
+  object-fit: cover;
   height: ${(props) => (props.height ? props.height : "auto")};
 `;
 
@@ -103,7 +108,7 @@ export const MainContents = () => {
       {!isLoading &&
         dataList?.data.map((list) => (
           <Container key={list.id}>
-            <Link to={`/product/${list.product}`}>
+            <MainContentsImageBox to={list.url}>
               {list.video ? (
                 <MainContentsVideo
                   height={list.height}
@@ -133,7 +138,7 @@ export const MainContents = () => {
                   {list.sub2}
                 </span>
               </MainContentsText>
-            </Link>
+            </MainContentsImageBox>
           </Container>
         ))}
     </>

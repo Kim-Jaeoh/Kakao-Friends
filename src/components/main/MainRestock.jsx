@@ -319,7 +319,7 @@ export const MainRestock = () => {
             dataList?.data.map((list, index) => (
               <div key={list.id}>
                 <ListBox>
-                  <Link to={`/product/${list.product}`}>
+                  <Link to={`/detail/${list.product}`}>
                     <ListImage src={list.img} alt={list.title} />
                     <ListTitle>{list.title}</ListTitle>
                   </Link>

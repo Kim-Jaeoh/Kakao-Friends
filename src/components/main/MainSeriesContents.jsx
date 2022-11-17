@@ -272,7 +272,7 @@ export const MainSeriesContents = () => {
             {!isLoading &&
               dataList?.data.map((list, index) => (
                 <List key={list.id}>
-                  <ListLink to={`/product/${list.product}`}>
+                  <ListLink to={`/detail/${list.product}`}>
                     <ListImage>
                       <img src={list.img} alt={list.title} />
                     </ListImage>

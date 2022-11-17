@@ -26,4 +26,6 @@ export const ProductListApi = () => axios.get(`${API}/ProductListData`);
 
 export const HalloweenApi = () => axios.get(`${API}/Halloween`);
 
+export const PromotionApi = () => axios.get(`${API}/promotion`);
+
 export const orderListApi = () => axios.get(`${API}/orderList`);

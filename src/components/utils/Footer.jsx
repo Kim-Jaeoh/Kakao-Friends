@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
-import kakaoLogo from "../assets/logo_foot_kakao.png";
-import markLogo from "../assets/mark_info.png";
+import kakaoLogo from "../../assets/logo_foot_kakao.png";
+import markLogo from "../../assets/mark_info.png";
 
 const Container = styled.footer`
   margin-top: 100px;

@@ -11,12 +11,12 @@ import {
 } from "react-router-dom";
 import { MyPageSeen } from "../components/myPage/MyPageSeen";
 import { MyPageAct } from "../components/myPage/MyPageAct";
-import { MyPageBasket } from "../components/myPage/MyPageBasket";
+import MyPageBasket from "../components/myPage/MyPageBasket";
 import { MyPageOrderList } from "../components/myPage/MyPageOrderList";
 import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../fbase";
 import { useSelector } from "react-redux";
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/utils/Footer";
 import { LoginPopupModal } from "../components/modal/LoginPopupModal";
 
 const Container = styled.div`
@@ -98,17 +98,7 @@ export const MyPage = ({ userObj }) => {
   }, [pathname]);
 
   const [popupModal, setPopupModal] = useState(false);
-  const navigate = useNavigate();
   const togglePopupModal = () => setPopupModal((prev) => !prev);
-
-  // useEffect(() => {
-  //   if (
-  //     (isLoggedIn === false && pathname.includes("/act")) ||
-  //     pathname.includes("/orderlist")
-  //   ) {
-  //     setPopupModal(true);
-  //   }
-  // }, [isLoggedIn, pathname]);
 
   useEffect(() => {
     if (loginToken === "logout") {
@@ -134,7 +124,7 @@ export const MyPage = ({ userObj }) => {
               <span>최근 본</span>
             </ListLink>
           </TabList>
-          <TabList>
+          {/* <TabList>
             <ListLink
               onClick={click}
               to={isLoggedIn && "/mypage/act"}
@@ -143,7 +133,7 @@ export const MyPage = ({ userObj }) => {
             >
               <span>내 활동</span>
             </ListLink>
-          </TabList>
+          </TabList> */}
           <TabList>
             <ListLink to="/mypage/basket" num={3} selected={selected}>
               <span>장바구니</span>
