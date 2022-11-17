@@ -41,7 +41,6 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "server": "json-server --watch ./server/db.json --port 4000",
     "start": "node server",
     "start:dev": "cross-env NODE_PATH=src react-scripts start",
     "build": "cross-env NODE_PATH=src react-scripts build",
