@@ -1090,7 +1090,7 @@
       "btn4": "/image/promotion_btn4.jpg"
     }
   ],
-  "promotion": [
+  "promotionlist": [
     {
       "image1": "/image/promotion_01.jpg",
       "image2": "/image/promotion_02.jpg",
@@ -1107,7 +1107,7 @@
       "image13": "/image/promotion_13.jpg"
     }
   ],
-  "orderList": [
+  "payList": [
     {
       "tid": "T373cfd37c755d996b4d",
       "created_at": "2022-11-16T02:41:40",
