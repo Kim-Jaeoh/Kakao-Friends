@@ -106,7 +106,7 @@ const ArrowButton = styled.button`
 const SliderItem = styled.div`
   position: relative;
   overflow: hidden;
-  max-width: 200px;
+  width: 200px;
   height: 412px;
   margin: 0 6px;
   border-radius: 10px;
@@ -115,6 +115,7 @@ const SliderItem = styled.div`
 
 const SlideVideoBox = styled.div`
   position: relative;
+  /* width: 200px; */
   height: 355px;
 
   ::before {
@@ -138,7 +139,7 @@ const SlideVideo = styled.video`
   width: 100%;
   min-height: 100%;
   transform: translate(-50%, -50%);
-  object-fit: contain;
+  object-fit: cover;
 `;
 
 const SlideVideoButton = styled.button`
@@ -362,32 +363,35 @@ export const MainSlideContents = () => {
         <Title>
           <strong>신박한 프렌즈템</strong>
         </Title>
-        {!isLoading && (
-          <SliderBox>
-            {!resize && (
-              <ArrowBox>
-                <ArrowButton onClick={onClickArrowBackButton}>
-                  <IoIosArrowBack />
-                </ArrowButton>
-                <ArrowButton onClick={onClickArrowForwardButton}>
-                  <IoIosArrowForward />
-                </ArrowButton>
-              </ArrowBox>
-            )}
+        <SliderBox>
+          {!resize && (
+            <ArrowBox>
+              <ArrowButton onClick={onClickArrowBackButton}>
+                <IoIosArrowBack />
+              </ArrowButton>
+              <ArrowButton onClick={onClickArrowForwardButton}>
+                <IoIosArrowForward />
+              </ArrowButton>
+            </ArrowBox>
+          )}
 
-            <Flicking
-              circular={true}
-              duration={500}
-              defaultIndex={0}
-              ref={flickingRef}
-              onChanged={(e) => {
-                setSlideIndex(e.index);
-                videoRef?.current[slideIndex]?.pause();
-              }}
-              moveType={"strict"}
-            >
-              {dataList?.data.map((list, index) => (
-                <SliderItem key={list.product}>
+          <Flicking
+            circular={true}
+            duration={500}
+            autoResize={true}
+            resizeOnContentsReady={true}
+            autoInit={true}
+            defaultIndex={0}
+            ref={flickingRef}
+            onChanged={(e) => {
+              setSlideIndex(e.index);
+              videoRef?.current[slideIndex]?.pause();
+            }}
+            moveType={"strict"}
+          >
+            {!isLoading &&
+              dataList?.data.map((list, index) => (
+                <SliderItem key={index}>
                   <SlideVideoBox>
                     {index === slideIndex && (
                       <SlideVideoButton
@@ -432,9 +436,9 @@ export const MainSlideContents = () => {
                   </SlideInfo>
                 </SliderItem>
               ))}
-            </Flicking>
+          </Flicking>
 
-            {/* <Swiper
+          {/* <Swiper
           modules={[Navigation, A11y]}
           spaceBetween={6}
           slidesPerView={3}
@@ -487,8 +491,7 @@ export const MainSlideContents = () => {
             );
           })}
         </Swiper> */}
-          </SliderBox>
-        )}
+        </SliderBox>
 
         {resize && (
           <PaginationButton slideIndex={slideIndex}>

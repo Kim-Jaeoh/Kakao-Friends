@@ -29,12 +29,12 @@ export const MyPagePayReady = () => {
             ?.reduce((a, b) => a + b),
           vat_amount: 0,
           tax_free_amount: 0,
-          approval_url: "https://kakao-friends.herokuapp.com/mypage/payresult",
-          fail_url: "https://kakao-friends.herokuapp.com",
-          cancel_url: "https://kakao-friends.herokuapp.com",
-          // approval_url: "http://localhost:3000/mypage/payresult",
-          // fail_url: "http://localhost:3000",
-          // cancel_url: "http://localhost:3000",
+          // approval_url: "https://kakao-friends.herokuapp.com/mypage/payresult",
+          // fail_url: "https://kakao-friends.herokuapp.com",
+          // cancel_url: "https://kakao-friends.herokuapp.com",
+          approval_url: "http://localhost:3000/mypage/payresult",
+          fail_url: "http://localhost:3000",
+          cancel_url: "http://localhost:3000",
         },
       };
 

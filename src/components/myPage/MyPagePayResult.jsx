@@ -36,13 +36,13 @@ export const MyPagePayResult = () => {
   });
 
   const params = {
-    item_info: currentBasket?.map((item) => ({
-      title: item.title,
-      amount: item.amount,
-      image: item.img,
-      product: item.product,
-      price: item.price,
-    })),
+    // item_info: currentBasket?.map((item) => ({
+    //   title: item.title,
+    //   amount: item.amount,
+    //   image: item.img,
+    //   product: item.product,
+    //   price: item.price,
+    // })),
     cid: "TC0ONETIME",
     tid: localStorage.getItem("tid"),
     partner_order_id: "partner_order_id",
@@ -50,14 +50,25 @@ export const MyPagePayResult = () => {
     pg_token: search.split("=")[1],
   };
 
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
+      setMyInfo(doc.data());
+    });
+  }, [currentUser.email]);
+
+  useEffect(() => {
+    console.log(typeof myInfo.orderList);
+    // myInfo?.orderList.map((asd) => console.log(asd));
+  }, [myInfo]);
+
   const userInfo = async () => {
     await updateDoc(dbRef, {
       orderList: [
-        ...myInfo?.orderList,
+        ...myInfo.orderList,
         {
           tid: localStorage.getItem("tid"),
           created_at: Date.now() || result.created_at,
-          // created_at: result.created_at,
           orderInfo: currentBasket?.map((order) => ({
             amount: order.amount,
             price: order.price,
@@ -72,9 +83,6 @@ export const MyPagePayResult = () => {
   };
 
   useEffect(() => {
-    // localstorage에서 tid값을 읽어온다.
-    setLocalTid(localStorage.getItem("tid"));
-
     if (params.pg_token) {
       const postKakaopay = async () => {
         await axios({
@@ -109,20 +117,13 @@ export const MyPagePayResult = () => {
         });
       };
       postKakaopay();
-      userInfo();
+      // userInfo();
     }
-  }, [params]);
-
-  // 본인 정보 가져오기
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
-      setMyInfo(doc.data());
-    });
-  }, [currentUser.email]);
+  }, []);
 
   return (
     <div>
-      <h2>결제가 완료되었습니다.</h2>
+      <h2 onClick={userInfo}>결제가 완료되었습니다.</h2>
       <div>{result?.item_name}</div>
       <div>{result?.amount?.total}</div>
     </div>
