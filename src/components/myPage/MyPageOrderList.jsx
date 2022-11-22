@@ -1,23 +1,40 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { orderListApi } from "../../apis/dataApi";
 import { IoIosArrowForward } from "react-icons/io";
 import { NotInfo } from "../utils/NotInfo";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { dbService } from "../../fbase";
+import { orderBy } from "lodash";
 
 export const MyPageOrderList = () => {
-  const { data: dataList, isLoading } = useQuery("orderList", orderListApi, {
+  const [dataList, setDataList] = useState([]);
+  const [myInfo, setMyInfo] = useState([]);
+  const [payStatus, setPayStatus] = useState("");
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentBasket = useSelector((state) => state.user.basket);
+
+  const { data, isLoading } = useQuery("orderList", orderListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e),
   });
 
   const { timeToString } = useTimeStamp(); // 시간 포멧 커스텀 훅
 
-  const [payStatus, setPayStatus] = useState("");
-
+  // 결제 상태 로직
   const paymentMap = {
     SUCCESS_PAYMENT: "결제 완료",
     PART_CANCEL_PAYMENT: "부분 취소",
@@ -25,13 +42,15 @@ export const MyPageOrderList = () => {
     QUIT_PAYMENT: "결제 중단",
     FAIL_PAYMENT: "결제 승인 실패",
   };
-
   const executePayment = (paymentType) => {
     return setPayStatus(paymentMap[paymentType]);
   };
 
+  // 결제 상태
   useEffect(() => {
-    dataList?.data?.map(
+    // const arr = [];
+
+    myInfo?.orderList?.map(
       async (obj) =>
         await axios
           .get("/v1/payment/order", {
@@ -42,25 +61,65 @@ export const MyPageOrderList = () => {
             },
           })
           .then((r) => {
+            // arr.push(obj);
             executePayment(r.data.status);
           })
     );
-  }, [dataList?.data]);
+
+    // const created = arr?.sort(
+    //   (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    // );
+
+    // setDataList(created);
+  }, [data?.data]);
+
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
+      setMyInfo(doc.data());
+    });
+  }, [currentUser.email]);
+
+  useEffect(() => {
+    console.log({ ...myInfo.orderList });
+    // const info = { ...myInfo };
+    // info.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    // console.log(info);
+  }, [myInfo]);
+
+  // const userInfo = async () => {
+  //   const dbRef = doc(dbService, "users", currentUser.email);
+  //   await updateDoc(dbRef, {
+  //     orderList: [
+  //       ...myInfo?.orderList,
+  //       {
+  //         tid: "123",
+  //         created_at: new Date(),
+  //         orderInfo: currentBasket.map((order) => ({
+  //           amount: order.amount,
+  //           price: order.price,
+  //           product: order.product,
+  //           image: order.img,
+  //           title: order.title,
+  //         })),
+  //       },
+  //     ],
+  //   });
+  //   console.log("흠");
+  // };
 
   return (
     <Container>
-      {dataList?.data.length !== 0 ? (
+      {myInfo?.orderList?.length !== 0 ? (
         <>
-          {dataList?.data.map((order) => {
+          {myInfo?.orderList?.map((order) => {
             const orderList = order.orderInfo;
             return (
               <Orderbox key={order.tid}>
                 <OrderInfo>
                   <Link>
-                    주문번호 {order.tid}
-                    <span>
-                      <IoIosArrowForward />
-                    </span>
+                    <span>주문번호 {order.tid}</span>
+                    <IoIosArrowForward />
                   </Link>
                   <p>{timeToString(order)}</p>
                 </OrderInfo>
@@ -95,12 +154,15 @@ export const MyPageOrderList = () => {
           })}
         </>
       ) : (
-        <NotInfo
-          url={
-            "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/ico_empty_ryan.png"
-          }
-          text={"아직 주문 내역이 없어요."}
-        />
+        <>
+          <NotInfo
+            url={
+              "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/ico_empty_ryan.png"
+            }
+            text={"아직 주문 내역이 없어요."}
+          />
+          {/* <div onClick={userInfo}>흠</div> */}
+        </>
       )}
     </Container>
   );
@@ -116,7 +178,7 @@ export const Orderbox = styled.div`
   position: relative;
   background-color: #fff;
 
-  :first-of-type {
+  :not(:last-of-type) {
     margin-bottom: 20px;
   }
 `;
@@ -126,20 +188,24 @@ export const OrderInfo = styled.div`
   border-bottom: 1px solid #f7f7f7;
 
   > a {
-    display: block;
-    margin-bottom: 1.5px;
     display: flex;
-    font-weight: 500;
     align-items: center;
+    margin-bottom: 1.5px;
+    font-weight: 500;
 
     span {
+      display: flex;
+      align-items: center;
+    }
+
+    svg {
+      font-weight: bold;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5px;
       margin-left: 2px;
-      svg {
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
     }
   }
 
@@ -151,7 +217,8 @@ export const OrderInfo = styled.div`
 
 export const OrderListBox = styled.ul`
   overflow: hidden;
-  border-bottom: 2px solid #f7f7f7;
+  /* border-bottom: 2px solid #f7f7f7; */
+  /* border: 1px solid red; */
 `;
 
 export const OrderList = styled.li`
@@ -159,7 +226,7 @@ export const OrderList = styled.li`
   margin: 20px 20px 0;
   padding: 0 28px 20px 0;
 
-  :first-of-type {
+  :not(:last-of-type) {
     border-bottom: 1px solid #f7f7f7;
   }
 `;

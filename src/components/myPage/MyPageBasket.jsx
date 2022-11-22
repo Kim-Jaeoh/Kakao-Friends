@@ -625,6 +625,7 @@ const BagButton = styled.button`
 
 const MyPageBasket = ({ userObj }) => {
   const [isFocus, setIsFocus] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [CheckBasketList, setCheckBasketList] = useState(0);
   const [cartPrice, setCartPrice] = useState("");
   const [priceFreeDb, setPriceFreeDb] = useState(false);
@@ -664,6 +665,7 @@ const MyPageBasket = ({ userObj }) => {
       setTotalPrice(
         PriceComma(cartPrice >= 30000 ? cartPrice : cartPrice + 3000)
       );
+      setLoading(true);
     }
   }, [PriceComma, cartPrice]);
 
@@ -782,9 +784,11 @@ const MyPageBasket = ({ userObj }) => {
                       <span>무료 배송</span>
                     ) : (
                       <>
-                        <span>
-                          {PriceComma(33000 - PriceDeleteComma(totalPrice))}
-                        </span>
+                        {loading && (
+                          <span>
+                            {PriceComma(33000 - PriceDeleteComma(totalPrice))}
+                          </span>
+                        )}
                         원 추가 시 무료 배송
                       </>
                     )}

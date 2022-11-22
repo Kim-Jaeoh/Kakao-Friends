@@ -142,9 +142,9 @@ export const ProductRecommend = ({ productId }) => {
 
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
-  const onRefresh = () => {
-    setRefresh(!refresh);
-  };
+  // const onRefresh = () => {
+  //   setRefresh(!refresh);
+  // };
 
   // 추천 목록 랜덤화
   useEffect(() => {
@@ -152,8 +152,8 @@ export const ProductRecommend = ({ productId }) => {
 
     if (productId) {
       arr = arr.filter((asd) => asd?.product !== productId);
-      // arr = arr.filter((asd) => asd?.product !== productId);
     }
+
     const randomArray = (array) => {
       // - 방법 1
       // array?.sort(() => Math.floor(Math.random() - 0.5));
@@ -179,7 +179,7 @@ export const ProductRecommend = ({ productId }) => {
       <strong>잠깐만, 이 제품은 어때요?</strong>
       <BasketRecommendListBox>
         {randomItem?.slice(0, 8).map((list, index) => (
-          <BasketRecommendList key={list.product}>
+          <BasketRecommendList key={list.id}>
             <RecommendListBox>
               <RecommendListImage to={`/detail/${list.product}`}>
                 <img src={list.img} alt={list.title} />

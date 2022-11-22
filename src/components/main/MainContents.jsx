@@ -1,10 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import React, { Suspense, useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
-import { mainContentsBannerList } from "../../data/mainContentsData.js";
-// import mainContentsBannerList from "../../../server/db.json";
-import axios from "axios";
 import { useQuery } from "react-query";
 import { BannerListApi } from "../../apis/dataApi.js";
 
@@ -22,7 +19,6 @@ const Container = styled.div`
     right: 0;
     bottom: 0;
     height: 190px;
-    /* background: linear-gradient(rgba(255, 255, 255, 0), white); */
     background: linear-gradient(rgba(0, 0, 0, 0), black);
     opacity: 0.5;
     content: "";
@@ -50,7 +46,6 @@ const MainContentsImage = styled.img`
 
 const MainContentsVideo = styled.video`
   display: block;
-  /* border: 0 none; */
   position: relative;
   left: 50%;
   width: 600px;
@@ -99,7 +94,6 @@ const MainContentsText = styled.span`
 export const MainContents = () => {
   const { data: dataList, isLoading } = useQuery("banner", BannerListApi, {
     refetchOnWindowFocus: false,
-    // suspense: true,
     onError: (e) => console.log(e.message),
   });
 
