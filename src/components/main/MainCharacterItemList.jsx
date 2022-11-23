@@ -20,8 +20,10 @@ const Title = styled.div`
   padding: 64px 20px 20px;
   margin-top: 0;
   background-repeat: no-repeat;
+  background-size: cover;
   background-position: right bottom;
-  background-size: 100%;
+  /* background-position: center center; */
+  /* background-size: 100%; */
 
   strong {
     display: -webkit-inline-box;

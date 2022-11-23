@@ -1092,19 +1092,31 @@
   ],
   "promotionlist": [
     {
-      "image1": "/image/promotion_01.jpg",
-      "image2": "/image/promotion_02.jpg",
-      "image3": "/image/promotion_03.jpg",
-      "image4": "/image/promotion_04.jpg",
-      "image5": "/image/promotion_05.jpg",
-      "image6": "/image/promotion_06.jpg",
-      "image7": "/image/promotion_07.jpg",
-      "image8": "/image/promotion_08.jpg",
-      "image9": "/image/promotion_09.jpg",
-      "image10": "/image/promotion_10.jpg",
-      "image11": "/image/promotion_11.jpg",
-      "image12": "/image/promotion_12.jpg",
-      "image13": "/image/promotion_13.jpg"
+      "id": 1,
+      "text": "마이 쿠키 크리스마스 기획전",
+      "list": [
+        { "image": "/image/promotion_01_a.jpg", "url": "" },
+        { "image": "/image/promotion_02_a.jpg", "url": "" },
+        { "image": "/image/promotion_03_a.jpg", "url": "" },
+        { "image": "/image/promotion_04_a.jpg", "url": "/detail/51" },
+        { "image": "/image/promotion_05_a.jpg", "url": "" },
+        { "image": "/image/promotion_06_a.jpg", "url": "/detail/52" },
+        { "image": "/image/promotion_07_a.jpg", "url": "" },
+        { "image": "/image/promotion_08_a.jpg", "url": "/detail/55" },
+        { "image": "/image/promotion_09_a.jpg", "url": "/detail/56" },
+        { "image": "/image/promotion_10_a.jpg", "url": "" },
+        { "image": "/image/promotion_11_a.jpg", "url": "/detail/57" },
+        { "image": "/image/promotion_12_a.jpg", "url": "" },
+        { "image": "/image/promotion_13_a.jpg", "url": "/detail/58" }
+      ]
+    },
+    {
+      "id": 2,
+      "text": "카카오페이 11월 즉시 할인",
+      "list": [
+        { "image": "/image/promotion_01_b.jpg", "url": "" },
+        { "image": "/image/promotion_02_b.jpg", "url": "" }
+      ]
     }
   ],
   "payList": [

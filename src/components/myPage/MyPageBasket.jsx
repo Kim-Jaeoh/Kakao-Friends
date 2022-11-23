@@ -756,6 +756,7 @@ const MyPageBasket = ({ userObj }) => {
     }
   };
 
+  // 주문하기 새창
   const orderClick = () => {
     if (cartPrice !== 0 && currentBasket?.length !== 0) {
       window.location.href = `${payReadyURL}`;
@@ -863,7 +864,6 @@ const MyPageBasket = ({ userObj }) => {
                               checkItems.includes(list.product) ? true : false
                             }
                             onChange={(e) => {
-                              console.log(e.target.checked);
                               checkHandler(e.target.checked, list);
                             }}
                           />

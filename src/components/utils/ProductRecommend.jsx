@@ -8,6 +8,7 @@ import { usePriceComma } from "../../hooks/usePriceComma";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 import axios from "axios";
+import { cloneDeep } from "lodash";
 
 const BasketRecommendBox = styled.div`
   padding-top: 36px;
@@ -132,26 +133,27 @@ export const ProductRecommend = ({ productId }) => {
   const [randomItem, setRandomITem] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
-  const { data: dataList } = useQuery("ProductList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onSuccess: (e) => setRefresh(!refresh), // useEffect 의존성 배열에 dataList를 넣지 않아서 새로고침 시 목록이 뜨지 않기에 state 변경 함수를 넣어 렌더링 되게 함 (dataList를 의존성 배열에 넣을 경우 렌더링 때마다 2번씩 실행되기 때문)
-    onError: (e) => console.log(e.message),
-  });
+  const { data: dataList, isLoading } = useQuery(
+    "ProductList",
+    ProductListApi,
+    {
+      refetchOnWindowFocus: false,
+      // onSuccess: (e) => setRefresh(!refresh), // useEffect 의존성 배열에 dataList를 넣지 않아서 새로고침 시 목록이 뜨지 않기에 state 변경 함수를 넣어 렌더링 되게 함 (dataList를 의존성 배열에 넣을 경우 렌더링 때마다 2번씩 실행되기 때문)
+      onError: (e) => console.log(e.message),
+    }
+  );
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
-  // const onRefresh = () => {
-  //   setRefresh(!refresh);
-  // };
-
   // 추천 목록 랜덤화
   useEffect(() => {
-    let arr = dataList?.data;
+    // 객체 깊은 복사
+    let arr = cloneDeep(dataList?.data);
 
     if (productId) {
-      arr = arr.filter((asd) => asd?.product !== productId);
+      arr = arr.filter((obj) => obj?.product !== productId);
     }
 
     const randomArray = (array) => {
@@ -172,14 +174,14 @@ export const ProductRecommend = ({ productId }) => {
 
     randomArray(arr);
     setRandomITem(arr);
-  }, [refresh]);
+  }, [isLoading]);
 
   return (
     <BasketRecommendBox>
       <strong>잠깐만, 이 제품은 어때요?</strong>
       <BasketRecommendListBox>
         {randomItem?.slice(0, 8).map((list, index) => (
-          <BasketRecommendList key={list.id}>
+          <BasketRecommendList key={list.product}>
             <RecommendListBox>
               <RecommendListImage to={`/detail/${list.product}`}>
                 <img src={list.img} alt={list.title} />

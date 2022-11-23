@@ -152,6 +152,7 @@ const OrderButton = styled.button`
 export const DetailProduct = () => {
   const { id } = useParams();
   const [slideIndex, setSlideIndex] = useState(0);
+  const [product, setProduct] = useState({});
   const flickingRef = useRef(null);
   const { viewedItems } = useLocalStorage();
 
@@ -168,13 +169,15 @@ export const DetailProduct = () => {
     new AutoPlay({ duration: 3000, direction: "NEXT", stopOnHover: true }),
   ];
 
-  const product = dataList?.data[id - 1];
+  useEffect(() => {
+    setProduct(dataList?.data[id - 1]);
+  }, [dataList?.data, id]);
 
   return (
     <>
       <Container>
         <RouterHeader title={"제품 상세"} />
-        {!isLoading && (
+        {product && (
           <>
             <SliderBox>
               <Flicking
@@ -232,8 +235,12 @@ export const DetailProduct = () => {
             </BasketBottomButton>
           </>
         )}
-        <ProductRecommend productId={product.product} />
-        <ProductSeen productId={product.product} />
+        {product && (
+          <>
+            <ProductRecommend productId={product.product} />
+            <ProductSeen productId={product.product} />
+          </>
+        )}
       </Container>
     </>
   );

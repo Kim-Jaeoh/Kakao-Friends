@@ -53,9 +53,9 @@ export const Category = () => {
         <CategoryMenuBtn
           num={2}
           selected={selected}
-          url={"/promotion"}
+          url={"/promotion/1"}
           onSelected={onSelected}
-          text={"기획전"}
+          text={"크리스마스"}
         />
         <CategoryMenuBtn
           num={3}

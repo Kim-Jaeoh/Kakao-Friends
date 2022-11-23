@@ -1,20 +1,15 @@
 import styled from "@emotion/styled";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/main_logo.gif";
 import { Category } from "./Category";
-import { Search } from "../../pages/Search";
 import { Menubar } from "../modal/Menubar";
-import { Reset } from "styled-reset";
-import { useQuery } from "react-query";
-import { CategoryListApi, MenuCharacterListApi } from "../../apis/dataApi";
-import { AuthModal } from "../modal/AuthModal";
 import { useSelector } from "react-redux";
 
-const Container = styled.div`
+const Container = styled.header`
   position: sticky;
   top: 0;
   left: 0;
@@ -32,10 +27,8 @@ const Container = styled.div`
 
 const HeaderBox = styled.div`
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
   height: 46px;
-  /* padding: 0 80px; */
   font-size: 16px;
   line-height: 46px;
   overflow: hidden;
@@ -83,7 +76,6 @@ export const Header = () => {
   const { pathname } = useLocation();
   const [showHeader, setShowHeader] = useState(true);
   const [menuModal, setMemuModal] = useState(false);
-  // const [searchModal, setSearchModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const loginToken = useSelector((state) => state.user.loginToken);
 
@@ -139,7 +131,6 @@ export const Header = () => {
                 </IconBox>
               </Icons>
             </HeaderBox>
-
             <Category />
           </Container>
 

@@ -11,6 +11,7 @@ import { MainRecommend } from "../components/main/MainRecommend";
 import { MainRestock } from "../components/main/MainRestock";
 import { Header } from "../components/header/Header";
 import { Footer } from "../components/utils/Footer";
+import { Link } from "react-router-dom";
 
 const Container = styled.main`
   position: relative;
@@ -26,17 +27,25 @@ const MainBanner = styled.article`
   padding: 4px 20px 0;
 `;
 
-const BeltBanner = styled.div`
+const BeltBanner = styled(Link)`
+  display: block;
   overflow: hidden;
   position: relative;
   margin-top: 20px;
+  padding: 0 20px;
   cursor: pointer;
+
+  @media screen and (min-width: 640px) {
+    margin-top: 30px;
+    padding: 0 55px;
+  }
 `;
 
 const BennerContents = styled.img`
   display: block;
-  width: ${(props) =>
-    props.resize ? `calc(${props.checkSize}px - 32px)` : "530px"};
+  width: 100%;
+  /* width: ${(props) =>
+    props.resize ? `calc(${props.checkSize}px - 40px)` : "530px"}; */
   max-width: 530px;
   min-width: 320px;
   margin: 0 auto;
@@ -47,18 +56,17 @@ export const Main = () => {
   const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
   return (
     <>
-      {/* <Header /> */}
       <Container>
         <Article>
           <MainBanner>
             <MainContents />
           </MainBanner>
-          <BeltBanner>
+          <BeltBanner to="/promotion/2" state={"카카오페이 11월 즉시할인"}>
             <BennerContents
-              resize={resize}
-              checkSize={size}
+              // resize={resize}
+              // checkSize={size}
               src={resize ? beltbannerMo : beltbannerPc}
-              alt="5만원 이상 구매하고 할로윈 가랜드 득템!"
+              alt="카카오페이로 결제 시 3천원 할인!"
             />
           </BeltBanner>
           <MainSlideContents />

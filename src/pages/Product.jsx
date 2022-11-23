@@ -216,32 +216,11 @@ const Product = () => {
   const { id } = useParams();
   const domRef = useRef([]);
 
-  const api = "https://kakao-friends.herokuapp.com/ProductListData";
-  // const api = "http://localhost:4000/ProductListData";
+  // const api = "https://kakao-friends.herokuapp.com/ProductListData";
+  const api = "http://localhost:4000/ProductListData";
 
   const { ref, dataList } = useInfinityScroll(api, 8); // 무한스크롤 커스텀 훅
   const { toggleIcon, currentBasKet } = useBasketToggle(); // 장바구니 커스텀 훅
-
-  // const { scrollInfos, scrollRemove } = useScrollMove({
-  //   page: `best`,
-  //   path: `/best/`,
-  //   dom: domRef,
-  // });
-
-  // useEffect(() => {
-  //   if (scrollInfos && id?.isExact) {
-  //     window.scrollTo(0, scrollInfos);
-  //     const scrollTop = Math.max(
-  //       document.documentElement.scrollTop,
-  //       document.body.scrollTop
-  //     );
-  //     //현재위치와 복구위치가 같다면
-  //     if (scrollTop == scrollInfos) {
-  //       scrollRemove();
-  //     }
-  //   }
-  //   //의존성 배열에 fetching 해오는 데이터를 넣어준다.
-  // }, [scrollInfos, scrollRemove, id]);
 
   const toggleTab = (num) => {
     setClickTabNumber(num);

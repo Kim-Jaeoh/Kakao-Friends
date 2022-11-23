@@ -18,7 +18,6 @@ import {
   where,
 } from "firebase/firestore";
 import { dbService } from "../../fbase";
-import { orderBy } from "lodash";
 
 export const MyPageOrderList = () => {
   const [dataList, setDataList] = useState([]);
@@ -48,8 +47,6 @@ export const MyPageOrderList = () => {
 
   // 결제 상태
   useEffect(() => {
-    // const arr = [];
-
     myInfo?.orderList?.map(
       async (obj) =>
         await axios
@@ -61,17 +58,10 @@ export const MyPageOrderList = () => {
             },
           })
           .then((r) => {
-            // arr.push(obj);
             executePayment(r.data.status);
           })
     );
-
-    // const created = arr?.sort(
-    //   (a, b) => new Date(b.created_at) - new Date(a.created_at)
-    // );
-
-    // setDataList(created);
-  }, [data?.data]);
+  }, [myInfo?.orderList]);
 
   // 본인 정보 가져오기
   useEffect(() => {
@@ -79,34 +69,6 @@ export const MyPageOrderList = () => {
       setMyInfo(doc.data());
     });
   }, [currentUser.email]);
-
-  useEffect(() => {
-    console.log({ ...myInfo.orderList });
-    // const info = { ...myInfo };
-    // info.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    // console.log(info);
-  }, [myInfo]);
-
-  // const userInfo = async () => {
-  //   const dbRef = doc(dbService, "users", currentUser.email);
-  //   await updateDoc(dbRef, {
-  //     orderList: [
-  //       ...myInfo?.orderList,
-  //       {
-  //         tid: "123",
-  //         created_at: new Date(),
-  //         orderInfo: currentBasket.map((order) => ({
-  //           amount: order.amount,
-  //           price: order.price,
-  //           product: order.product,
-  //           image: order.img,
-  //           title: order.title,
-  //         })),
-  //       },
-  //     ],
-  //   });
-  //   console.log("흠");
-  // };
 
   return (
     <Container>
@@ -154,15 +116,12 @@ export const MyPageOrderList = () => {
           })}
         </>
       ) : (
-        <>
-          <NotInfo
-            url={
-              "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/ico_empty_ryan.png"
-            }
-            text={"아직 주문 내역이 없어요."}
-          />
-          {/* <div onClick={userInfo}>흠</div> */}
-        </>
+        <NotInfo
+          url={
+            "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/ico_empty_ryan.png"
+          }
+          text={"아직 주문 내역이 없어요."}
+        />
       )}
     </Container>
   );

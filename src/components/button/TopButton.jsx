@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { BsArrowUp } from "react-icons/bs";
+import { useLocation } from "react-router-dom";
 
 const TopButtonBox = styled.div`
   position: fixed;
   width: 56px;
   right: 24px;
-  bottom: 24px;
+  bottom: ${(props) => (props.btnBottom ? "104px" : "24px")};
   z-index: 100;
   opacity: ${(props) => (props.btnStatus ? 100 : 0)};
   transition: all 0.15s ease-in-out;
@@ -40,6 +41,8 @@ const Button = styled.button`
 export const TopButton = () => {
   const [scrollY, setScrollY] = useState(0);
   const [btnStatus, setBtnStatus] = useState(false); // 버튼 상태
+  const [btnBottom, setBtnBottom] = useState(false); // 버튼 위치
+  const { pathname } = useLocation();
 
   const handleTop = () => {
     // 클릭하면 스크롤이 위로 올라가는 함수
@@ -52,6 +55,12 @@ export const TopButton = () => {
       setBtnStatus(false);
     }
   };
+
+  useEffect(() => {
+    if (pathname?.includes("detail/") || pathname?.includes("basket")) {
+      setBtnBottom(true);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const handleFollow = () => {
@@ -72,6 +81,7 @@ export const TopButton = () => {
 
   return (
     <TopButtonBox
+      btnBottom={btnBottom}
       btnStatus={btnStatus}
       onClick={handleTop} // 버튼 클릭시 함수 호출
     >

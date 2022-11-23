@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import { Footer } from "../components/utils/Footer";
 import { LoginPopupModal } from "../components/modal/LoginPopupModal";
 
-const Container = styled.div`
+const Container = styled.main`
   position: relative;
 `;
 

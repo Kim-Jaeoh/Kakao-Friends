@@ -32,7 +32,7 @@ const Container = styled.div`
   position: relative;
   margin: 0 auto;
   max-width: 640px;
-  min-width: 320px;
+  min-width: 320px !important;
   min-height: 100vh;
   background-color: #fff;
   box-sizing: border-box;
@@ -70,7 +70,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Main userObj={userObj} />} />
             {/* <Route path="/event" element={<Event />} /> */}
-            <Route path="/promotion/*" element={<Promotion />} />
+            <Route path="/promotion/:id" element={<Promotion />} />
             <Route path="/search" element={<Search />} />
             <Route path="/product" element={<Product />} />
             <Route path="/detail/:id" element={<DetailProduct />} />
