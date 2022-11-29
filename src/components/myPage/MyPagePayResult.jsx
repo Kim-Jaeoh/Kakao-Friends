@@ -2,30 +2,27 @@ import axios from "axios";
 import styled from "@emotion/styled";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { dbService } from "../../fbase";
 import character from "../../assets/order_complete_lion.gif";
 import { Footer } from "../utils/Footer";
+import { useTimeStamp } from "../../hooks/useTimeStamp";
+import { cloneDeep } from "lodash";
+import { setOrder } from "../../reducer/user";
 
 export const MyPagePayResult = () => {
   const { search } = useLocation();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [myInfo, setMyInfo] = useState({});
+  const [filterInfo, setFilterInfo] = useState({});
   const currentBasket = useSelector((state) => state.user.basket);
+  const currentOrder = useSelector((state) => state.user.order);
   const currentUser = useSelector((state) => state.user.currentUser);
   const dbRef = doc(dbService, "users", currentUser.email);
-
-  // const { data: dataList } = useQuery("productList", ProductListApi, {
-  //   refetchOnWindowFocus: false,
-  //   onError: (e) => console.log(e),
-  // });
-
-  // const { mutate: mutateOrderList } = useMutation((order) => {
-  //   return axios.post("http://localhost:4000/paylist", order);
-  //   // return axios.post("https://kakao-friends.herokuapp.com/paylist", order);
-  // });
+  const { timeToString } = useTimeStamp();
+  const dispatch = useDispatch();
 
   const params = {
     // item_info: currentBasket?.map((item) => ({
@@ -42,25 +39,53 @@ export const MyPagePayResult = () => {
     pg_token: search.split("=")[1],
   };
 
-  // 본인 정보 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
-      setMyInfo(doc.data());
-      setLoading(true);
-      console.log("받아옴");
-    });
-    return () => setLoading(false);
-  }, [currentUser.email]);
+    if (result && loading) {
+      setFilterInfo(
+        ...myInfo?.orderList.filter((order) => order.tid === result?.tid)
+      );
+    }
+  }, [loading, myInfo?.orderList, result]);
 
   useEffect(() => {
-    // 객체 깊은 복사
-    // setOrderObj(cloneDeep(myInfo.orderList));
-    // console.log([...myInfo.orderList, { tid: 22, asd: 22 }]);
-    if (loading) {
-      console.log(myInfo);
+    // if (loading) {
+    if (result && loading) {
+      // 주문 내역 업데이트
+      const userInfo = async () => {
+        await updateDoc(dbRef, {
+          orderList: [
+            ...myInfo?.orderList,
+            {
+              tid: result.tid || "",
+              created_at: result.created_at || "",
+              orderInfo: currentOrder?.map((order) => ({
+                amount: order.amount,
+                price: order.price,
+                product: order.product,
+                image: order.image,
+                title: order.title,
+              })),
+              // orderInfo: currentBasket?.map((order) => ({
+              //   amount: order.amount,
+              //   price: order.price,
+              //   product: order.product,
+              //   image: order.img,
+              //   title: order.title,
+              // })),
+              type: result.payment_method_type === "MONEY" ? "현금" : "카드",
+            },
+          ],
+        });
+        console.log("흠");
+      };
+      userInfo();
     }
-    // setOrderObj(JSON.stringify(myInfo.orderList));
-  }, [loading, myInfo]);
+  }, [result]);
+
+  useEffect(() => {
+    console.log(myInfo);
+    console.log(currentOrder);
+  }, []);
 
   useEffect(() => {
     if (loading && params.pg_token) {
@@ -76,99 +101,85 @@ export const MyPagePayResult = () => {
           params,
         }).then(async (response) => {
           // 결제 승인에 대한 응답 출력
-          console.log(response);
+          console.log(response.data);
           setResult(response.data);
         });
       };
-
-      // 주문 내역 업데이트
-      const userInfo = async () => {
-        await updateDoc(dbRef, {
-          orderList: [
-            ...myInfo.orderList,
-            {
-              tid: localStorage.getItem("tid"),
-              created_at: result.created_at,
-              orderInfo: currentBasket?.map((order) => ({
-                amount: order.amount,
-                price: order.price,
-                product: order.product,
-                image: order.img,
-                title: order.title,
-              })),
-            },
-          ],
-        });
-        console.log("흠");
-      };
-
       postKakaopay();
-      userInfo();
     }
   }, [loading]);
 
-  console.log(myInfo);
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
+      setLoading(true);
+      setMyInfo(doc.data());
+    });
+  }, [currentUser.email]);
 
   return (
     <Container>
-      <OrderInfoBox>
-        <CharacterBox>
-          <img src={character} alt="" />
-        </CharacterBox>
-        <OrderInfoText>
-          <OrderInfoTitle>주문이 완료되었어요!</OrderInfoTitle>
-          <OrderInfoSub>
-            주문하신 내역은 '마이' 페이지에서도 확인하실 수 있습니다.
-          </OrderInfoSub>
-        </OrderInfoText>
-      </OrderInfoBox>
-      {/* <div>{result?.item_name}</div>
-      <div>{result?.amount?.total}</div> */}
+      {myInfo && (
+        <>
+          <OrderInfoBox>
+            <CharacterBox>
+              <img src={character} alt="" />
+            </CharacterBox>
+            <OrderInfoText>
+              <OrderInfoTitle>주문이 완료되었어요!</OrderInfoTitle>
+              <OrderInfoSub>
+                주문하신 내역은&nbsp;
+                <Link to="/mypage/orderlist">'마이 - 주문내역'</Link>{" "}
+                페이지에서도 확인하실 수 있습니다.
+              </OrderInfoSub>
+            </OrderInfoText>
+          </OrderInfoBox>
 
-      <OrderInfoCategory>
-        <OrderListBox>
-          <OrderCategoryText>주문상품 정보</OrderCategoryText>
-          {currentBasket?.map((list, index) => {
-            return (
-              <OrderList key={index}>
-                <ListContents>
-                  <ListImageBox to={`/detail/${list.product}`}>
-                    <ListImage>
-                      <img src={list.img} alt={list.title} />
-                    </ListImage>
-                  </ListImageBox>
-                  <ListInfoBox to={`/detail/${list.product}`}>
-                    <ListInfo>
-                      <ListTitle>{list.title}</ListTitle>
-                      <ListPrice>
-                        <span>{list.price}</span>원&nbsp;/&nbsp;
-                        <span>{list.amount}</span>개
-                      </ListPrice>
-                    </ListInfo>
-                  </ListInfoBox>
-                </ListContents>
-              </OrderList>
-            );
-          })}
-        </OrderListBox>
-      </OrderInfoCategory>
+          <OrderInfoCategory>
+            <OrderListBox>
+              <OrderCategoryText>주문상품 정보</OrderCategoryText>
+              {filterInfo?.orderInfo?.map((list, index) => {
+                return (
+                  <OrderList key={index}>
+                    <ListContents>
+                      <ListImageBox to={`/detail/${list.product}`}>
+                        <ListImage>
+                          <img src={list.image} alt={list.title} />
+                        </ListImage>
+                      </ListImageBox>
+                      <ListInfoBox to={`/detail/${list.product}`}>
+                        <ListInfo>
+                          <ListTitle>{list.title}</ListTitle>
+                          <ListPrice>
+                            <span>{list.price}</span>원&nbsp;/&nbsp;
+                            <span>{list.amount}</span>개
+                          </ListPrice>
+                        </ListInfo>
+                      </ListInfoBox>
+                    </ListContents>
+                  </OrderList>
+                );
+              })}
+            </OrderListBox>
+          </OrderInfoCategory>
 
-      <OrderInfoCategory>
-        <OrderCategoryText>주문 정보</OrderCategoryText>
-        {myInfo?.orderList?.map((list, index) => {
-          return (
-            <div key={index}>
-              <div>
-                주문번호 <span>{list.tid}</span>
-              </div>
-              <div>
-                결제일시 <span>{list.created_at}</span>
-              </div>
-            </div>
-          );
-        })}
-      </OrderInfoCategory>
-      <Footer />
+          <OrderInfoCategory>
+            <OrderCategoryText>주문 정보</OrderCategoryText>
+            <OrderPayInfo>
+              <OrderPayText>
+                주문번호&nbsp;<span>{filterInfo?.tid}</span>
+              </OrderPayText>
+              <OrderPayText>
+                결제일시&nbsp;<span>{timeToString(filterInfo)}</span>
+              </OrderPayText>
+              <OrderPayText>
+                결제수단&nbsp;<span>{filterInfo?.type}</span>
+              </OrderPayText>
+            </OrderPayInfo>
+          </OrderInfoCategory>
+          <Footer />
+        </>
+      )}
     </Container>
   );
 };
@@ -188,7 +199,7 @@ const OrderInfoBox = styled.div`
 const CharacterBox = styled.div`
   position: absolute;
   right: 0;
-  bottom: -5px;
+  bottom: 10px;
   overflow: hidden;
   width: 100px;
 
@@ -208,17 +219,21 @@ const OrderInfoTitle = styled.h2`
   font-size: 22px;
 `;
 
-const OrderInfoSub = styled.p``;
+const OrderInfoSub = styled.p`
+  a {
+    text-decoration: underline;
+  }
+`;
 
 const OrderInfoCategory = styled.div`
-  margin-top: 25px;
-  margin-bottom: 25px;
+  /* margin-bottom: 25px; */
   :not(:last-of-type) {
     border-bottom: 2px solid #f7f7f7;
   }
 `;
 
 const OrderCategoryText = styled.strong`
+  display: block;
   padding: 20px;
   font-size: 16px;
   font-weight: bold;
@@ -226,14 +241,13 @@ const OrderCategoryText = styled.strong`
 `;
 
 export const OrderListBox = styled.ul`
-  margin-top: 25px;
   margin-bottom: 25px;
   overflow: hidden;
 `;
 
 export const OrderList = styled.li`
   position: relative;
-  margin: 20px 20px 0;
+  margin: 0px 20px;
   padding: 0 28px 0px 0;
 
   :not(:last-of-type) {
@@ -314,5 +328,18 @@ const ListPrice = styled.div`
 
   span {
     font-size: 16px;
+  }
+`;
+
+const OrderPayInfo = styled.div`
+  padding: 0 20px;
+`;
+
+const OrderPayText = styled.span`
+  display: block;
+  margin-bottom: 5px;
+
+  span {
+    margin-left: 4px;
   }
 `;

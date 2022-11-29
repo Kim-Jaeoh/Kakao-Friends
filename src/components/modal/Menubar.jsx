@@ -16,6 +16,7 @@ import { authService, dbService } from "../../fbase";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { setBasket, setCurrentUser, setLoginToken } from "../../reducer/user";
+import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 
 const Container = styled.div`
   overflow-y: scroll;
@@ -314,11 +315,11 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
   const [expanded, setExpanded] = useState("");
   const [signModal, setSignModal] = useState(false);
   const toggleSignModal = () => setSignModal((prev) => !prev);
-
   const currentUser = useSelector((state) => state.user.currentUser);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const modalFixed = useModalScrollFixed(menuModal); // 모달 스크롤 픽스
 
   const { data: dataList1, isLoading } = useQuery(
     "character",
@@ -369,15 +370,6 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
     }
   };
 
-  const { pathname } = useLocation();
-
-  // useEffect(() => {
-  //   if (menuModal) {
-  //     toggleModal();
-  //     console.log("ㅎ");
-  //   }
-  // }, [pathname]);
-
   return (
     <>
       <Drawer
@@ -386,6 +378,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
         open={menuModal}
         onClose={toggleModal}
         transitionDuration={400}
+        disableScrollLock={true}
       >
         <Container role="presentation">
           <UserInfoBox>
@@ -449,7 +442,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
                       <CharacterList key={list.id}>
                         <Link>
                           <CharacterListImage
-                            image={list.img}
+                            image={list.image}
                             imageH={list.imageHover}
                           />
                           <CharacterListText>{list.title}</CharacterListText>

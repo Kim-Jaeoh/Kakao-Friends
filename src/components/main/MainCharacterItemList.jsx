@@ -228,7 +228,7 @@ export const MainCharacterItemList = ({
                 <SliderItem>
                   <Link to={`/detail/${list.product}`}>
                     <SliderImage>
-                      <img src={list.img} alt="제품" />
+                      <img src={list.image} alt="제품" />
                     </SliderImage>
                   </Link>
 

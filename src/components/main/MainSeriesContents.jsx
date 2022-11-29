@@ -266,7 +266,7 @@ export const MainSeriesContents = () => {
                 <List key={list.id}>
                   <ListLink to={`/detail/${list.product}`}>
                     <ListImage>
-                      <img src={list.img} alt={list.title} />
+                      <img src={list.image} alt={list.title} />
                     </ListImage>
                     <ListText>
                       <ListTitle>{list.title}</ListTitle>

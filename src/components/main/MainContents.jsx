@@ -111,12 +111,12 @@ export const MainContents = () => {
                   autoPlay
                   playsInline
                   muted
-                  poster={list.img}
+                  poster={list.image}
                 >
                   <source src={list.video} type="video/mp4" />
                 </MainContentsVideo>
               ) : (
-                <MainContentsImage src={list.img} height={list.height} />
+                <MainContentsImage src={list.image} height={list.height} />
               )}
               <MainContentsText>
                 {list.title2 ? (

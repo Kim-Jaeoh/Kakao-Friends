@@ -320,7 +320,7 @@ export const MainRestock = () => {
               <div key={list.id}>
                 <ListBox>
                   <Link to={`/detail/${list.product}`}>
-                    <ListImage src={list.img} alt={list.title} />
+                    <ListImage src={list.image} alt={list.title} />
                     <ListTitle>{list.title}</ListTitle>
                   </Link>
                   <BellButton onClick={(e) => toggleIcon(list, index)}>

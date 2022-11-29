@@ -321,6 +321,7 @@ export const Search = () => {
   const [searchText, setSearchText] = useState("");
   const [resultText, setResultText] = useState([]);
   const [color, setColor] = useState([]);
+  const inputRef = useRef();
 
   const { data: dataList1, isLoading1 } = useQuery(
     "character",
@@ -366,11 +367,14 @@ export const Search = () => {
     setSearchText(e.target.value);
   }, 200);
 
-  const inputRef = useRef();
-
   const searchDelete = () => {
     setSearchText("");
     inputRef.current.value = "";
+  };
+
+  const noEnter = (e) => {
+    console.log(e.currentTarget);
+    e.preventDefault();
   };
 
   return (
@@ -380,7 +384,7 @@ export const Search = () => {
           <RouterHeader title={"검색"} />
 
           <SearchBox>
-            <SearchForm>
+            <SearchForm onSubmit={noEnter}>
               <SearchContents>
                 <SearchIcon>
                   <div>
@@ -439,7 +443,7 @@ export const Search = () => {
                     <SearchCharacterList key={list.id}>
                       <div>
                         <SearchCharacterImage
-                          image={list.img}
+                          image={list.image}
                           imageH={list.imageHover}
                         />
                         <SearchCharacterText>{list.title}</SearchCharacterText>

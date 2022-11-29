@@ -18,11 +18,12 @@ import {
 } from "../../reducer/user";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 import axios from "axios";
-import { MyPagePayReady } from "./MyPagePayReady";
 import { memo } from "react";
 import { NotInfo } from "../utils/NotInfo";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import { ProductRecommend } from "../utils/ProductRecommend";
+import { usePayReady } from "../../hooks/usePayReady";
+import { LoginPopupModal } from "../modal/LoginPopupModal";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -632,12 +633,18 @@ const MyPageBasket = ({ userObj }) => {
   const [totalPrice, setTotalPrice] = useState("");
   const [totalProgress, setTotalProgress] = useState(0);
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
 
-  const { next_redirect_pc_url: payReadyURL } = MyPagePayReady();
+  const [popupModal, setPopupModal] = useState(false);
+  const togglePopupModal = () => setPopupModal((prev) => !prev);
 
-  const { checkItems, setCheckItems, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
-
+  const { currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const { PriceReComma, PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
+
+  const { next_redirect_pc_url: payReadyURL } = usePayReady(
+    currentBasket,
+    "basket"
+  );
 
   // 상품 가격
   useEffect(() => {
@@ -686,7 +693,7 @@ const MyPageBasket = ({ userObj }) => {
   // 페이지 이탈 시 전체 체크 활성화
   useEffect(() => {
     // 첫 렌더링 시 체크됐던 목록 담기
-    setCheckItems(currentBasket.map((obj) => obj.product));
+    // setCheckItems(currentBasket.map((obj) => obj.product));
 
     return () => {
       currentBasket.map((obj) => {
@@ -706,13 +713,19 @@ const MyPageBasket = ({ userObj }) => {
     dispatch(setBasket(filter));
   };
 
+  const checkedId = currentBasket.map((item) => {
+    return item.product;
+  });
+
   // 선택 삭제
   const selectDelete = () => {
     const filter = currentBasket?.filter(
-      (item) => !checkItems.includes(item.product)
+      (item) => item.check === false
+      // (item) => !checkItems.includes(item.product)
     );
-    setCheckItems(filter);
     dispatch(setBasket(filter));
+
+    // setCheckItems(checkItems.filter((item) => item.product !== checkedId));
   };
 
   // 수량 변경
@@ -720,7 +733,6 @@ const MyPageBasket = ({ userObj }) => {
     (list, value) => {
       if (isFocus === true) {
         dispatch(InputChange(list, +value));
-        // dispatch(InputChange(list, +value.replace(/(^0+)/, "")));
       }
     },
     [dispatch, isFocus]
@@ -730,10 +742,10 @@ const MyPageBasket = ({ userObj }) => {
   const checkHandler = (check, itemId) => {
     if (check) {
       dispatch(CheckItem(itemId));
-      setCheckItems((prev) => [...prev, itemId.product]);
+      // setCheckItems((prev) => [...prev, itemId.product]);
     } else {
       dispatch(UnCheckItem(itemId));
-      setCheckItems(checkItems.filter((item) => item !== itemId.product));
+      // setCheckItems(checkItems.filter((item) => item !== itemId.product));
     }
   };
 
@@ -746,20 +758,24 @@ const MyPageBasket = ({ userObj }) => {
         idArray.push(obj.product);
         return dispatch(CheckItem(obj));
       });
-      setCheckItems(idArray);
+      // setCheckItems(idArray);
     } else {
       // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
       currentBasket.map((obj) => {
         return dispatch(UnCheckItem(obj));
       });
-      setCheckItems([]);
+      // setCheckItems([]);
     }
   };
 
   // 주문하기 새창
   const orderClick = () => {
-    if (cartPrice !== 0 && currentBasket?.length !== 0) {
-      window.location.href = `${payReadyURL}`;
+    if (currentUser.email) {
+      if (currentBasket.find((item) => item.check === true)) {
+        window.location.href = `${payReadyURL}`;
+      }
+    } else {
+      togglePopupModal();
     }
   };
 
@@ -861,7 +877,8 @@ const MyPageBasket = ({ userObj }) => {
                             name={`select-${list.product}`}
                             type="checkbox"
                             checked={
-                              checkItems.includes(list.product) ? true : false
+                              list.check === true ? true : false
+                              // checkItems.includes(list.product) ? true : false
                             }
                             onChange={(e) => {
                               checkHandler(e.target.checked, list);
@@ -871,7 +888,7 @@ const MyPageBasket = ({ userObj }) => {
                         </ListCheckIcon>
                         <ListImageBox to={`/detail/${list.product}`}>
                           <ListImage>
-                            <img src={list.img} alt={list.title} />
+                            <img src={list.image} alt={list.title} />
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox>
@@ -948,6 +965,13 @@ const MyPageBasket = ({ userObj }) => {
           </BasketBox>
         )}
         <ProductRecommend />
+        {popupModal && !currentUser.email && (
+          <LoginPopupModal
+            popupModal={popupModal}
+            setPopupModal={setPopupModal}
+            togglePopupModal={togglePopupModal}
+          />
+        )}
       </Container>
     </>
   );

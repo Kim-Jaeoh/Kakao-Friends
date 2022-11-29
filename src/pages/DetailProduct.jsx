@@ -20,8 +20,12 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { AiOutlineBell } from "react-icons/ai";
 import { ProductRecommend } from "../components/utils/ProductRecommend";
 import { ProductSeen } from "../components/utils/ProductSeen";
+import { usePayReady } from "../hooks/usePayReady";
+import { useSelector } from "react-redux";
+import { DetailProductModal } from "../components/modal/DetailProductModal";
 
 const Container = styled.main`
+  position: relative;
   padding-bottom: 40px;
 `;
 
@@ -152,7 +156,8 @@ const OrderButton = styled.button`
 export const DetailProduct = () => {
   const { id } = useParams();
   const [slideIndex, setSlideIndex] = useState(0);
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState([]);
+  const [count, setCount] = useState(1);
   const flickingRef = useRef(null);
   const { viewedItems } = useLocalStorage();
 
@@ -170,15 +175,35 @@ export const DetailProduct = () => {
   ];
 
   useEffect(() => {
-    setProduct(dataList?.data[id - 1]);
-  }, [dataList?.data, id]);
+    if (isLoading === false) {
+      const item = dataList?.data[id - 1];
+      setProduct([
+        {
+          id: item?.id,
+          product: item?.product,
+          title: item?.title,
+          price: item?.price,
+          image: item?.image,
+          amount: count,
+        },
+      ]);
+    } else {
+      setProduct(dataList?.data[id - 1]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
+    }
+  }, [isLoading, id, count]);
+
+  const [buttonModal, setbuttonModal] = useState(false);
+  const toggleButtonModal = () => {
+    setbuttonModal((prev) => !prev);
+  };
 
   return (
     <>
-      <Container>
-        <RouterHeader title={"제품 상세"} />
-        {product && (
-          <>
+      {product &&
+        product.map((item) => (
+          <Container key={item.id}>
+            <RouterHeader title={"제품 상세"} />
+
             <SliderBox>
               <Flicking
                 circular={true}
@@ -195,53 +220,56 @@ export const DetailProduct = () => {
                 plugins={_plugins}
               >
                 <SliderItem>
-                  <img src={product.img} alt="" />
+                  <img src={item.image} alt="" />
                 </SliderItem>
-                {/* {product.detailImage.map((item, index) => (
+                {/* {item.detailImage.map((item, index) => (
                 <SliderItem key={index}>
                   <img src={item} alt="" />
                 </SliderItem>
               ))} */}
               </Flicking>
-              {product?.detailImage ? (
+              {/* {item?.detailImage ? (
                 <PaginationButton slideIndex={slideIndex}>
                   {!isLoading &&
-                    product?.detailImage?.map((list, index) => (
+                    item?.detailImage?.map((list, index) => (
                       <span key={index}>
                         <span />
                       </span>
                     ))}
                 </PaginationButton>
-              ) : null}
+              ) : null} */}
             </SliderBox>
             <ProductInfoBox>
               <ProductInfo>
-                <ProductTitle>{product.title}</ProductTitle>
+                <ProductTitle>{item.title}</ProductTitle>
                 <ProductPrice>
-                  <span>{product.price}원</span>
+                  <span>{item.price}원</span>
                 </ProductPrice>
-                <Rating id={product.id} rate={3} />
+                <Rating id={item.id} rate={3} />
               </ProductInfo>
               <ProductDetail></ProductDetail>
             </ProductInfoBox>
             <BasketBottomButton>
-              {product.amount !== 0 ? (
-                <OrderButton>구매하기</OrderButton>
+              {item.amount !== 0 ? (
+                <OrderButton onClick={toggleButtonModal}>구매하기</OrderButton>
               ) : (
                 <OrderButton style={{ backgroundColor: "#3396ff" }}>
                   <AiOutlineBell size="24" /> 재입고 알림
                 </OrderButton>
               )}
             </BasketBottomButton>
-          </>
-        )}
-        {product && (
-          <>
-            <ProductRecommend productId={product.product} />
-            <ProductSeen productId={product.product} />
-          </>
-        )}
-      </Container>
+            <ProductRecommend productId={item.product} />
+            <ProductSeen productId={item.product} />
+            {buttonModal && (
+              <DetailProductModal
+                products={product}
+                setCount={setCount}
+                buttonModal={buttonModal}
+                toggleButtonModal={toggleButtonModal}
+              />
+            )}
+          </Container>
+        ))}
     </>
   );
 };

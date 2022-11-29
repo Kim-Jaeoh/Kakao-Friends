@@ -130,7 +130,7 @@ const BagButton = styled.button`
 `;
 
 export const ProductRecommend = ({ productId }) => {
-  const [randomItem, setRandomITem] = useState([]);
+  const [randomItem, setRandomItem] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
   const { data: dataList, isLoading } = useQuery(
@@ -143,7 +143,7 @@ export const ProductRecommend = ({ productId }) => {
     }
   );
 
-  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
+  const { toggleIcon, checkItems, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
@@ -173,7 +173,8 @@ export const ProductRecommend = ({ productId }) => {
     };
 
     randomArray(arr);
-    setRandomITem(arr);
+    setRandomItem(arr);
+    // setRandomItem(arr.filter((asd) => !checkItems.includes(asd.product)));
   }, [isLoading]);
 
   return (
@@ -184,14 +185,14 @@ export const ProductRecommend = ({ productId }) => {
           <BasketRecommendList key={list.product}>
             <RecommendListBox>
               <RecommendListImage to={`/detail/${list.product}`}>
-                <img src={list.img} alt={list.title} />
+                <img src={list.image} alt={list.title} />
               </RecommendListImage>
               <RecommendListText>
                 <strong>{list.title}</strong>
                 <RecomendListPrice>
                   <span>{PriceComma(list.price)}</span>원
                 </RecomendListPrice>
-                <BagButton onClick={(e) => toggleIcon(list, index)}>
+                <BagButton onClick={(e) => toggleIcon(list)}>
                   {currentBasket?.filter((obj) => obj.product === list.product)
                     .length > 0 ? (
                     <BsBagFill style={{ color: "#ff447f" }} />

@@ -4,43 +4,40 @@ import { setBasket } from "../reducer/user";
 
 export const useBasketToggle = () => {
   const dispatch = useDispatch();
-  const [checkItems, setCheckItems] = useState([]);
+  // const [checkItems, setCheckItems] = useState([]);
   const currentBasket = useSelector((state) => state.user.basket);
 
-  // 장바구니 dispatch
-  const toggleIcon = useCallback(
-    (itemId, index) => {
-      // dispatch(setBasket([])); // 초기화;
+  const toggleIcon = (itemId, amount) => {
+    // dispatch(setBasket([])); // 초기화;
 
-      const finded = currentBasket?.find(
-        (item) => item.product === itemId.product
+    const finded = currentBasket?.find(
+      (item) => item.product === itemId.product
+    );
+    if (finded === undefined) {
+      console.log("d");
+      // setCheckItems([...checkItems, itemId.product]);
+      dispatch(
+        setBasket([
+          ...currentBasket,
+          {
+            id: itemId.id,
+            product: itemId.product,
+            title: itemId.title,
+            price: itemId.price,
+            image: itemId.image,
+            amount: amount ? amount : 1,
+            check: true,
+          },
+        ])
       );
-      if (finded === undefined) {
-        setCheckItems((prev) => [...prev, itemId.product]);
-        dispatch(
-          setBasket([
-            ...currentBasket,
-            {
-              id: itemId.id,
-              product: itemId.product,
-              title: itemId.title,
-              price: itemId.price,
-              img: itemId.img,
-              amount: 1,
-              check: true,
-            },
-          ])
-        );
-      } else {
-        setCheckItems(checkItems.filter((el) => el !== itemId.id));
-        const filter = currentBasket?.filter(
-          (item) => item.product !== itemId.product
-        );
-        dispatch(setBasket(filter));
-      }
-    },
-    [checkItems, currentBasket, dispatch]
-  );
+    } else {
+      // setCheckItems(checkItems.filter((el) => el !== itemId.product));
+      const filter = currentBasket?.filter(
+        (item) => item.product !== itemId.product
+      );
+      dispatch(setBasket(filter));
+    }
+  };
 
-  return { toggleIcon, checkItems, setCheckItems, currentBasket };
+  return { toggleIcon, currentBasket };
 };

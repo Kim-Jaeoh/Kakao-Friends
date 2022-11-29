@@ -12,6 +12,7 @@ import { setCurrentUser, setLoginToken } from "../../reducer/user";
 import { useNavigate } from "react-router-dom";
 import KakaoLogo from "../../assets/logo_foot_kakao.png";
 import { IoCloseOutline } from "react-icons/io5";
+import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 
 const Wrapper = styled.div`
   overflow-y: scroll;
@@ -190,6 +191,8 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
   const navigate = useNavigate();
   const toggleAccount = () => setNewAccount(!newAccount);
 
+  const modalFixed = useModalScrollFixed(signModal); // 모달 스크롤 픽스
+
   const reloadState = useCallback(() => {
     toggleSignModal();
     toggleModal();
@@ -306,7 +309,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
   };
 
   return (
-    <Modal open={signModal} onClose={toggleSignModal}>
+    <Modal open={signModal} onClose={toggleSignModal} disableScrollLock={true}>
       <Wrapper>
         <Container>
           <LogoBox>

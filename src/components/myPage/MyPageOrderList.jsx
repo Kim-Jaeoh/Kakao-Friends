@@ -20,11 +20,10 @@ import {
 import { dbService } from "../../fbase";
 
 export const MyPageOrderList = () => {
-  const [dataList, setDataList] = useState([]);
+  const [orderList, setOrderList] = useState([]);
   const [myInfo, setMyInfo] = useState([]);
   const [payStatus, setPayStatus] = useState("");
   const currentUser = useSelector((state) => state.user.currentUser);
-  const currentBasket = useSelector((state) => state.user.basket);
 
   const { data, isLoading } = useQuery("orderList", orderListApi, {
     refetchOnWindowFocus: false,
@@ -41,9 +40,19 @@ export const MyPageOrderList = () => {
     QUIT_PAYMENT: "결제 중단",
     FAIL_PAYMENT: "결제 승인 실패",
   };
+
   const executePayment = (paymentType) => {
     return setPayStatus(paymentMap[paymentType]);
   };
+
+  // 시간 순서별
+  useEffect(() => {
+    setOrderList(
+      myInfo?.orderList
+        ?.map((asd) => asd)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    );
+  }, [myInfo?.orderList]);
 
   // 결제 상태
   useEffect(() => {
@@ -72,48 +81,53 @@ export const MyPageOrderList = () => {
 
   return (
     <Container>
-      {myInfo?.orderList?.length !== 0 ? (
+      {orderList?.length !== 0 ? (
         <>
-          {myInfo?.orderList?.map((order) => {
-            const orderList = order.orderInfo;
-            return (
-              <Orderbox key={order.tid}>
-                <OrderInfo>
-                  <Link>
-                    <span>주문번호 {order.tid}</span>
-                    <IoIosArrowForward />
-                  </Link>
-                  <p>{timeToString(order)}</p>
-                </OrderInfo>
+          {payStatus &&
+            orderList?.map((order) => {
+              const orderInfo = order.orderInfo;
+              return (
+                <Orderbox key={order.tid}>
+                  <OrderInfo>
+                    <Link>
+                      <span>주문번호 {order.tid}</span>
+                      <IoIosArrowForward />
+                    </Link>
+                    <p>{timeToString(order)}</p>
+                  </OrderInfo>
 
-                <OrderListBox>
-                  {orderList?.map((list, index) => {
-                    return (
-                      <OrderList key={index}>
-                        <ListContents>
-                          <ListImageBox to={`/detail/${list.product}`}>
-                            <ListImage>
-                              <img src={list.image} alt={list.title} />
-                            </ListImage>
-                          </ListImageBox>
-                          <ListInfoBox to={`/detail/${list.product}`}>
-                            <ListInfo>
-                              <ListTitle>{list.title}</ListTitle>
-                              <ListPrice>
-                                <span>{list.price}</span>원&nbsp;/&nbsp;
-                                <span>{list.amount}</span>개
-                              </ListPrice>
-                            </ListInfo>
-                            {payStatus && <ListStatus>{payStatus}</ListStatus>}
-                          </ListInfoBox>
-                        </ListContents>
-                      </OrderList>
-                    );
-                  })}
-                </OrderListBox>
-              </Orderbox>
-            );
-          })}
+                  <OrderListBox>
+                    {orderInfo?.map((list, index) => {
+                      return (
+                        <OrderList key={index}>
+                          <ListContents>
+                            <ListImageBox to={`/detail/${list.product}`}>
+                              <ListImage>
+                                <img src={list.image} alt={list.title} />
+                              </ListImage>
+                            </ListImageBox>
+                            <ListInfoBox>
+                              <ListInfo to={`/detail/${list.product}`}>
+                                <ListTitle>{list.title}</ListTitle>
+                                <ListPrice>
+                                  <span>{list.price}</span>원&nbsp;/&nbsp;
+                                  <span>{list.amount}</span>개
+                                </ListPrice>
+                              </ListInfo>
+                              <ListStatus>
+                                {payStatus}
+                                &nbsp;|&nbsp;
+                                {order.type}
+                              </ListStatus>
+                            </ListInfoBox>
+                          </ListContents>
+                        </OrderList>
+                      );
+                    })}
+                  </OrderListBox>
+                </Orderbox>
+              );
+            })}
         </>
       ) : (
         <NotInfo

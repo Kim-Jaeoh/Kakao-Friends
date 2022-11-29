@@ -10,6 +10,7 @@ import { ProductListApi } from "../../apis/dataApi";
 
 const BasketRecommendBox = styled.div`
   padding-top: 36px;
+  margin-bottom: 36px;
   border-top: 4px solid #f7f7f7;
 
   > strong {
@@ -170,14 +171,14 @@ export const ProductSeen = ({ productId }) => {
           <BasketRecommendList key={list.product}>
             <RecommendListBox>
               <RecommendListImage to={`/detail/${list.product}`}>
-                <img src={list.img} alt={list.title} />
+                <img src={list.image} alt={list.title} />
               </RecommendListImage>
               <RecommendListText>
                 <strong>{list.title}</strong>
                 <RecomendListPrice>
                   <span>{PriceComma(list.price)}</span>원
                 </RecomendListPrice>
-                <BagButton onClick={(e) => toggleIcon(list, index)}>
+                <BagButton onClick={(e) => toggleIcon(list)}>
                   {currentBasket?.filter((obj) => obj.product === list.product)
                     .length > 0 ? (
                     <BsBagFill style={{ color: "#ff447f" }} />

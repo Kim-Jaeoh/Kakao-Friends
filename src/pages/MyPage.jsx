@@ -63,7 +63,7 @@ const ListLink = styled(Link)`
 `;
 
 const TabListNumber = styled.span`
-  font-size: 11px;
+  font-size: 12px;
   width: 18px;
   height: 18px;
   padding: 2px;

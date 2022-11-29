@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import { BsArrowUp } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 
+const Container = styled.div``;
+
 const TopButtonBox = styled.div`
   position: fixed;
   width: 56px;
@@ -80,14 +82,16 @@ export const TopButton = () => {
   }, [scrollY]);
 
   return (
-    <TopButtonBox
-      btnBottom={btnBottom}
-      btnStatus={btnStatus}
-      onClick={handleTop} // 버튼 클릭시 함수 호출
-    >
-      <Button>
-        <BsArrowUp />
-      </Button>
-    </TopButtonBox>
+    <Container>
+      <TopButtonBox
+        btnBottom={btnBottom}
+        btnStatus={btnStatus}
+        onClick={handleTop} // 버튼 클릭시 함수 호출
+      >
+        <Button>
+          <BsArrowUp />
+        </Button>
+      </TopButtonBox>
+    </Container>
   );
 };

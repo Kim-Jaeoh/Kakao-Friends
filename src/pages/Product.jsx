@@ -291,7 +291,7 @@ const Product = () => {
                   <ProductBox>
                     <Link to={`/detail/${list.product}`}>
                       <ProductImage>
-                        <img src={list.img} alt={list.title} />
+                        <img src={list.image} alt={list.title} />
                       </ProductImage>
                     </Link>
                     <ProductTextBox>

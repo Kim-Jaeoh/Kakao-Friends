@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import KakaoLogo from "../../assets/logo_foot_kakao.png";
 import { IoCloseOutline } from "react-icons/io5";
 import { AuthModal } from "./AuthModal";
+import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 
 const Wrapper = styled.div`
   overflow-y: scroll;
@@ -138,13 +139,21 @@ export const LoginPopupModal = ({
   popupModal,
   setPopupModal,
   togglePopupModal,
+  type,
 }) => {
   const [signModal, setSignModal] = useState(false);
   const toggleSignModal = () => setSignModal((prev) => !prev);
 
+  // 모달 스크롤 픽스 (type이 있는 경우는 모달이 2중이고, 하나 닫았을 때 스크롤이 다시 되는 걸 방지하기 위해 별도의 값을 넣음)
+  const modalFixed = useModalScrollFixed(popupModal, type);
+
   return (
     <>
-      <Modal open={popupModal} onClose={togglePopupModal}>
+      <Modal
+        open={popupModal}
+        onClose={togglePopupModal}
+        disableScrollLock={true}
+      >
         <Wrapper>
           <Container>
             <ListDelete onClick={togglePopupModal}>

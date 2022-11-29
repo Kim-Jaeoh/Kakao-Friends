@@ -229,7 +229,7 @@ export const MyPageSeen = () => {
                       <ListContents>
                         <ListImageBox to={`/detail/${list?.product}`}>
                           <ListImage>
-                            <img src={list?.img} alt={list?.title} />
+                            <img src={list?.image} alt={list?.title} />
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox to={`/detail/${list?.product}`}>

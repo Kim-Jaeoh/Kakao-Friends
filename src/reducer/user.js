@@ -24,7 +24,7 @@ export const setBasket = (basket) => ({
 });
 
 export const setOrder = (order) => ({
-  type: SET_BASKET,
+  type: SET_ORDER,
   payload: order,
 });
 
@@ -75,16 +75,11 @@ const initialState = {
       check: true,
     },
   ],
-  order: [
-    {
-      id: "",
-      product: "",
-      title: "",
-      price: "",
-      image: "",
-      amount: "",
-    },
-  ],
+  order: {
+    tid: "",
+    created_at: "",
+    orderInfo: {},
+  },
 };
 
 const user = (state = initialState, action) => {
