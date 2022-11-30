@@ -38,39 +38,6 @@ export const usePayReady = (list, type) => {
         approval_url: appUrl,
         fail_url: failUrl,
         cancel_url: cancelUrl,
-        // if (type === "direct") {
-        //   params = {
-        //     cid: "TC0ONETIME",
-        //     partner_order_id: "partner_order_id",
-        //     partner_user_id: "partner_user_id",
-        //     item_name: list.title,
-        //     quantity: list.amount,
-        //     total_amount: list.price?.split(",").join("") * list?.amount,
-        //     vat_amount: 0,
-        //     tax_free_amount: 0,
-        //     approval_url: appUrl,
-        //     fail_url: failUrl,
-        //     cancel_url: cancelUrl,
-        //   };
-        // } else if (type === "basket") {
-        //   params = {
-        //     cid: "TC0ONETIME",
-        //     partner_order_id: "partner_order_id",
-        //     partner_user_id: "partner_user_id",
-        //     item_name:
-        //       list?.length === 1
-        //         ? `${list[0]?.title}`
-        //         : `${list[0]?.title} 외 ${list?.length - 1}건`,
-        //     quantity: list?.map((item) => item?.amount)?.reduce((a, b) => a + b),
-        //     total_amount: list
-        //       ?.map((item) => item?.price?.split(",").join("") * item?.amount)
-        //       ?.reduce((a, b) => a + b),
-        //     vat_amount: 0,
-        //     tax_free_amount: 0,
-        //     approval_url: appUrl,
-        //     fail_url: failUrl,
-        //     cancel_url: cancelUrl,
-        //   };
       };
 
       const postKakaopay = async () => {
@@ -104,49 +71,6 @@ export const usePayReady = (list, type) => {
                 ])
               )
             );
-
-            // dispatch(
-            //   setOrder({
-            //     tid: response.data.tid,
-            //     created_at: response.data.created_at,
-            //     orderInfo: list?.map((order) => ({
-            //       amount: order.amount,
-            //       price: order.price,
-            //       product: order.product,
-            //       image: order.image,
-            //       title: order.title,
-            //     })),
-            //   })
-            // );
-            // if (type === "direct") {
-            //   dispatch(
-            //     setOrder({
-            //       tid: response.data.tid,
-            //       created_at: response.data.created_at,
-            //       orderInfo: {
-            //         amount: list.amount,
-            //         price: list.price,
-            //         product: list.product,
-            //         image: list.image,
-            //         title: list.title,
-            //       },
-            //     })
-            //   );
-            // } else if (type === "basket") {
-            //   dispatch(
-            //     setOrder({
-            //       tid: response.data.tid,
-            //       created_at: response.data.created_at,
-            //       orderInfo: list?.map((order) => ({
-            //         amount: order.amount,
-            //         price: order.price,
-            //         product: order.product,
-            //         image: order.img,
-            //         title: order.title,
-            //       })),
-            //     })
-            //   );
-            // }
 
             // 응답 data로 state 갱신
             setObj({ next_redirect_pc_url, tid });

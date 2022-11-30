@@ -5,7 +5,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { BiMinus, BiPlus } from "react-icons/bi";
 import { IoCheckmarkCircleSharp, IoCloseOutline } from "react-icons/io5";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,6 +24,8 @@ import { usePriceComma } from "../../hooks/usePriceComma";
 import { ProductRecommend } from "../utils/ProductRecommend";
 import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
+import { cloneDeep } from "lodash";
+import { useProductAmount } from "../../hooks/useProductAmount";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -778,6 +780,14 @@ const MyPageBasket = ({ userObj }) => {
       togglePopupModal();
     }
   };
+
+  //
+  const currentOrder = useSelector((state) => state.user.order);
+
+  // const sibal = useProductAmount(currentBasket.map((asd) => asd.product));
+  const sibal = useProductAmount();
+
+  //
 
   return (
     <>

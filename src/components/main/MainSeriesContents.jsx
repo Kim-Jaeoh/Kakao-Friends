@@ -41,8 +41,8 @@ const VideoButton = styled.button`
   z-index: 20;
   transform: translate(-50%, -50%);
 
-  opacity: ${(props) => (props.hover ? "0" : "100")};
-  transition: opacity 0.6s;
+  opacity: ${(props) => (props.hover ? "100" : "0")};
+  /* transition: opacity 0.6s; */
 
   svg {
     width: 70px;
@@ -198,31 +198,49 @@ export const MainSeriesContents = () => {
     onError: (e) => console.log(e.message),
   });
 
-  // 영상 autoPlay 시 아이콘 숨김
-  useEffect(() => {
-    setHover(true);
-  }, []);
+  // // 영상 autoPlay 시 아이콘 숨김
+  // useEffect(() => {
+  //   setHover(false);
+  // }, []);
 
   const togglePlay = () => {
-    if (!isPlaying) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
+    if (hover) {
+      if (!isPlaying) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
     }
   };
 
-  const onMouseOverButton = (e) => {
-    if (isPlaying) {
-      setHover(false);
-    }
+  // const onMouseOverButton = (e) => {
+  //   if (isPlaying) {
+  //     setHover(false);
+  //   }
+  // };
+  // const onMouseOutButton = (e) => {
+  //   if (isPlaying) {
+  //     setHover(true);
+  //   }
+  // };
+
+  const onClick = () => {
+    setHover((prev) => !prev);
   };
-  const onMouseOutButton = (e) => {
-    if (isPlaying) {
-      setHover(true);
+
+  // 재생 시 hover 노출 및 2초뒤 꺼짐
+  useEffect(() => {
+    clearTimeout();
+    if (hover) {
+      setTimeout(() => {
+        return setHover(false);
+      }, 2000);
     }
-  };
+
+    return () => clearTimeout();
+  }, [hover]);
 
   const { toggleIcon, currentBasKet } = useBasketToggle();
 
@@ -237,7 +255,7 @@ export const MainSeriesContents = () => {
             onClick={togglePlay}
             hover={hover}
             isPlaying={isPlaying}
-            onMouseEnter={onMouseOverButton}
+            // onMouseEnter={onMouseOverButton}
           >
             {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
           </VideoButton>
@@ -249,7 +267,8 @@ export const MainSeriesContents = () => {
             playsInline
             src={videoContents}
             type="video/mp4"
-            onMouseOut={onMouseOutButton}
+            onClick={onClick}
+            // onMouseOut={onMouseOutButton}
           />
         </VideoBox>
         <InfoBox>

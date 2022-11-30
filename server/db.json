@@ -1095,27 +1095,72 @@
       "id": 1,
       "text": "마이 쿠키 크리스마스 기획전",
       "list": [
-        { "image": "/image/promotion_01_a.jpg", "url": "" },
-        { "image": "/image/promotion_02_a.jpg", "url": "" },
-        { "image": "/image/promotion_03_a.jpg", "url": "" },
-        { "image": "/image/promotion_04_a.jpg", "url": "/detail/51" },
-        { "image": "/image/promotion_05_a.jpg", "url": "" },
-        { "image": "/image/promotion_06_a.jpg", "url": "/detail/52" },
-        { "image": "/image/promotion_07_a.jpg", "url": "" },
-        { "image": "/image/promotion_08_a.jpg", "url": "/detail/55" },
-        { "image": "/image/promotion_09_a.jpg", "url": "/detail/56" },
-        { "image": "/image/promotion_10_a.jpg", "url": "" },
-        { "image": "/image/promotion_11_a.jpg", "url": "/detail/57" },
-        { "image": "/image/promotion_12_a.jpg", "url": "" },
-        { "image": "/image/promotion_13_a.jpg", "url": "/detail/58" }
+        {
+          "image": "/image/promotion_01_a.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_02_a.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_03_a.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_04_a.jpg",
+          "url": "/detail/51"
+        },
+        {
+          "image": "/image/promotion_05_a.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_06_a.jpg",
+          "url": "/detail/52"
+        },
+        {
+          "image": "/image/promotion_07_a.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_08_a.jpg",
+          "url": "/detail/55"
+        },
+        {
+          "image": "/image/promotion_09_a.jpg",
+          "url": "/detail/56"
+        },
+        {
+          "image": "/image/promotion_10_a.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_11_a.jpg",
+          "url": "/detail/57"
+        },
+        {
+          "image": "/image/promotion_12_a.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_13_a.jpg",
+          "url": "/detail/58"
+        }
       ]
     },
     {
       "id": 2,
       "text": "카카오페이 11월 즉시 할인",
       "list": [
-        { "image": "/image/promotion_01_b.jpg", "url": "" },
-        { "image": "/image/promotion_02_b.jpg", "url": "" }
+        {
+          "image": "/image/promotion_01_b.jpg",
+          "url": ""
+        },
+        {
+          "image": "/image/promotion_02_b.jpg",
+          "url": ""
+        }
       ]
     }
   ],

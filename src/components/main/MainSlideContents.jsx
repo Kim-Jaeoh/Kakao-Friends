@@ -111,14 +111,16 @@ const SliderItem = styled.div`
   margin: 0 6px;
   border-radius: 10px;
   isolation: isolate;
+  box-sizing: border-box;
 `;
 
 const SlideVideoBox = styled.div`
   position: relative;
-  /* width: 200px; */
   height: 355px;
-
-  ::before {
+  border: 1px solid #dedfe0;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  /* ::before {
     position: absolute;
     left: 0;
     top: 0;
@@ -129,17 +131,19 @@ const SlideVideoBox = styled.div`
     border-bottom: 0;
     border-radius: 10px 10px 0 0;
     content: "";
-  }
+  } */
 `;
 
 const SlideVideo = styled.video`
   position: absolute;
+  /* z-index: 10; */
   left: 50%;
   top: 50%;
   width: 100%;
   min-height: 100%;
   transform: translate(-50%, -50%);
   object-fit: cover;
+  padding-bottom: 1px;
 `;
 
 const SlideVideoButton = styled.button`
@@ -148,8 +152,9 @@ const SlideVideoButton = styled.button`
   top: 50%;
   z-index: 20;
   transform: translate(-50%, -50%);
-  opacity: ${(props) => (props.hover ? "0" : "100")};
-  transition: opacity 0.4s;
+  opacity: ${(props) => (props.hover ? "100" : "0")};
+  cursor: ${(props) => (props.hover ? "pointer" : "default")};
+  /* transition: opacity 0.4s; */
 
   svg {
     width: 70px;
@@ -268,14 +273,16 @@ export const MainSlideContents = () => {
   // 비디오
   const togglePlay = (event) => {
     event.preventDefault();
-    // check if video in ref is playing
-    if (videoRef?.current[slideIndex].paused) {
-      videoRef?.current[slideIndex].play();
-      setIsPlaying(true);
-      setHover(true); // 플레이 시 아이콘 보이게
-    } else {
-      videoRef?.current[slideIndex]?.pause();
-      setIsPlaying(false);
+    if (hover) {
+      // check if video in ref is playing
+      if (videoRef?.current[slideIndex].paused) {
+        videoRef?.current[slideIndex].play();
+        setIsPlaying(true);
+        // setHover(true); // 플레이 시 아이콘 보이게
+      } else {
+        videoRef?.current[slideIndex]?.pause();
+        setIsPlaying(false);
+      }
     }
   };
 
@@ -343,17 +350,38 @@ export const MainSlideContents = () => {
     }
   };
 
-  // 재생/일시정지 버튼 마우스 이벤트
-  const onMouseOverButton = (e) => {
-    if (isPlaying) {
-      setHover(false);
+  // // 재생/일시정지 버튼 마우스 이벤트
+  // const onMouseOverButton = (e) => {
+  //   if (isPlaying) {
+  //     setHover(false);
+  //     console.log("?");
+  //   }
+  // };
+  // const onMouseOutButton = (e) => {
+  //   if (isPlaying) {
+  //     setHover(true);
+  //     console.log("!");
+  //   }
+  // };
+
+  const onClick = (index) => {
+    // 다른 비디오에서 클릭 못하게 막기
+    if (index === slideIndex) {
+      setHover((prev) => !prev);
     }
   };
-  const onMouseOutButton = (e) => {
-    if (isPlaying) {
-      setHover(true);
+
+  // 재생 시 hover 노출 및 2초뒤 꺼짐
+  useEffect(() => {
+    clearTimeout();
+    if (hover) {
+      setTimeout(() => {
+        return setHover(false);
+      }, 2000);
     }
-  };
+
+    return () => clearTimeout();
+  }, [hover]);
 
   const { toggleIcon, currentBasKet } = useBasketToggle();
 
@@ -397,12 +425,11 @@ export const MainSlideContents = () => {
                       <SlideVideoButton
                         onClick={togglePlay}
                         hover={hover}
-                        onMouseEnter={onMouseOverButton}
+                        // onMouseEnter={onMouseOverButton}
                       >
                         {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
                       </SlideVideoButton>
                     )}
-
                     <SlideVideo
                       ref={(el) => {
                         videoRef.current[index] = el;
@@ -414,10 +441,10 @@ export const MainSlideContents = () => {
                       src={list.video}
                       poster={list.poster}
                       type="video/mp4"
-                      onMouseOut={onMouseOutButton}
+                      onClick={() => onClick(index)}
+                      // onMouseOut={onMouseOutButton}
                     />
                   </SlideVideoBox>
-
                   <SlideInfo>
                     <SlideInfoText>
                       <Link to={`/detail/${list.product}`}>

@@ -14,7 +14,6 @@ export const useBasketToggle = () => {
       (item) => item.product === itemId.product
     );
     if (finded === undefined) {
-      console.log("d");
       // setCheckItems([...checkItems, itemId.product]);
       dispatch(
         setBasket([

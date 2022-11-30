@@ -25,10 +25,10 @@ export const MyPageOrderList = () => {
   const [payStatus, setPayStatus] = useState("");
   const currentUser = useSelector((state) => state.user.currentUser);
 
-  const { data, isLoading } = useQuery("orderList", orderListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e),
-  });
+  // const { data, isLoading } = useQuery("orderList", orderListApi, {
+  //   refetchOnWindowFocus: false,
+  //   onError: (e) => console.log(e),
+  // });
 
   const { timeToString } = useTimeStamp(); // 시간 포멧 커스텀 훅
 

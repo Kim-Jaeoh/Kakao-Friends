@@ -249,7 +249,7 @@ const Product = () => {
 
     // randomArray(arr);
     // setDataItem(arr);
-    return () => randomArray();
+    // return () => randomArray();
   }, [dataList]);
 
   return (
