@@ -59,9 +59,10 @@ export const TopButton = () => {
   };
 
   useEffect(() => {
-    if (pathname?.includes("detail/") || pathname?.includes("basket")) {
+    if (pathname?.includes("/detail") || pathname?.includes("/mypage/basket")) {
       setBtnBottom(true);
     }
+    return () => setBtnBottom(false);
   }, [pathname]);
 
   useEffect(() => {

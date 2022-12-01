@@ -195,10 +195,9 @@ export const MainCharacterItemList = ({
   listData,
 }) => {
   const [resizeItem, setResizeItem] = useState([]);
-  const [clickIcon, setClickIcon] = useState(false);
-  const [clickNumber, setClickNumber] = useState([]);
 
   const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+  const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
 
   // 모바일 사이즈 시 리스트 4개만 보이도록 (총 6개)
   useEffect(() => {
@@ -208,8 +207,6 @@ export const MainCharacterItemList = ({
       setResizeItem(copy);
     }
   }, [listData, resize]);
-
-  const { toggleIcon, currentBasKet } = useBasketToggle();
 
   return (
     // <Wrapper>
@@ -245,7 +242,7 @@ export const MainCharacterItemList = ({
                     onClick={(e) => toggleIcon(list, index)}
                     style={{
                       backgroundColor:
-                        currentBasKet?.filter(
+                        currentBasket?.filter(
                           (obj) => obj.product === list.product
                         ).length > 0
                           ? "#ff477E"

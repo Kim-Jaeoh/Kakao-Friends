@@ -319,7 +319,7 @@ export const Search = () => {
   const [loading, setLoading] = useState(false);
   const [focus, setFocus] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [resultText, setResultText] = useState([]);
+  const [resultItem, setResultItem] = useState([]);
   const [color, setColor] = useState([]);
   const inputRef = useRef();
 
@@ -356,13 +356,14 @@ export const Search = () => {
         obj.title.includes(searchText)
       );
       setLoading(true);
-      setResultText(filter);
+      setResultItem(filter);
     } else {
       setLoading(false);
-      setResultText([]);
+      setResultItem([]);
     }
   }, [dataList3, focus, searchText]);
 
+  // 검색어 디바운스
   const onChangeText = debounce((e) => {
     setSearchText(e.target.value);
   }, 200);
@@ -372,11 +373,9 @@ export const Search = () => {
     inputRef.current.value = "";
   };
 
-  const noEnter = (e) => {
-    console.log(e.currentTarget);
-    e.preventDefault();
-  };
-
+  // const noEnter = (e) => {
+  //   e.preventDefault();
+  // };
   return (
     <>
       <Wrapper>
@@ -384,7 +383,7 @@ export const Search = () => {
           <RouterHeader title={"검색"} />
 
           <SearchBox>
-            <SearchForm onSubmit={noEnter}>
+            <SearchForm onSubmit={(e) => e.preventDefault()}>
               <SearchContents>
                 <SearchIcon>
                   <div>
@@ -409,25 +408,44 @@ export const Search = () => {
             </SearchForm>
           </SearchBox>
 
-          {loading && resultText ? (
+          {loading && resultItem ? (
             <ResultBox>
-              {resultText.length !== 0 ? (
+              {resultItem.length !== 0 ? (
                 <ResultListBox>
-                  {resultText?.map((list, index) => (
-                    <ResultList key={index}>
-                      <Link to={`/product/${list.product}`}>
-                        {list.title.includes(searchText) ? (
-                          <>
-                            {list.title.split(searchText)[0]}
-                            <em style={{ color: "#ff447f" }}>{searchText}</em>
-                            {list.title.split(searchText)[1]}
-                          </>
-                        ) : (
-                          list.title
-                        )}
-                      </Link>
-                    </ResultList>
-                  ))}
+                  {resultItem?.map((list, index) => {
+                    const parts = list.title.split(
+                      new RegExp(`(${searchText})`, "gi")
+                    );
+
+                    return (
+                      <ResultList key={index}>
+                        <Link to={`/detail/${list.product}`}>
+                          {/* 1. split 방법 */}
+                          {/* {searchText !== "" &&
+                          list.title.includes(searchText) ? (
+                            <>
+                              {list.title.split(searchText)[0]}
+                              <em style={{ color: "#ff447f" }}>{searchText}</em>
+                              {list.title.split(searchText)[1]}
+                            </>
+                          ) : (
+                            list.title
+                          )} */}
+
+                          {/* 2. 정규식 방법 */}
+                          {parts.map((part, index) =>
+                            part.toLowerCase() === searchText.toLowerCase() ? (
+                              <em style={{ color: "#ff447f" }} key={index}>
+                                {part}
+                              </em>
+                            ) : (
+                              part
+                            )
+                          )}
+                        </Link>
+                      </ResultList>
+                    );
+                  })}
                 </ResultListBox>
               ) : (
                 <NotResultBox>
@@ -457,7 +475,7 @@ export const Search = () => {
                   {!isLoading2 &&
                     dataList2?.data.map((list, index) => (
                       <SearchCategoryText key={list.id}>
-                        <Link to="/">{list.title}</Link>
+                        <Link>{list.title}</Link>
                       </SearchCategoryText>
                     ))}
                 </SearchCategoryTextList>

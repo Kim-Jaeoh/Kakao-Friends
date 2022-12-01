@@ -153,7 +153,6 @@ const SlideVideoButton = styled.button`
   z-index: 20;
   transform: translate(-50%, -50%);
   opacity: ${(props) => (props.hover ? "100" : "0")};
-  cursor: ${(props) => (props.hover ? "pointer" : "default")};
   /* transition: opacity 0.4s; */
 
   svg {
@@ -383,7 +382,7 @@ export const MainSlideContents = () => {
     return () => clearTimeout();
   }, [hover]);
 
-  const { toggleIcon, currentBasKet } = useBasketToggle();
+  const { toggleIcon, currentBasket } = useBasketToggle();
 
   return (
     <>
@@ -421,7 +420,7 @@ export const MainSlideContents = () => {
               dataList?.data.map((list, index) => (
                 <SliderItem key={index}>
                   <SlideVideoBox>
-                    {index === slideIndex && (
+                    {index === slideIndex && hover && (
                       <SlideVideoButton
                         onClick={togglePlay}
                         hover={hover}
@@ -451,8 +450,8 @@ export const MainSlideContents = () => {
                         <strong>{list.title}</strong>
                       </Link>
                     </SlideInfoText>
-                    <BagButton onClick={(e) => toggleIcon(list, index)}>
-                      {currentBasKet?.filter(
+                    <BagButton onClick={(e) => toggleIcon(list)}>
+                      {currentBasket?.filter(
                         (obj) => obj.product === list.product
                       ).length > 0 ? (
                         <BsBagFill />

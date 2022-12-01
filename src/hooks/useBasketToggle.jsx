@@ -17,7 +17,6 @@ export const useBasketToggle = () => {
       // setCheckItems([...checkItems, itemId.product]);
       dispatch(
         setBasket([
-          ...currentBasket,
           {
             id: itemId.id,
             product: itemId.product,
@@ -27,6 +26,7 @@ export const useBasketToggle = () => {
             amount: amount ? amount : 1,
             check: true,
           },
+          ...currentBasket,
         ])
       );
     } else {

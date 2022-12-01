@@ -220,7 +220,7 @@ const Product = () => {
   const api = "http://localhost:4000/ProductListData";
 
   const { ref, dataList } = useInfinityScroll(api, 8); // 무한스크롤 커스텀 훅
-  const { toggleIcon, currentBasKet } = useBasketToggle(); // 장바구니 커스텀 훅
+  const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
 
   const toggleTab = (num) => {
     setClickTabNumber(num);
@@ -302,7 +302,7 @@ const Product = () => {
                         <span>{list.price}</span>원
                       </ProductPrice>
                       <ProductBag onClick={() => toggleIcon(list, index)}>
-                        {currentBasKet?.filter(
+                        {currentBasket?.filter(
                           (obj) => obj.product === list.product
                         ).length > 0 ? (
                           <BsBagFill />

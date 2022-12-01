@@ -13,7 +13,7 @@ import { useHandleISize } from "../../hooks/useHandleISize";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useQuery } from "react-query";
-import { RestockListApi } from "../../apis/dataApi";
+import { ProductListApi, RestockListApi } from "../../apis/dataApi";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 
 const Container = styled.div`
@@ -200,6 +200,7 @@ const ArrowButton = styled.button`
 export const MainRestock = () => {
   const flickingRef = useRef(null);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [filterItem, setFilterItem] = useState([]);
   const [visible, setVisible] = useState(true);
   const [visible2, setVisible2] = useState(true);
   const [clickIcon, setClickIcon] = useState(false);
@@ -216,6 +217,14 @@ export const MainRestock = () => {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
   });
+
+  const { data: dataList2, isLoading2 } = useQuery("data", ProductListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  // dataList에서 amount(수량)이 0인 객체만 가져오기
+  const RestockItem = dataList2?.data.filter((item) => item.amount === 0);
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
@@ -276,7 +285,16 @@ export const MainRestock = () => {
     }
   }, [dataList?.data, slideIndex]);
 
-  const { toggleIcon, currentBasKet } = useBasketToggle();
+  // const { toggleIcon, currentBasKet } = useBasketToggle();
+
+  const toggleBell = (index) => {
+    setClickNumber(index);
+    if (clickIcon) {
+      setClickIcon(false);
+    } else {
+      setClickIcon(true);
+    }
+  };
 
   return (
     <Container>
@@ -316,17 +334,15 @@ export const MainRestock = () => {
           align={"prev"}
         >
           {!isLoading &&
-            dataList?.data.map((list, index) => (
+            RestockItem.map((list, index) => (
               <div key={list.id}>
                 <ListBox>
                   <Link to={`/detail/${list.product}`}>
                     <ListImage src={list.image} alt={list.title} />
                     <ListTitle>{list.title}</ListTitle>
                   </Link>
-                  <BellButton onClick={(e) => toggleIcon(list, index)}>
-                    {currentBasKet?.filter(
-                      (obj) => obj.product === list.product
-                    ).length > 0 ? (
+                  <BellButton onClick={() => toggleBell(index)}>
+                    {clickIcon && index === clickNumber ? (
                       <AiFillBell />
                     ) : (
                       <AiOutlineBell />

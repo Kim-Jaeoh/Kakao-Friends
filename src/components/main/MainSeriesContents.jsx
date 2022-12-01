@@ -242,7 +242,7 @@ export const MainSeriesContents = () => {
     return () => clearTimeout();
   }, [hover]);
 
-  const { toggleIcon, currentBasKet } = useBasketToggle();
+  const { toggleIcon, currentBasket } = useBasketToggle();
 
   return (
     <Container>
@@ -251,14 +251,16 @@ export const MainSeriesContents = () => {
       </Title>
       <Wrapper>
         <VideoBox>
-          <VideoButton
-            onClick={togglePlay}
-            hover={hover}
-            isPlaying={isPlaying}
-            // onMouseEnter={onMouseOverButton}
-          >
-            {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
-          </VideoButton>
+          {hover && (
+            <VideoButton
+              onClick={togglePlay}
+              hover={hover}
+              isPlaying={isPlaying}
+              // onMouseEnter={onMouseOverButton}
+            >
+              {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
+            </VideoButton>
+          )}
           <Video
             ref={videoRef}
             muted
@@ -296,7 +298,7 @@ export const MainSeriesContents = () => {
                   </ListLink>
 
                   <BagButton onClick={(e) => toggleIcon(list, index)}>
-                    {currentBasKet?.filter(
+                    {currentBasket?.filter(
                       (obj) => obj.product === list.product
                     ).length > 0 ? (
                       <BsBagFill />
