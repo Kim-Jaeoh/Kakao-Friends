@@ -35,10 +35,10 @@ export const DetailProductModal = ({
 
   // 제품 수량 변경
   const countValue = (type) => {
-    if (type === "minus" && product.amount > 1) {
-      setCount((product.amount -= 1));
-    } else if (type === "plus" && product.amount < 99) {
-      setCount((product.amount += 1));
+    if (type === "minus" && product.quanity > 1) {
+      setCount((product.quanity -= 1));
+    } else if (type === "plus" && product.quanity < 99) {
+      setCount((product.quanity += 1));
     }
   };
 
@@ -67,7 +67,7 @@ export const DetailProductModal = ({
                   <ItemCounterBox>
                     <ItemCounter>
                       <QuanityButton
-                        amount={product.amount}
+                        quanity={product.quanity}
                         type="button"
                         onClick={() => countValue("minus")}
                       >
@@ -75,7 +75,7 @@ export const DetailProductModal = ({
                       </QuanityButton>
                       <input
                         type="number"
-                        value={product.amount}
+                        value={product.quanity}
                         // onFocus={() => setIsFocus(true)}
                         // onBlur={() => setIsFocus(false)}
                         min="1"
@@ -84,7 +84,7 @@ export const DetailProductModal = ({
                         onWheel={(e) => e.target.blur()} // 마우스 휠 막기
                       />
                       <QuanityButton
-                        amount={product.amount}
+                        quanity={product.quanity}
                         type="button"
                         onClick={() => countValue("plus")}
                       >
@@ -99,7 +99,7 @@ export const DetailProductModal = ({
                 <PriceText>
                   <span>
                     {PriceComma(
-                      PriceDeleteComma(product.price) * product?.amount
+                      PriceDeleteComma(product.price) * product?.quanity
                     )}
                   </span>
                   원
@@ -109,7 +109,7 @@ export const DetailProductModal = ({
                 <BuyButton>
                   <BuyButtonText onClick={orderClick}>바로구매</BuyButtonText>
                   <BagButton
-                    onClick={(e) => toggleIcon(product, product.amount)}
+                    onClick={(e) => toggleIcon(product, product.quanity)}
                   >
                     {currentBasket?.filter(
                       (obj) => obj.product === product.product
@@ -264,14 +264,14 @@ const QuanityButton = styled.button`
   :first-of-type {
     left: 0;
     svg {
-      color: ${(props) => (props.amount > 1 ? "#3c404b" : "#dedfe0")};
+      color: ${(props) => (props.quanity > 1 ? "#3c404b" : "#dedfe0")};
     }
   }
 
   :last-of-type {
     right: 0;
     svg {
-      color: ${(props) => (props.amount >= 1 ? "#3c404b" : "#dedfe0")};
+      color: ${(props) => (props.quanity >= 1 ? "#3c404b" : "#dedfe0")};
     }
   }
 

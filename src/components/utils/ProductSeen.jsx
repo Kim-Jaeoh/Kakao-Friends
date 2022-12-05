@@ -137,7 +137,7 @@ export const ProductSeen = ({ productId }) => {
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
-  const { data: dataList } = useQuery("ProductList", ProductListApi, {
+  const { data: dataList } = useQuery("productList", ProductListApi, {
     refetchOnWindowFocus: false,
     onSuccess: (e) => setLoading(true),
     onError: (e) => console.log(e.message),

@@ -134,16 +134,15 @@ export const ProductRecommend = ({ productId }) => {
   const [refresh, setRefresh] = useState(false);
 
   const { data: dataList, isLoading } = useQuery(
-    "ProductList",
+    "productList",
     ProductListApi,
     {
       refetchOnWindowFocus: false,
-      // onSuccess: (e) => setRefresh(!refresh), // useEffect 의존성 배열에 dataList를 넣지 않아서 새로고침 시 목록이 뜨지 않기에 state 변경 함수를 넣어 렌더링 되게 함 (dataList를 의존성 배열에 넣을 경우 렌더링 때마다 2번씩 실행되기 때문)
       onError: (e) => console.log(e.message),
     }
   );
 
-  const { toggleIcon, checkItems, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
+  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
@@ -153,7 +152,7 @@ export const ProductRecommend = ({ productId }) => {
     let arr = cloneDeep(dataList?.data);
 
     if (productId) {
-      arr = arr.filter((obj) => obj?.product !== productId);
+      arr = arr?.filter((obj) => obj?.product !== productId);
     }
 
     const randomArray = (array) => {
@@ -174,8 +173,7 @@ export const ProductRecommend = ({ productId }) => {
 
     randomArray(arr);
     setRandomItem(arr);
-    // setRandomItem(arr.filter((asd) => !checkItems.includes(asd.product)));
-  }, [isLoading]);
+  }, [isLoading, productId]);
 
   return (
     <BasketRecommendBox>

@@ -177,6 +177,7 @@ export const DetailProduct = () => {
   useEffect(() => {
     if (isLoading === false) {
       const item = dataList?.data[id - 1];
+
       setProduct([
         {
           id: item?.id,
@@ -184,9 +185,11 @@ export const DetailProduct = () => {
           title: item?.title,
           price: item?.price,
           image: item?.image,
-          amount: count,
+          amount: item?.amount,
+          quanity: count,
         },
       ]);
+      console.log(item.amount);
     } else {
       setProduct(dataList?.data[id - 1]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
     }
@@ -196,6 +199,8 @@ export const DetailProduct = () => {
   const toggleButtonModal = () => {
     setbuttonModal((prev) => !prev);
   };
+
+  console.log(product);
 
   return (
     <>

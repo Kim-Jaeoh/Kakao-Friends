@@ -20,6 +20,8 @@ import Product from "./pages/Product";
 import { Header } from "./components/header/Header";
 import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
 import { Promotion } from "./pages/Promotion";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { SearchResultItem } from "./components/search/SearchResultItem";
 
 const Container = styled.div`
   font-size: 14px;
@@ -57,27 +59,41 @@ function App() {
     });
   }, []);
 
+  const queryClient = new QueryClient();
+
   return (
     <>
       {init && (
-        <BrowserRouter>
-          <ScrollToTop />
-          <Container>
-            <TopButton />
-            <Header />
-            <Routes>
-              <Route path="/" element={<Main userObj={userObj} />} />
-              {/* <Route path="/event" element={<Event />} /> */}
-              <Route path="/promotion/:id" element={<Promotion />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/product" element={<Product />} />
-              <Route path="/detail/:id" element={<DetailProduct />} />
-              <Route path="/mypage/*" element={<MyPage userObj={userObj} />} />
-              <Route path="/mypage/payresult/*" element={<MyPagePayResult />} />
-              <Route path="/*" element={<Navigate replace to="/" />} />
-            </Routes>
-          </Container>
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <ScrollToTop />
+            <Container>
+              <TopButton />
+              <Header />
+              <Routes>
+                <Route path="/" element={<Main userObj={userObj} />} />
+                {/* <Route path="/event" element={<Event />} /> */}
+                <Route path="/promotion/:id" element={<Promotion />} />
+                <Route path="/search" element={<Search />}></Route>
+                {/* <Route
+                  path="/search/keyword/*"
+                  element={<SearchResultItem />}
+                /> */}
+                <Route path="/product" element={<Product />} />
+                <Route path="/detail/:id" element={<DetailProduct />} />
+                <Route
+                  path="/mypage/*"
+                  element={<MyPage userObj={userObj} />}
+                />
+                <Route
+                  path="/mypage/payresult/*"
+                  element={<MyPagePayResult />}
+                />
+                <Route path="/*" element={<Navigate replace to="/" />} />
+              </Routes>
+            </Container>
+          </BrowserRouter>
+        </QueryClientProvider>
       )}
     </>
   );

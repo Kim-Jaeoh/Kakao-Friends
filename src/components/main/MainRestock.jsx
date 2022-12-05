@@ -200,42 +200,35 @@ const ArrowButton = styled.button`
 export const MainRestock = () => {
   const flickingRef = useRef(null);
   const [slideIndex, setSlideIndex] = useState(0);
-  const [filterItem, setFilterItem] = useState([]);
   const [visible, setVisible] = useState(true);
   const [visible2, setVisible2] = useState(true);
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
-  // const [dataList, setDataList] = useState(null);
-
-  // useEffect(() => {
-  //   axios.get("http://localhost:4000/mainRestockList").then((res) => {
-  //     setDataList(res.data);
-  //   });
-  // }, []);
-
-  const { data: dataList, isLoading } = useQuery("restock", RestockListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
-  const { data: dataList2, isLoading2 } = useQuery("data", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
-  // dataList에서 amount(수량)이 0인 객체만 가져오기
-  const RestockItem = dataList2?.data.filter((item) => item.amount === 0);
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
-  const flickingOnChange = (e) => {
-    setSlideIndex(e);
-  };
+  // const { data: dataList, isLoading } = useQuery("restock", RestockListApi, {
+  //   refetchOnWindowFocus: false,
+  //   onError: (e) => console.log(e.message),
+  // });
 
-  // 이미지 변경 시마다 리렌더링
+  const { data: dataList, isLoading } = useQuery(
+    "productList",
+    ProductListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
+
+  // dataList에서 amount(수량)이 0인 객체만 6개 가져오기
+  const RestockItem = dataList?.data
+    .filter((item) => item.amount === 0)
+    .slice(0, 6);
+
+  // 이미지 변경 시마다 슬라이드 이동
   useEffect(() => {
     moveToFlicking(slideIndex);
-    // console.log(flickingRef.current.threshold);
   }, [slideIndex]);
 
   // 슬라이드 변경 (주어진 인덱스에 해당하는 패널로 이동)
@@ -266,7 +259,7 @@ export const MainRestock = () => {
     if (flickingRef.current.animating === true) {
       return;
     }
-    if (slideIndex !== dataList?.data.length - 3) {
+    if (slideIndex !== 3) {
       setSlideIndex(slideIndex + 1);
     }
   };
@@ -277,15 +270,12 @@ export const MainRestock = () => {
     } else {
       setVisible(true);
     }
-
-    if (slideIndex === dataList?.data.length - 3) {
+    if (slideIndex === 3) {
       setVisible2(false);
     } else {
       setVisible2(true);
     }
-  }, [dataList?.data, slideIndex]);
-
-  // const { toggleIcon, currentBasKet } = useBasketToggle();
+  }, [slideIndex]);
 
   const toggleBell = (index) => {
     setClickNumber(index);
@@ -300,7 +290,7 @@ export const MainRestock = () => {
     <Container>
       <Title>
         <strong>다시 놓치지 않을 거예요</strong>
-        <Link to="/">
+        <Link>
           더보기
           <IoIosArrowForward />
         </Link>
@@ -326,7 +316,6 @@ export const MainRestock = () => {
           ref={flickingRef}
           changeOnHold={false}
           moveType={"strict"}
-          onChange={flickingOnChange}
           onChanged={(e) => {
             setSlideIndex(e.index);
           }}

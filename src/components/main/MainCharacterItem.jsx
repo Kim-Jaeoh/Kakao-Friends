@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import Flicking from "@egjs/react-flicking";
+import Flicking, { ViewportSlot } from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
@@ -14,6 +14,8 @@ import {
   CharacterList2Api,
   CharacterList3Api,
 } from "../../apis/dataApi";
+import { Pagination } from "@egjs/flicking-plugins";
+import "@egjs/flicking-plugins/dist/pagination.css";
 
 const Container = styled.div`
   position: relative;
@@ -133,7 +135,6 @@ export const MainCharacterItem = () => {
     if (flickingRef.current.animating === true) {
       return;
     }
-    // 첫번째 장일 경우 마지막 장 불러오기 (원본 보존으로 인해 전개연산자로 복사)
     if (slideIndex === 0) {
       setSlideIndex(2);
     } else {
@@ -146,7 +147,6 @@ export const MainCharacterItem = () => {
     if (flickingRef.current.animating === true) {
       return;
     }
-    // 마지막 장일 경우 첫번째 장 불러오기 (원본 보존으로 인해 전개연산자로 복사)
     if (slideIndex === 2) {
       setSlideIndex(0);
     } else {
@@ -168,6 +168,8 @@ export const MainCharacterItem = () => {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
   });
+
+  const plugins = [new Pagination({ type: "bullet" })];
 
   return (
     <Container>
@@ -220,15 +222,11 @@ export const MainCharacterItem = () => {
             </ArrowButton>
           )}
           <PaginationButton slideIndex={slideIndex}>
-            <span>
-              <span />
-            </span>
-            <span>
-              <span />
-            </span>
-            <span>
-              <span />
-            </span>
+            {Array.from({ length: 3 }, (value, index) => (
+              <span key={index}>
+                <span />
+              </span>
+            ))}
           </PaginationButton>
           {!resize && (
             <ArrowButton onClick={onClickArrowForwardButton}>

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const EmptyBasketBox = styled.div`
   padding: 30% 0;
+  margin-bottom: -80px;
   /* margin-bottom: -100px; */
 `;
 
@@ -17,6 +18,15 @@ const EmptyBasketCharacter = styled.span`
     display: block;
     width: 100%;
   }
+`;
+
+const EmptyTitle = styled.strong`
+  display: block;
+  padding-bottom: 8px;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
 `;
 
 const EmptyText = styled.span`
@@ -47,12 +57,13 @@ const BestItemViewBtn = styled(Link)`
   color: #fff !important;
 `;
 
-export const NotInfo = ({ url, text, text2, btn }) => {
+export const NotInfo = ({ url, title, text, text2, btn }) => {
   return (
     <EmptyBasketBox>
       <EmptyBasketCharacter>
         <img src={url} alt="" />
       </EmptyBasketCharacter>
+      {title && <EmptyTitle>{title}</EmptyTitle>}
       {!text2 ? (
         <EmptyText>{text}</EmptyText>
       ) : (

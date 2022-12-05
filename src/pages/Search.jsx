@@ -2,7 +2,14 @@ import React, { Suspense, useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { createBrowserHistory } from "history";
 import { Modal } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
 import { TbWorld } from "react-icons/tb";
 import { FiHome } from "react-icons/fi";
@@ -18,98 +25,15 @@ import {
 import { RouterHeader } from "../components/header/RouterHeader";
 import { debounce } from "lodash";
 import { useRef } from "react";
+import axios from "axios";
+import { SearchResultItem } from "../components/search/SearchResultItem";
+import { SearchResultItem2 } from "../components/search/SearchResultItem2";
 
-const Wrapper = styled.div`
-  width: 100%;
-  outline: none;
-`;
+const Wrapper = styled.div``;
 
 const Container = styled.div`
-  /* overflow-y: scroll;
-
-  -ms-overflow-style: none; // 인터넷 익스플로러
-  scrollbar-width: none; // 파이어폭스
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  margin: 0 auto;
-  background-color: #fff;
-  max-width: 640px;
-  min-width: 320px;
-  height: 100%;
-  outline: none;
-
-  @media screen and (min-width: 640px) {
-    width: 640px;
-  } */
-`;
-
-const Header = styled.div`
   width: 100%;
-  position: relative;
-  z-index: 20;
-  position: sticky;
-  top: 0;
-  background-color: #fff;
-`;
-
-const HeaderBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 46px;
-  font-size: 16px;
-  line-height: 46px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  margin: 0 12px;
-`;
-
-const IconBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Icon = styled.div`
-  width: 24px;
-  height: 24px;
-  font-size: 22px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-  cursor: pointer;
-
-  svg {
-  }
-
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`;
-
-const HeaderName = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  font-weight: 700;
-
-  img {
-    display: block;
-    width: 100%;
-  }
+  outline: none;
 `;
 
 const SearchBox = styled.div`
@@ -320,8 +244,11 @@ export const Search = () => {
   const [focus, setFocus] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [resultItem, setResultItem] = useState([]);
-  const [color, setColor] = useState([]);
+  const [isSubmit, setIsSubmit] = useState(false);
+  // const [resultSubmit, setResultSubmit] = useState(false);
   const inputRef = useRef();
+  const { pathname } = useLocation();
+  const keyword = pathname.split("/search")[1];
 
   const { data: dataList1, isLoading1 } = useQuery(
     "character",
@@ -365,49 +292,68 @@ export const Search = () => {
 
   // 검색어 디바운스
   const onChangeText = debounce((e) => {
+    setIsSubmit(false);
     setSearchText(e.target.value);
-  }, 200);
+  }, 100);
 
+  // 검색어 지우기
   const searchDelete = () => {
+    setIsSubmit(false);
     setSearchText("");
     inputRef.current.value = "";
   };
 
-  // const noEnter = (e) => {
-  //   e.preventDefault();
-  // };
+  // // 검색(form enter)했는지 체크
+  // useEffect(() => {
+  //   if (isSubmit) {
+  //     setResultSubmit(true);
+  //   } else {
+  //     setResultSubmit(false);
+  //   }
+  // }, [isSubmit]);
+
+  // 검색(form enter)했는지 체크
+  const onSubmit = (e) => {
+    e.preventDefault();
+    // navigate(`/search/${searchText}`);
+    setIsSubmit(true);
+    inputRef.current.value = "";
+  };
+
   return (
-    <>
-      <Wrapper>
-        <Container>
-          <RouterHeader title={"검색"} />
+    <Container>
+      <RouterHeader title={"검색"} />
 
-          <SearchBox>
-            <SearchForm onSubmit={(e) => e.preventDefault()}>
-              <SearchContents>
-                <SearchIcon>
-                  <div>
-                    <CiSearch />
-                  </div>
-                </SearchIcon>
-                <SearchInput
-                  type="text"
-                  ref={inputRef}
-                  onChange={onChangeText}
-                  onFocus={() => setFocus(true)}
-                  // onBlur={() => setFocus(false)}
-                />
-                {searchText && (
-                  <ResetButton onClick={searchDelete}>
-                    <span>
-                      <IoMdCloseCircle />
-                    </span>
-                  </ResetButton>
-                )}
-              </SearchContents>
-            </SearchForm>
-          </SearchBox>
+      <SearchBox>
+        <SearchForm onSubmit={onSubmit}>
+          <SearchContents>
+            <SearchIcon>
+              <div>
+                <CiSearch />
+              </div>
+            </SearchIcon>
+            <SearchInput
+              type="text"
+              ref={inputRef}
+              onChange={onChangeText}
+              onFocus={() => setFocus(true)}
+              // onBlur={() => setFocus(false)}
+            />
+            {searchText && (
+              <ResetButton onClick={searchDelete}>
+                <span>
+                  <IoMdCloseCircle />
+                </span>
+              </ResetButton>
+            )}
+          </SearchContents>
+        </SearchForm>
+      </SearchBox>
 
+      {isSubmit ? (
+        <SearchResultItem2 dataList={resultItem} />
+      ) : (
+        <>
           {loading && resultItem ? (
             <ResultBox>
               {resultItem.length !== 0 ? (
@@ -432,7 +378,7 @@ export const Search = () => {
                             list.title
                           )} */}
 
-                          {/* 2. 정규식 방법 */}
+                          {/* ✔ 2. 정규식 방법 */}
                           {parts.map((part, index) =>
                             part.toLowerCase() === searchText.toLowerCase() ? (
                               <em style={{ color: "#ff447f" }} key={index}>
@@ -482,9 +428,9 @@ export const Search = () => {
               </SearchCategoryTextBox>
             </SearchCategoryBox>
           )}
-          <Footer />
-        </Container>
-      </Wrapper>
-    </>
+        </>
+      )}
+      <Footer />
+    </Container>
   );
 };

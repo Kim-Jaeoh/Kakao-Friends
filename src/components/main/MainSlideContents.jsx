@@ -1,12 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import "../../styles/swiperModules/swiper.scss";
-import "../../styles/swiperModules/pagination.scss";
-import "../../styles/swiperModules/navigation.scss";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import "../../styles/swiperModules/swiper.scss";
+// import "../../styles/swiperModules/pagination.scss";
+// import "../../styles/swiperModules/navigation.scss";
 import { Link } from "react-router-dom";
 import { BsBag, BsFillPauseFill, BsPlayFill, BsBagFill } from "react-icons/bs";
-import Flicking from "@egjs/react-flicking";
+import Flicking, { ViewportSlot } from "@egjs/react-flicking";
+import { Arrow, Pagination } from "@egjs/flicking-plugins";
+import "@egjs/flicking-plugins/dist/pagination.css";
 import "@egjs/react-flicking/dist/flicking.css";
+import "@egjs/flicking-plugins/dist/arrow.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { useQuery } from "react-query";
@@ -324,7 +328,7 @@ export const MainSlideContents = () => {
       return;
     }
     if (slideIndex === 0) {
-      setSlideIndex(dataList?.data.length - 1);
+      setSlideIndex(dataList?.data.length - 1); // array.length - (n)은 배열의 길이가 아닌 index 반환
     } else {
       setSlideIndex(slideIndex - 1);
     }
@@ -384,6 +388,8 @@ export const MainSlideContents = () => {
 
   const { toggleIcon, currentBasket } = useBasketToggle();
 
+  const plugins = [new Pagination({ type: "bullet" })];
+
   return (
     <>
       <Container>
@@ -415,6 +421,7 @@ export const MainSlideContents = () => {
               videoRef?.current[slideIndex]?.pause();
             }}
             moveType={"strict"}
+            // plugins={plugins}
           >
             {!isLoading &&
               dataList?.data.map((list, index) => (
@@ -462,61 +469,77 @@ export const MainSlideContents = () => {
                   </SlideInfo>
                 </SliderItem>
               ))}
+            {/* <ViewportSlot>
+              <div className="flicking-pagination"></div>
+            </ViewportSlot> */}
           </Flicking>
 
           {/* <Swiper
-          modules={[Navigation, A11y]}
-          spaceBetween={6}
-          slidesPerView={3}
-          navigation
-          initialSlide={0}
-          centeredSlides={true}
-          onRealIndexChange={(e) => {
-            setSlideIndex(e.realIndex);
-            setIsPlaying(false);
-          }}
-          onActiveIndexChange={(e) => {
-            console.log(e);
-          }}
-          ref={flickingRef}
-          loop={true}
-          scrollbar={{ draggable: true }}
-        >
-          {mainContentsSlideList.map((list, index) => {
-            return (
-              <SwiperSlide key={list.id}>
-                <SliderItem>
-                  <SlideVideoBox>
-                    <SlideVideo
-                      loop
-                      muted
-                      // controls
-                      ref={(el) => (videoRef.current[index] = el)}
-                      data-list={index}
-                      src={list.video}
-                      type="video/mp4"
-                    />
-                    {index === slideIndex && (
-                      <SlideVideoButton onClick={togglePlay}>
-                        {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
-                      </SlideVideoButton>
-                    )}
+            // modules={[Navigation, A11y]}
+            spaceBetween={6}
+            slidesPerView={3}
+            navigation
+            initialSlide={0}
+            centeredSlides={true}
+            onRealIndexChange={(e) => {
+              setSlideIndex(e.index);
+              videoRef?.current[slideIndex]?.pause();
+            }}
+            ref={flickingRef}
+            loop={true}
+            scrollbar={{ draggable: true }}
+          >
+            {dataList?.data.map((list, index) => {
+              return (
+                <SwiperSlide key={list.id}>
+                  <SliderItem>
+                    <SlideVideoBox>
+                      {index === slideIndex && hover && (
+                        <SlideVideoButton
+                          onClick={togglePlay}
+                          hover={hover}
+                          // onMouseEnter={onMouseOverButton}
+                        >
+                          {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
+                        </SlideVideoButton>
+                      )}
+                      <SlideVideo
+                        ref={(el) => {
+                          videoRef.current[index] = el;
+                          // console.log(el);
+                        }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
+                        loop
+                        muted
+                        playsInline
+                        src={list.video}
+                        poster={list.poster}
+                        type="video/mp4"
+                        onClick={() => onClick(index)}
+                        // onMouseOut={onMouseOutButton}
+                      />
+                    </SlideVideoBox>
                     <SlideInfo>
                       <SlideInfoText>
-                        <Link to={list.url}>
+                        <Link to={`/detail/${list.product}`}>
                           <strong>{list.title}</strong>
                         </Link>
                       </SlideInfoText>
-                      <BagButton>
-                        <BsBag />
+                      <BagButton onClick={(e) => toggleIcon(list)}>
+                        {currentBasket?.filter(
+                          (obj) => obj.product === list.product
+                        ).length > 0 ? (
+                          <BsBagFill />
+                        ) : (
+                          <BsBag />
+                        )}
                       </BagButton>
                     </SlideInfo>
-                  </SlideVideoBox>
-                </SliderItem>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper> */}
+                  </SliderItem>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        */}
         </SliderBox>
 
         {resize && (
