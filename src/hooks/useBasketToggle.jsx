@@ -4,17 +4,13 @@ import { setBasket } from "../reducer/user";
 
 export const useBasketToggle = () => {
   const dispatch = useDispatch();
-  // const [checkItems, setCheckItems] = useState([]);
   const currentBasket = useSelector((state) => state.user.basket);
 
-  const toggleIcon = (itemId, amount) => {
-    // dispatch(setBasket([])); // 초기화;
-
+  const toggleIcon = (itemId, quanity) => {
     const finded = currentBasket?.find(
       (item) => item.product === itemId.product
     );
     if (finded === undefined) {
-      // setCheckItems([...checkItems, itemId.product]);
       dispatch(
         setBasket([
           {
@@ -23,14 +19,13 @@ export const useBasketToggle = () => {
             title: itemId.title,
             price: itemId.price,
             image: itemId.image,
-            amount: amount ? amount : 1,
+            quanity: quanity ? quanity : 1,
             check: true,
           },
           ...currentBasket,
         ])
       );
     } else {
-      // setCheckItems(checkItems.filter((el) => el !== itemId.product));
       const filter = currentBasket?.filter(
         (item) => item.product !== itemId.product
       );

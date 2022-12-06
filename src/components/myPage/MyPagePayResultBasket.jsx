@@ -13,13 +13,13 @@ import { setOrder } from "../../reducer/user";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 
-export const MyPagePayResult = () => {
+export const MyPagePayResultBasket = () => {
   const { search } = useLocation();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [myInfo, setMyInfo] = useState({});
   const [filterInfo, setFilterInfo] = useState({});
-  const currentOrder = useSelector((state) => state.user.order);
+  const currentBasket = useSelector((state) => state.user.basket);
   const currentUser = useSelector((state) => state.user.currentUser);
   const dbRef = doc(dbService, "users", currentUser.email);
   const { timeToString } = useTimeStamp();
@@ -47,12 +47,10 @@ export const MyPagePayResult = () => {
     });
   }, [currentUser.email]);
 
-  console.log(currentOrder);
-
   // 잔여 수량 변경
   const { mutate } = useMutation(
     (amount) =>
-      currentOrder.map((order) => {
+      currentBasket.map((order) => {
         return axios.patch(
           `http://localhost:4000/productListData/${order.product}`,
           amount
@@ -81,7 +79,7 @@ export const MyPagePayResult = () => {
         }).then(async (response) => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
-          currentOrder.map((order) => {
+          currentBasket.map((order) => {
             // console.log("수량 변경!");
             return mutate({
               amount: dataList?.data[order.id - 1].amount - order.quanity,
@@ -103,7 +101,7 @@ export const MyPagePayResult = () => {
             {
               tid: result.tid || "",
               created_at: result.created_at || "",
-              orderInfo: currentOrder?.map((order) => ({
+              orderInfo: currentBasket?.map((order) => ({
                 quanity: order.quanity,
                 price: order.price,
                 product: order.product,

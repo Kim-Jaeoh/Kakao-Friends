@@ -26,6 +26,7 @@ import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
 import { cloneDeep } from "lodash";
 import { useProductAmount } from "../../hooks/useProductAmount";
+import { usePayReadyBasket } from "../../hooks/usePayReadyBasket";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -407,14 +408,14 @@ const QuanityButton = styled.button`
   :first-of-type {
     left: 0;
     svg {
-      color: ${(props) => (props.amount > 1 ? "#3c404b" : "#dedfe0")};
+      color: ${(props) => (props.quanity > 1 ? "#3c404b" : "#dedfe0")};
     }
   }
 
   :last-of-type {
     right: 0;
     svg {
-      color: ${(props) => (props.amount >= 1 ? "#3c404b" : "#dedfe0")};
+      color: ${(props) => (props.quanity >= 1 ? "#3c404b" : "#dedfe0")};
     }
   }
 
@@ -643,10 +644,14 @@ const MyPageBasket = ({ userObj }) => {
   const { currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const { PriceReComma, PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
 
-  const { next_redirect_pc_url: payReadyURL } = usePayReady(
+  const { next_redirect_pc_url: payReadyURL } = usePayReadyBasket(
     currentBasket,
     "basket"
   );
+
+  useEffect(() => {
+    console.log(currentBasket);
+  }, [currentBasket]);
 
   // 상품 가격
   useEffect(() => {
@@ -658,7 +663,7 @@ const MyPageBasket = ({ userObj }) => {
     if (checkItem.length !== 0) {
       setCartPrice(
         checkItem
-          ?.map((item) => PriceDeleteComma(item.price) * item.amount)
+          ?.map((item) => PriceDeleteComma(item.price) * item.quanity)
           ?.reduce((l, r) => l + r)
       );
     } else {
@@ -715,10 +720,6 @@ const MyPageBasket = ({ userObj }) => {
     dispatch(setBasket(filter));
   };
 
-  const checkedId = currentBasket.map((item) => {
-    return item.product;
-  });
-
   // 선택 삭제
   const selectDelete = () => {
     const filter = currentBasket?.filter(
@@ -726,8 +727,6 @@ const MyPageBasket = ({ userObj }) => {
       // (item) => !checkItems.includes(item.product)
     );
     dispatch(setBasket(filter));
-
-    // setCheckItems(checkItems.filter((item) => item.product !== checkedId));
   };
 
   // 수량 변경
@@ -744,10 +743,8 @@ const MyPageBasket = ({ userObj }) => {
   const checkHandler = (check, itemId) => {
     if (check) {
       dispatch(CheckItem(itemId));
-      // setCheckItems((prev) => [...prev, itemId.product]);
     } else {
       dispatch(UnCheckItem(itemId));
-      // setCheckItems(checkItems.filter((item) => item !== itemId.product));
     }
   };
 
@@ -760,13 +757,11 @@ const MyPageBasket = ({ userObj }) => {
         idArray.push(obj.product);
         return dispatch(CheckItem(obj));
       });
-      // setCheckItems(idArray);
     } else {
       // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
       currentBasket.map((obj) => {
         return dispatch(UnCheckItem(obj));
       });
-      // setCheckItems([]);
     }
   };
 
@@ -783,9 +778,6 @@ const MyPageBasket = ({ userObj }) => {
 
   //
   const currentOrder = useSelector((state) => state.user.order);
-
-  // const sibal = useProductAmount(currentBasket.map((asd) => asd.product));
-  const sibal = useProductAmount();
 
   //
 
@@ -913,7 +905,7 @@ const MyPageBasket = ({ userObj }) => {
                           <ItemCounterBox>
                             <ItemCounter>
                               <QuanityButton
-                                amount={list.amount}
+                                quanity={list.quanity}
                                 type="button"
                                 onClick={(e) => dispatch(Decrement(list))}
                               >
@@ -921,7 +913,7 @@ const MyPageBasket = ({ userObj }) => {
                               </QuanityButton>
                               <input
                                 type="number"
-                                value={list.amount}
+                                value={list.quanity}
                                 onFocus={() => setIsFocus(true)}
                                 onBlur={() => setIsFocus(false)}
                                 min="1"
@@ -930,7 +922,7 @@ const MyPageBasket = ({ userObj }) => {
                                 onWheel={(e) => e.target.blur()} // 마우스 휠 막기
                               />
                               <QuanityButton
-                                amount={list.amount}
+                                quanity={list.quanity}
                                 type="button"
                                 onClick={(e) => dispatch(Increment(list))}
                               >

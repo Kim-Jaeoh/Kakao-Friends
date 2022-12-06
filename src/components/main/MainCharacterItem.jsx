@@ -46,7 +46,6 @@ const ArrowButton = styled.button`
   border-radius: 50%;
 
   svg {
-    /* width: 100%; */
     font-size: 16px;
     padding: 4px;
     display: flex;
@@ -66,24 +65,24 @@ const PaginationButton = styled.div`
   @media screen and (min-width: 640px) {
     margin: 0 30px;
   }
+`;
+
+const PaginationSpan = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    span {
-      border-radius: 100%;
-      display: inline-block;
-      font-size: 1rem;
-      width: 4px;
-      height: 4px;
-      background-color: #dedfe0;
-      margin: 0 2px;
-    }
+    border-radius: 100%;
+    display: inline-block;
+    font-size: 1rem;
+    width: 4px;
+    height: 4px;
+    background-color: #dedfe0;
+    margin: 0 2px;
   }
 
-  span:nth-of-type(${(props) => props.slideIndex + 1}) {
+  &:nth-of-type(${(props) => props.slideIndex + 1}) {
     span {
       background-color: #000;
       transform: scaleX(30px);
@@ -221,11 +220,11 @@ export const MainCharacterItem = () => {
               <IoIosArrowBack />
             </ArrowButton>
           )}
-          <PaginationButton slideIndex={slideIndex}>
+          <PaginationButton>
             {Array.from({ length: 3 }, (value, index) => (
-              <span key={index}>
+              <PaginationSpan key={index} slideIndex={slideIndex}>
                 <span />
-              </span>
+              </PaginationSpan>
             ))}
           </PaginationButton>
           {!resize && (

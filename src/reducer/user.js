@@ -71,7 +71,7 @@ const initialState = {
       title: "",
       price: "",
       image: "",
-      amount: "",
+      quanity: "",
       check: true,
     },
   ],
@@ -132,8 +132,8 @@ const user = (state = initialState, action) => {
 
     case INCREMENT:
       const plus = state.basket.find((item) => item.id === action.payload.id);
-      if (plus && plus.amount < 99) {
-        plus.amount += 1;
+      if (plus && plus.quanity < 99) {
+        plus.quanity += 1;
       }
       return {
         ...state,
@@ -142,8 +142,8 @@ const user = (state = initialState, action) => {
 
     case DECREMENT:
       const minus = state.basket.find((item) => item.id === action.payload.id);
-      if (minus && minus.amount > 1) {
-        minus.amount -= 1;
+      if (minus && minus.quanity > 1) {
+        minus.quanity -= 1;
       }
       return {
         ...state,
@@ -153,7 +153,7 @@ const user = (state = initialState, action) => {
     case INPUTCHANGE:
       const change = state.basket.find((item) => item.id === action.payload.id);
       if (change) {
-        change.amount = action.value;
+        change.quanity = action.value;
       }
 
       return {

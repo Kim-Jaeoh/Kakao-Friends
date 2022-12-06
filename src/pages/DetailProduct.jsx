@@ -6,7 +6,7 @@ import "@egjs/react-flicking/dist/flicking.css";
 import { Arrow, AutoPlay, Pagination } from "@egjs/flicking-plugins";
 import "@egjs/flicking-plugins/dist/pagination.css";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { ProductListApi } from "../apis/dataApi";
 import {
   Navigate,
@@ -23,6 +23,7 @@ import { ProductSeen } from "../components/utils/ProductSeen";
 import { usePayReady } from "../hooks/usePayReady";
 import { useSelector } from "react-redux";
 import { DetailProductModal } from "../components/modal/DetailProductModal";
+import axios from "axios";
 
 const Container = styled.main`
   position: relative;
@@ -161,14 +162,18 @@ export const DetailProduct = () => {
   const flickingRef = useRef(null);
   const { viewedItems } = useLocalStorage();
 
-  const { data: dataList, isLoading } = useQuery(
-    "ProductList",
-    ProductListApi,
-    {
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e.message),
-    }
-  );
+  // const api = async () =>
+  //   await axios
+  //     .get(`http://localhost:4000/productListData?product=${id}`)
+
+  const {
+    data: dataList,
+    isLoading,
+    refetch,
+  } = useQuery("productList", ProductListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
   const _plugins = [
     new AutoPlay({ duration: 3000, direction: "NEXT", stopOnHover: true }),
@@ -177,6 +182,9 @@ export const DetailProduct = () => {
   useEffect(() => {
     if (isLoading === false) {
       const item = dataList?.data[id - 1];
+      // const item = dataList?.data[0];
+
+      console.log(item);
 
       setProduct([
         {
@@ -185,22 +193,20 @@ export const DetailProduct = () => {
           title: item?.title,
           price: item?.price,
           image: item?.image,
-          amount: item?.amount,
-          quanity: count,
+          amount: item?.amount, // 잔여 수량
+          quanity: count, // 구매할 수량
         },
       ]);
-      console.log(item.amount);
     } else {
       setProduct(dataList?.data[id - 1]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
+      // setProduct(dataList?.data[0]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
     }
-  }, [isLoading, id, count]);
+  }, [count, dataList?.data, isLoading, id, refetch]);
 
   const [buttonModal, setbuttonModal] = useState(false);
   const toggleButtonModal = () => {
     setbuttonModal((prev) => !prev);
   };
-
-  console.log(product);
 
   return (
     <>

@@ -235,7 +235,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
               displayName: user.email.split("@")[0],
               email: user.email,
               createdAtId: Date.now(),
-              cart: [{}],
+              orderList: [],
               like: [],
             });
           }
@@ -247,7 +247,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
             displayName: user.email.split("@")[0],
             email: user.email,
             createdAtId: Date.now(),
-            cart: [{}],
+            orderList: [],
             like: [],
           })
         );

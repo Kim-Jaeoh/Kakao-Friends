@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { setOrder } from "../reducer/user";
 
-export const usePayReady = (list, type) => {
+export const usePayReadyBasket = (list, type) => {
   const [obj, setObj] = useState([]);
   const { pathname } = useLocation();
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ export const usePayReady = (list, type) => {
   const currentBasket = useSelector((state) => state.user.basket);
 
   // const appUrl = "https://kakao-friends.herokuapp.com/mypage/payresult";
-  const appUrl = "http://localhost:3000/mypage/payresult1";
+  const appUrl = "http://localhost:3000/mypage/payresult2";
   const failUrl = "http://localhost:3000";
   const cancelUrl = "http://localhost:3000";
 
@@ -58,21 +58,6 @@ export const usePayReady = (list, type) => {
               data: { next_redirect_pc_url, tid },
             } = response;
 
-            list.map((order) =>
-              dispatch(
-                setOrder([
-                  {
-                    id: order.id,
-                    quanity: order.quanity,
-                    price: order.price,
-                    product: order.product,
-                    image: order.image,
-                    title: order.title,
-                  },
-                ])
-              )
-            );
-
             // 응답 data로 state 갱신
             setObj({ next_redirect_pc_url, tid });
             localStorage.setItem("tid", tid);
@@ -81,10 +66,6 @@ export const usePayReady = (list, type) => {
       postKakaopay();
     }
   }, [dispatch, list, type]);
-
-  useEffect(() => {
-    console.log(currentOrder);
-  }, [currentOrder]);
 
   const { next_redirect_pc_url } = obj;
 

@@ -185,7 +185,7 @@ const ArrowButton = styled.button`
 
   &:last-of-type {
     opacity: ${(props) => (props.visible2 ? "1" : "0")};
-    display: ${(props) => (props.visible ? "1" : "0")};
+    display: ${(props) => (props.visible2 ? "1" : "0")};
     margin-right: 20px;
   }
 

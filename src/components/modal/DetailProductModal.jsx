@@ -29,7 +29,6 @@ export const DetailProductModal = ({
   const product = products[0];
 
   const modalFixed = useModalScrollFixed(buttonModal); // 모달 스크롤 픽스
-
   const { next_redirect_pc_url: payReadyURL } = usePayReady(products, "direct");
   const { PriceDeleteComma, PriceComma } = usePriceComma(product.price);
 

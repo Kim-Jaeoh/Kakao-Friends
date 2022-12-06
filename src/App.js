@@ -22,6 +22,7 @@ import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
 import { Promotion } from "./pages/Promotion";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SearchResultItem } from "./components/search/SearchResultItem";
+import { MyPagePayResultBasket } from "./components/myPage/MyPagePayResultBasket";
 
 const Container = styled.div`
   font-size: 14px;
@@ -72,13 +73,8 @@ function App() {
               <Header />
               <Routes>
                 <Route path="/" element={<Main userObj={userObj} />} />
-                {/* <Route path="/event" element={<Event />} /> */}
                 <Route path="/promotion/:id" element={<Promotion />} />
                 <Route path="/search" element={<Search />}></Route>
-                {/* <Route
-                  path="/search/keyword/*"
-                  element={<SearchResultItem />}
-                /> */}
                 <Route path="/product" element={<Product />} />
                 <Route path="/detail/:id" element={<DetailProduct />} />
                 <Route
@@ -86,8 +82,12 @@ function App() {
                   element={<MyPage userObj={userObj} />}
                 />
                 <Route
-                  path="/mypage/payresult/*"
+                  path="/mypage/payresult1"
                   element={<MyPagePayResult />}
+                />
+                <Route
+                  path="/mypage/payresult2"
+                  element={<MyPagePayResultBasket />}
                 />
                 <Route path="/*" element={<Navigate replace to="/" />} />
               </Routes>

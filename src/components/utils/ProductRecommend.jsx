@@ -173,7 +173,7 @@ export const ProductRecommend = ({ productId }) => {
 
     randomArray(arr);
     setRandomItem(arr);
-  }, [isLoading, productId]);
+  }, [dataList?.data, isLoading, productId]);
 
   return (
     <BasketRecommendBox>

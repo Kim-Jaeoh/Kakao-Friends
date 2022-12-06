@@ -226,36 +226,30 @@ const Product = () => {
     setClickTabNumber(num);
   };
 
-  const randomArray = (array) => {
-    for (let index = array?.length - 1; index > 0; index--) {
-      // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
-      const randomPosition = Math.floor(Math.random() * (index + 1));
-
-      // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
-      const temporary = array[index];
-      array[index] = array[randomPosition];
-      array[randomPosition] = temporary;
-    }
-  };
-
   useEffect(() => {
     const arr = [...dataList];
-    setDataItem(arr);
+    // setDataItem(arr);
+
     // // 가격순
     // const price = arr.sort((a, b) => {
     //   return b.price.split(",").join("") - a.price.split(",").join("");
     // });
     // setDataItem(price);
 
-    // randomArray(arr);
-    // setDataItem(arr);
-    // return () => randomArray();
-  }, [dataList]);
+    // 수량 순
+    if (clickTabNumber === 1) {
+      const price = arr.sort((a, b) => {
+        return a.amount - b.amount;
+      });
+      setDataItem(price);
+    } else {
+      setDataItem(arr);
+    }
+  }, [clickTabNumber, dataList]);
 
   return (
     <>
       <Container>
-        {/* <Header /> */}
         <Wrapper>
           <WrapperTitle>
             <strong>지금 인기있는</strong>
@@ -280,7 +274,10 @@ const Product = () => {
           <ListBox>
             {dataItem &&
               dataItem?.map((list, index) => (
-                <ListItem key={index} ref={(e) => (domRef.current[index] = e)}>
+                <ListItem
+                  key={index}
+                  //  ref={(e) => (domRef.current[index] = e)}
+                >
                   <ListItemNumberBox>
                     {index + 1 < 4 ? (
                       <ListItemRank>{index + 1}</ListItemRank>
@@ -301,7 +298,7 @@ const Product = () => {
                       <ProductPrice>
                         <span>{list.price}</span>원
                       </ProductPrice>
-                      <ProductBag onClick={() => toggleIcon(list, index)}>
+                      <ProductBag onClick={() => toggleIcon(list)}>
                         {currentBasket?.filter(
                           (obj) => obj.product === list.product
                         ).length > 0 ? (

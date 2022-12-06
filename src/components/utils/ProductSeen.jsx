@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
@@ -130,18 +130,23 @@ const BagButton = styled.button`
 
 export const ProductSeen = ({ productId }) => {
   const [seenArray, setSeenArray] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [view, setView] = useState([]);
 
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
-  const { data: dataList } = useQuery("productList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onSuccess: (e) => setLoading(true),
-    onError: (e) => console.log(e.message),
-  });
+  const { data: dataList, isLoading } = useQuery(
+    "productList",
+    ProductListApi,
+    {
+      refetchOnWindowFocus: false,
+      // onSuccess: (e) => setLoading(true),
+      onError: (e) => console.log(e.message),
+    }
+  );
+  const { id } = useParams();
 
   // localStorage 받아오기
   useEffect(() => {
@@ -157,9 +162,11 @@ export const ProductSeen = ({ productId }) => {
   }, []);
 
   useEffect(() => {
+    if (!view) return;
+
     // 본 순서대로 나열되게 새로 map을 이용하여 저장함
     let arr = view?.map((item) => dataList?.data[item - 1]);
-    const filter = arr.filter((item) => item.product !== productId);
+    const filter = arr?.filter((item) => item?.product !== productId);
     setSeenArray(filter);
   }, [dataList?.data, productId, view]);
 
@@ -168,18 +175,18 @@ export const ProductSeen = ({ productId }) => {
       <strong>최근 본 상품이 요기 있네</strong>
       <BasketRecommendListBox>
         {seenArray?.slice(0, 8).map((list, index) => (
-          <BasketRecommendList key={list.product}>
+          <BasketRecommendList key={index}>
             <RecommendListBox>
-              <RecommendListImage to={`/detail/${list.product}`}>
-                <img src={list.image} alt={list.title} />
+              <RecommendListImage to={`/detail/${list?.product}`}>
+                <img src={list?.image} alt={list?.title} />
               </RecommendListImage>
               <RecommendListText>
-                <strong>{list.title}</strong>
+                <strong>{list?.title}</strong>
                 <RecomendListPrice>
-                  <span>{PriceComma(list.price)}</span>원
+                  <span>{PriceComma(list?.price)}</span>원
                 </RecomendListPrice>
                 <BagButton onClick={(e) => toggleIcon(list)}>
-                  {currentBasket?.filter((obj) => obj.product === list.product)
+                  {currentBasket?.filter((obj) => obj.product === list?.product)
                     .length > 0 ? (
                     <BsBagFill style={{ color: "#ff447f" }} />
                   ) : (

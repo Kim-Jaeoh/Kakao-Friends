@@ -233,23 +233,24 @@ const PaginationButton = styled.div`
   justify-content: center;
   align-items: center;
   user-select: none;
+`;
+
+const PaginationSpan = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    span {
-      border-radius: 100%;
-      display: inline-block;
-      font-size: 1rem;
-      width: 4px;
-      height: 4px;
-      background-color: #dedfe0;
-      margin: 0 2px;
-    }
+    border-radius: 100%;
+    display: inline-block;
+    font-size: 1rem;
+    width: 4px;
+    height: 4px;
+    background-color: #dedfe0;
+    margin: 0 2px;
   }
 
-  span:nth-of-type(${(props) => props.slideIndex + 1}) {
+  &:nth-of-type(${(props) => props.slideIndex + 1}) {
     span {
       background-color: #000;
       transform: scaleX(30px);
@@ -309,19 +310,6 @@ export const MainSlideContents = () => {
     });
   };
 
-  // // 페이지 아이콘
-  // const onPageButton = async (index) => {
-  //   const flicking = flickingRef.current;
-  //   if (!flicking) {
-  //     return;
-  //   }
-
-  //   // 무분별하게 이동 시 "Animation is already playing." 에러 뜨는 거 방지
-  //   await flicking.moveTo(index).catch((e) => {
-  //     return;
-  //   });
-  // };
-
   const onClickArrowBackButton = () => {
     // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
     if (flickingRef.current.animating === true) {
@@ -353,20 +341,6 @@ export const MainSlideContents = () => {
     }
   };
 
-  // // 재생/일시정지 버튼 마우스 이벤트
-  // const onMouseOverButton = (e) => {
-  //   if (isPlaying) {
-  //     setHover(false);
-  //     console.log("?");
-  //   }
-  // };
-  // const onMouseOutButton = (e) => {
-  //   if (isPlaying) {
-  //     setHover(true);
-  //     console.log("!");
-  //   }
-  // };
-
   const onClick = (index) => {
     // 다른 비디오에서 클릭 못하게 막기
     if (index === slideIndex) {
@@ -374,7 +348,7 @@ export const MainSlideContents = () => {
     }
   };
 
-  // 재생 시 hover 노출 및 2초뒤 꺼짐
+  // 재생 시 hover 노출 및 2초 뒤 꺼짐
   useEffect(() => {
     clearTimeout();
     if (hover) {
@@ -387,8 +361,6 @@ export const MainSlideContents = () => {
   }, [hover]);
 
   const { toggleIcon, currentBasket } = useBasketToggle();
-
-  const plugins = [new Pagination({ type: "bullet" })];
 
   return (
     <>
@@ -421,25 +393,19 @@ export const MainSlideContents = () => {
               videoRef?.current[slideIndex]?.pause();
             }}
             moveType={"strict"}
-            // plugins={plugins}
           >
             {!isLoading &&
               dataList?.data.map((list, index) => (
                 <SliderItem key={index}>
                   <SlideVideoBox>
                     {index === slideIndex && hover && (
-                      <SlideVideoButton
-                        onClick={togglePlay}
-                        hover={hover}
-                        // onMouseEnter={onMouseOverButton}
-                      >
+                      <SlideVideoButton onClick={togglePlay} hover={hover}>
                         {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
                       </SlideVideoButton>
                     )}
                     <SlideVideo
                       ref={(el) => {
                         videoRef.current[index] = el;
-                        // console.log(el);
                       }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
                       loop
                       muted
@@ -448,7 +414,6 @@ export const MainSlideContents = () => {
                       poster={list.poster}
                       type="video/mp4"
                       onClick={() => onClick(index)}
-                      // onMouseOut={onMouseOutButton}
                     />
                   </SlideVideoBox>
                   <SlideInfo>
@@ -469,87 +434,16 @@ export const MainSlideContents = () => {
                   </SlideInfo>
                 </SliderItem>
               ))}
-            {/* <ViewportSlot>
-              <div className="flicking-pagination"></div>
-            </ViewportSlot> */}
           </Flicking>
-
-          {/* <Swiper
-            // modules={[Navigation, A11y]}
-            spaceBetween={6}
-            slidesPerView={3}
-            navigation
-            initialSlide={0}
-            centeredSlides={true}
-            onRealIndexChange={(e) => {
-              setSlideIndex(e.index);
-              videoRef?.current[slideIndex]?.pause();
-            }}
-            ref={flickingRef}
-            loop={true}
-            scrollbar={{ draggable: true }}
-          >
-            {dataList?.data.map((list, index) => {
-              return (
-                <SwiperSlide key={list.id}>
-                  <SliderItem>
-                    <SlideVideoBox>
-                      {index === slideIndex && hover && (
-                        <SlideVideoButton
-                          onClick={togglePlay}
-                          hover={hover}
-                          // onMouseEnter={onMouseOverButton}
-                        >
-                          {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
-                        </SlideVideoButton>
-                      )}
-                      <SlideVideo
-                        ref={(el) => {
-                          videoRef.current[index] = el;
-                          // console.log(el);
-                        }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
-                        loop
-                        muted
-                        playsInline
-                        src={list.video}
-                        poster={list.poster}
-                        type="video/mp4"
-                        onClick={() => onClick(index)}
-                        // onMouseOut={onMouseOutButton}
-                      />
-                    </SlideVideoBox>
-                    <SlideInfo>
-                      <SlideInfoText>
-                        <Link to={`/detail/${list.product}`}>
-                          <strong>{list.title}</strong>
-                        </Link>
-                      </SlideInfoText>
-                      <BagButton onClick={(e) => toggleIcon(list)}>
-                        {currentBasket?.filter(
-                          (obj) => obj.product === list.product
-                        ).length > 0 ? (
-                          <BsBagFill />
-                        ) : (
-                          <BsBag />
-                        )}
-                      </BagButton>
-                    </SlideInfo>
-                  </SliderItem>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        */}
         </SliderBox>
 
-        {resize && (
-          <PaginationButton slideIndex={slideIndex}>
-            {!isLoading &&
-              dataList?.data.map((list, index) => (
-                <span key={list.id}>
-                  <span />
-                </span>
-              ))}
+        {resize && !isLoading && (
+          <PaginationButton>
+            {dataList?.data.map((list) => (
+              <PaginationSpan key={list.id} slideIndex={slideIndex}>
+                <span />
+              </PaginationSpan>
+            ))}
           </PaginationButton>
         )}
       </Container>
