@@ -1,12 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
-import { BsBag, BsBagFill } from "react-icons/bs";
 import { BiMinus, BiPlus } from "react-icons/bi";
 import { IoCheckmarkCircleSharp, IoCloseOutline } from "react-icons/io5";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { ProductListApi } from "../../apis/dataApi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   CheckItem,
@@ -17,16 +14,11 @@ import {
   UnCheckItem,
 } from "../../reducer/user";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
-import axios from "axios";
-import { memo } from "react";
 import { NotInfo } from "../utils/NotInfo";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import { ProductRecommend } from "../utils/ProductRecommend";
 import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
-import { cloneDeep } from "lodash";
-import { useProductAmount } from "../../hooks/useProductAmount";
-import { usePayReadyBasket } from "../../hooks/usePayReadyBasket";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -644,7 +636,7 @@ const MyPageBasket = ({ userObj }) => {
   const { currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const { PriceReComma, PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
 
-  const { next_redirect_pc_url: payReadyURL } = usePayReadyBasket(
+  const { next_redirect_pc_url: payReadyURL } = usePayReady(
     currentBasket,
     "basket"
   );

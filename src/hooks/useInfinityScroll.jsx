@@ -20,13 +20,15 @@ const useInfinityScroll = (url, count) => {
       const { data } = await axios.get(
         `${url}?_limit=${count}&_page=${page.current}`
       );
+
       setDataList((prev) => [...prev, ...data]);
+
       setHasNextPage(data.length === count); // 전달받은 count와 data의 배열 길이가 같은지 체크
+
       if (data.length) {
         // data가 존재하면 페이지 1 추가
         page.current += 1;
       }
-      // console.log(`${url}?_limit=${count}&_page=${page.current}`);
     } catch (err) {
       console.error(err);
     }

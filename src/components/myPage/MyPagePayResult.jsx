@@ -3,13 +3,11 @@ import styled from "@emotion/styled";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { dbService } from "../../fbase";
 import character from "../../assets/order_complete_lion.gif";
 import { Footer } from "../utils/Footer";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
-import { cloneDeep } from "lodash";
-import { setOrder } from "../../reducer/user";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 
@@ -18,26 +16,29 @@ export const MyPagePayResult = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [myInfo, setMyInfo] = useState({});
+  const [currentData, setCurrentData] = useState([]);
   const [filterInfo, setFilterInfo] = useState({});
   const currentOrder = useSelector((state) => state.user.order);
+  const currentBasket = useSelector((state) => state.user.basket);
   const currentUser = useSelector((state) => state.user.currentUser);
   const dbRef = doc(dbService, "users", currentUser.email);
   const { timeToString } = useTimeStamp();
-  const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
 
   const params = {
     cid: "TC0ONETIME",
     tid: localStorage.getItem("tid"),
     partner_order_id: "partner_order_id",
     partner_user_id: "partner_user_id",
-    pg_token: search.split("=")[1],
+    pg_token: searchParams.get("pg_token"),
   };
 
-  const { data: dataList } = useQuery("productList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
+  // search에 따라 데이터 값 설정
+  useEffect(() => {
+    const type = searchParams.get("type");
+    setCurrentData(type === "direct" ? currentOrder : currentBasket);
+  }, [currentBasket, currentOrder, searchParams]);
 
   // 본인 정보 가져오기
   useEffect(() => {
@@ -47,12 +48,15 @@ export const MyPagePayResult = () => {
     });
   }, [currentUser.email]);
 
-  console.log(currentOrder);
+  const { data: dataList } = useQuery("productList", ProductListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
   // 잔여 수량 변경
   const { mutate } = useMutation(
     (amount) =>
-      currentOrder.map((order) => {
+      currentData.map((order) => {
         return axios.patch(
           `http://localhost:4000/productListData/${order.product}`,
           amount
@@ -81,8 +85,7 @@ export const MyPagePayResult = () => {
         }).then(async (response) => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
-          currentOrder.map((order) => {
-            // console.log("수량 변경!");
+          currentData.map((order) => {
             return mutate({
               amount: dataList?.data[order.id - 1].amount - order.quanity,
             });
@@ -103,7 +106,7 @@ export const MyPagePayResult = () => {
             {
               tid: result.tid || "",
               created_at: result.created_at || "",
-              orderInfo: currentOrder?.map((order) => ({
+              orderInfo: currentData?.map((order) => ({
                 quanity: order.quanity,
                 price: order.price,
                 product: order.product,

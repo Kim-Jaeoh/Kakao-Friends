@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import { Main } from "./pages/Main";
 import { Event } from "./pages/Event";
-import { Contents } from "./pages/Contents";
 import { MyPage } from "./pages/MyPage";
 import { TopButton } from "./components/button/TopButton";
 import { Search } from "./pages/Search";
@@ -21,8 +20,6 @@ import { Header } from "./components/header/Header";
 import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
 import { Promotion } from "./pages/Promotion";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { SearchResultItem } from "./components/search/SearchResultItem";
-import { MyPagePayResultBasket } from "./components/myPage/MyPagePayResultBasket";
 
 const Container = styled.div`
   font-size: 14px;
@@ -81,14 +78,8 @@ function App() {
                   path="/mypage/*"
                   element={<MyPage userObj={userObj} />}
                 />
-                <Route
-                  path="/mypage/payresult1"
-                  element={<MyPagePayResult />}
-                />
-                <Route
-                  path="/mypage/payresult2"
-                  element={<MyPagePayResultBasket />}
-                />
+                <Route path="/mypage/payresult" element={<MyPagePayResult />} />
+
                 <Route path="/*" element={<Navigate replace to="/" />} />
               </Routes>
             </Container>

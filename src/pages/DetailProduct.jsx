@@ -155,16 +155,13 @@ const OrderButton = styled.button`
 `;
 
 export const DetailProduct = () => {
-  const { id } = useParams();
   const [slideIndex, setSlideIndex] = useState(0);
   const [product, setProduct] = useState([]);
   const [count, setCount] = useState(1);
+  const [buttonModal, setbuttonModal] = useState(false);
   const flickingRef = useRef(null);
+  const { id } = useParams();
   const { viewedItems } = useLocalStorage();
-
-  // const api = async () =>
-  //   await axios
-  //     .get(`http://localhost:4000/productListData?product=${id}`)
 
   const {
     data: dataList,
@@ -182,9 +179,6 @@ export const DetailProduct = () => {
   useEffect(() => {
     if (isLoading === false) {
       const item = dataList?.data[id - 1];
-      // const item = dataList?.data[0];
-
-      console.log(item);
 
       setProduct([
         {
@@ -203,7 +197,6 @@ export const DetailProduct = () => {
     }
   }, [count, dataList?.data, isLoading, id, refetch]);
 
-  const [buttonModal, setbuttonModal] = useState(false);
   const toggleButtonModal = () => {
     setbuttonModal((prev) => !prev);
   };

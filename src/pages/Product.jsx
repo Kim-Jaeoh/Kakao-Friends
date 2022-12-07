@@ -20,7 +20,7 @@ const ContentArticle = styled.article``;
 
 const Wrapper = styled.article`
   overflow: hidden;
-  padding-bottom: 100px;
+  /* padding-bottom: 100px; */
 `;
 
 const WrapperTitle = styled.div`
@@ -219,7 +219,7 @@ const Product = () => {
   // const api = "https://kakao-friends.herokuapp.com/ProductListData";
   const api = "http://localhost:4000/ProductListData";
 
-  const { ref, dataList } = useInfinityScroll(api, 8); // 무한스크롤 커스텀 훅
+  const { ref, dataList } = useInfinityScroll(api, 12); // 무한스크롤 커스텀 훅
   const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
 
   const toggleTab = (num) => {
@@ -238,10 +238,11 @@ const Product = () => {
 
     // 수량 순
     if (clickTabNumber === 1) {
-      const price = arr.sort((a, b) => {
+      const filter = arr.filter((array) => array.amount !== 0);
+      const sort = filter.sort((a, b) => {
         return a.amount - b.amount;
       });
-      setDataItem(price);
+      setDataItem(sort);
     } else {
       setDataItem(arr);
     }
@@ -275,7 +276,7 @@ const Product = () => {
             {dataItem &&
               dataItem?.map((list, index) => (
                 <ListItem
-                  key={index}
+                  key={list.product}
                   //  ref={(e) => (domRef.current[index] = e)}
                 >
                   <ListItemNumberBox>
@@ -311,7 +312,13 @@ const Product = () => {
                   </ProductBox>
                 </ListItem>
               ))}
-            <div ref={ref} style={{ position: "absolute", bottom: "250px" }} />
+            <div
+              ref={ref}
+              style={{
+                position: "absolute",
+                bottom: "550px",
+              }}
+            />
           </ListBox>
         </Wrapper>
         <Footer />
