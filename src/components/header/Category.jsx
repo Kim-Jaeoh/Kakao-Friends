@@ -39,9 +39,9 @@ export const Category = () => {
         <CategoryMenuBtn
           num={1}
           selected={selected}
+          onSelected={onSelected}
           url={"/"}
           text={"홈"}
-          onSelected={onSelected}
         />
         {/* <CategoryMenuBtn
           num={2}
@@ -53,23 +53,23 @@ export const Category = () => {
         <CategoryMenuBtn
           num={2}
           selected={selected}
-          url={"/promotion/1"}
           onSelected={onSelected}
+          url={"/promotion/1"}
           text={"크리스마스"}
         />
         <CategoryMenuBtn
           num={3}
           selected={selected}
+          onSelected={onSelected}
           url={"/product"}
           text={"상품"}
-          onSelected={onSelected}
         />
         <CategoryMenuBtn
           num={4}
           selected={selected}
+          onSelected={onSelected}
           url={"/mypage/basket"}
           text={"마이"}
-          onSelected={onSelected}
         />
       </Inner>
     </Container>

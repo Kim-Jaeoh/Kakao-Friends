@@ -7,19 +7,19 @@ import React, {
   useState,
 } from "react";
 import { useInView } from "react-intersection-observer";
+import { useQuery } from "react-query";
 
-const useInfinityScroll = (url, count) => {
+const useInfinityScroll = (url, count, tab) => {
   // 무한 스크롤
   const [dataList, setDataList] = useState([]);
+  const [searchFilter, setSearchFilter] = useState([]);
   const [hasNextPage, setHasNextPage] = useState(true);
   const page = useRef(1);
   const [ref, inView] = useInView();
 
   const fetch = useCallback(async () => {
     try {
-      const { data } = await axios.get(
-        `${url}?_limit=${count}&_page=${page.current}`
-      );
+      const { data } = await axios.get(`${url}&_page=${page.current}`);
 
       setDataList((prev) => [...prev, ...data]);
 

@@ -72,7 +72,7 @@ function App() {
                 <Route path="/" element={<Main userObj={userObj} />} />
                 <Route path="/promotion/:id" element={<Promotion />} />
                 <Route path="/search" element={<Search />}></Route>
-                <Route path="/product" element={<Product />} />
+                <Route path="/product/*" element={<Product />} />
                 <Route path="/detail/:id" element={<DetailProduct />} />
                 <Route
                   path="/mypage/*"
