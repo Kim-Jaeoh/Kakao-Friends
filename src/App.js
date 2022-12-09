@@ -20,6 +20,7 @@ import { Header } from "./components/header/Header";
 import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
 import { Promotion } from "./pages/Promotion";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SearchResultItem2 } from "./components/search/SearchResultItem2";
 
 const Container = styled.div`
   font-size: 14px;
@@ -71,7 +72,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Main userObj={userObj} />} />
                 <Route path="/promotion/:id" element={<Promotion />} />
-                <Route path="/search" element={<Search />}></Route>
+                <Route path="/search/*" element={<Search />} />
                 <Route path="/product/*" element={<Product />} />
                 <Route path="/detail/:id" element={<DetailProduct />} />
                 <Route

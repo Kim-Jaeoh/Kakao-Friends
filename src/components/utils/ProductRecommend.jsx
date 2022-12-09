@@ -150,6 +150,7 @@ export const ProductRecommend = ({ productId }) => {
   useEffect(() => {
     // 객체 깊은 복사
     let arr = cloneDeep(dataList?.data);
+    arr = arr?.filter((item) => item.amount !== 0);
 
     if (productId) {
       arr = arr?.filter((obj) => obj?.product !== productId);

@@ -6,10 +6,7 @@ import { setOrder } from "../reducer/user";
 export const usePayReady = (list, type) => {
   const [obj, setObj] = useState([]);
   const dispatch = useDispatch();
-  // const currentOrder = useSelector((state) => state.user.order);
-  // const currentBasket = useSelector((state) => state.user.basket);
 
-  // const appUrl = "https://kakao-friends.herokuapp.com/mypage/payresult";
   const appUrl = `http://localhost:3000/mypage/payresult?type=${
     type === "direct" ? "direct" : "basket"
   }`;

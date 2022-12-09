@@ -3,18 +3,18 @@ import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { usePriceComma } from "../../hooks/usePriceComma";
+import useInfinityScroll from "../../hooks/useInfinityScroll";
+
+import { NotInfo } from "../utils/NotInfo";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
-import axios from "axios";
-import { cloneDeep, debounce } from "lodash";
-import useInfinityScroll from "../../hooks/useInfinityScroll";
-import { RouterHeader } from "../header/RouterHeader";
-import { CiSearch } from "react-icons/ci";
-import { IoMdCloseCircle } from "react-icons/io";
-import { Footer } from "../utils/Footer";
-import { NotInfo } from "../utils/NotInfo";
 
 const Container = styled.div`
   width: 100%;
@@ -221,12 +221,23 @@ const SearchResultBox = styled.div`
 `;
 
 export const SearchResultItem2 = ({ dataList }) => {
-  const api = "http://localhost:4000/ProductListData";
+  const [resultItem, setResultItem] = useState([]);
+  const [searchParams] = useSearchParams();
 
-  // const { ref, dataList: data } = useInfinityScroll(api, 8); // 무한스크롤 커스텀 훅
+  const keyword = searchParams.get("keyword");
+  const api = "http://localhost:4000/ProductListData?";
 
-  // const filter = data.data.filter((asd) => dataList.includes(asd));
-  // console.log(filter);
+  const { ref, dataList: data } = useInfinityScroll(api, 9); // 무한스크롤 커스텀 훅
+
+  // useEffect(() => {
+  //   const filter = data?.data?.filter((asd) => asd.title.includes(keyword));
+  //   setResultItem(filter);
+  // }, [data?.data, keyword]);
+
+  useEffect(() => {
+    // console.log("데이터 안 받아지는 이유 찾는 중;;");
+    // console.log(data);
+  }, [data]);
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
@@ -234,50 +245,59 @@ export const SearchResultItem2 = ({ dataList }) => {
 
   return (
     <BasketRecommendBox>
-      <>
-        <SearchResultBox>
-          <span>
-            총 <strong>{dataList.length}</strong> 개
-          </span>
-        </SearchResultBox>
-        {dataList.length > 0 ? (
-          <BasketRecommendListBox>
-            {dataList?.map((list, index) => (
-              <BasketRecommendList key={list.product}>
-                <RecommendListBox>
-                  <RecommendListImage to={`/detail/${list.product}`}>
-                    <img src={list.image} alt={list.title} />
-                  </RecommendListImage>
-                  <RecommendListText>
-                    <strong>{list.title}</strong>
-                    <RecomendListPrice>
-                      <span>{PriceComma(list.price)}</span>원
-                    </RecomendListPrice>
-                    <BagButton onClick={(e) => toggleIcon(list)}>
-                      {currentBasket?.filter(
-                        (obj) => obj.product === list.product
-                      ).length > 0 ? (
-                        <BsBagFill style={{ color: "#ff447f" }} />
-                      ) : (
-                        <BsBag />
-                      )}
-                    </BagButton>
-                  </RecommendListText>
-                </RecommendListBox>
-              </BasketRecommendList>
-            ))}
-          </BasketRecommendListBox>
-        ) : (
-          <NotInfo
-            url={
-              "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221202/101742/assets/images/m960/ico_empty_ryan.png"
-            }
-            title={"검색 결과가 없습니다."}
-            text={"다른 검색어를 입력하시거나, "}
-            text2={"철자 및 띄어쓰기를 확인해주세요."}
-          />
-        )}
-      </>
+      {keyword && (
+        <>
+          <SearchResultBox>
+            <span>
+              총 <strong>{dataList.length}</strong> 개
+            </span>
+          </SearchResultBox>
+          {dataList.length > 0 ? (
+            <BasketRecommendListBox>
+              {dataList?.map((list, index) => (
+                <BasketRecommendList key={list.product}>
+                  <RecommendListBox>
+                    <RecommendListImage to={`/detail/${list.product}`}>
+                      <img src={list.image} alt={list.title} />
+                    </RecommendListImage>
+                    <RecommendListText>
+                      <strong>{list.title}</strong>
+                      <RecomendListPrice>
+                        <span>{PriceComma(list.price)}</span>원
+                      </RecomendListPrice>
+                      <BagButton onClick={(e) => toggleIcon(list)}>
+                        {currentBasket?.filter(
+                          (obj) => obj.product === list.product
+                        ).length > 0 ? (
+                          <BsBagFill style={{ color: "#ff447f" }} />
+                        ) : (
+                          <BsBag />
+                        )}
+                      </BagButton>
+                    </RecommendListText>
+                  </RecommendListBox>
+                </BasketRecommendList>
+              ))}
+              <div
+                ref={ref}
+                style={{
+                  position: "absolute",
+                  bottom: "50px",
+                }}
+              />
+            </BasketRecommendListBox>
+          ) : (
+            <NotInfo
+              url={
+                "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221202/101742/assets/images/m960/ico_empty_ryan.png"
+              }
+              title={"검색 결과가 없습니다."}
+              text={"다른 검색어를 입력하시거나, "}
+              text2={"철자 및 띄어쓰기를 확인해주세요."}
+            />
+          )}
+        </>
+      )}
     </BasketRecommendBox>
   );
 };

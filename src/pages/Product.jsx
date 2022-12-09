@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { BsBag, BsBagFill } from "react-icons/bs";
-import { Header } from "../components/header/Header";
 import { Footer } from "../components/utils/Footer";
 import {
   Link,
@@ -9,15 +7,9 @@ import {
   Routes,
   useLocation,
   useNavigate,
-  useParams,
+  useSearchParams,
 } from "react-router-dom";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { useBasketToggle } from "../hooks/useBasketToggle";
-import { useSelector } from "react-redux";
-import useInfinityScroll from "../hooks/useInfinityScroll";
-import { useMemo } from "react";
-import useScrollMove from "../hooks/useScrollMove";
-import { set } from "lodash";
+
 import { ProductSteady } from "../components/product/ProductSteady";
 import { ProductRealTime } from "../components/product/ProductRealTime";
 
@@ -62,7 +54,7 @@ const TabTitle = styled.li`
   margin: 0 2px;
   vertical-align: top;
 
-  p {
+  a {
     display: block;
     padding: 0 14px;
     border: 1px solid;
@@ -84,19 +76,19 @@ const TabTitle = styled.li`
 
 const Product = () => {
   const [clickTabNumber, setClickTabNumber] = useState(1);
-  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const toggleTab = (num) => {
     setClickTabNumber(num);
   };
 
   useEffect(() => {
-    if (clickTabNumber === 1) {
-      navigate("/product/realtime");
+    if (pathname.includes("realtime")) {
+      setClickTabNumber(1);
     } else {
-      navigate("/product/steady");
+      setClickTabNumber(2);
     }
-  }, [clickTabNumber, navigate]);
+  }, [pathname]);
 
   return (
     <>
@@ -111,18 +103,22 @@ const Product = () => {
               num={1}
               selected={clickTabNumber}
             >
-              <p>실시간</p>
+              <Link to="/product/realtime">실시간</Link>
             </TabTitle>
             <TabTitle
               onClick={() => toggleTab(2)}
               num={2}
               selected={clickTabNumber}
             >
-              <p>스테디</p>
+              <Link to="/product/steady">스테디</Link>
+              {/* <p>스테디</p> */}
             </TabTitle>
           </TabList>
 
-          {clickTabNumber === 1 ? <ProductRealTime /> : <ProductSteady />}
+          <Routes>
+            <Route path="/realtime" element={<ProductRealTime />} />
+            <Route path="/steady" element={<ProductSteady />} />
+          </Routes>
         </Wrapper>
         <Footer />
       </Container>

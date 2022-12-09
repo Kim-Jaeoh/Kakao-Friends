@@ -5,7 +5,7 @@ import { ProductInnerList } from "./ProductInnerList";
 export const ProductSteady = () => {
   const [dataItem, setDataItem] = useState([]);
 
-  const api = "http://localhost:4000/ProductListData?_limit=16";
+  const api = "http://localhost:4000/ProductListData?";
 
   const { ref, dataList } = useInfinityScroll(api, 16); // 무한스크롤 커스텀 훅
 

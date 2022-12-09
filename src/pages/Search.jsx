@@ -1,7 +1,5 @@
-import React, { Suspense, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
-import { createBrowserHistory } from "history";
-import { Modal } from "@mui/material";
 import {
   Link,
   Route,
@@ -9,14 +7,13 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useSearchParams,
 } from "react-router-dom";
-import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
-import { TbWorld } from "react-icons/tb";
-import { FiHome } from "react-icons/fi";
+import { IoMdCloseCircle } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 
 import { Footer } from "../components/utils/Footer";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import {
   CategoryListApi,
   MenuCharacterListApi,
@@ -28,6 +25,7 @@ import { useRef } from "react";
 import axios from "axios";
 import { SearchResultItem } from "../components/search/SearchResultItem";
 import { SearchResultItem2 } from "../components/search/SearchResultItem2";
+import useInfinityScroll from "../hooks/useInfinityScroll";
 
 const Wrapper = styled.div``;
 
@@ -247,8 +245,11 @@ export const Search = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   // const [resultSubmit, setResultSubmit] = useState(false);
   const inputRef = useRef();
-  const { pathname } = useLocation();
-  const keyword = pathname.split("/search")[1];
+  const { search } = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const keyword = searchParams.get("keyword");
 
   const { data: dataList1, isLoading1 } = useQuery(
     "character",
@@ -277,9 +278,10 @@ export const Search = () => {
     }
   );
 
+  // 검색어 데이터
   useEffect(() => {
     if (focus && searchText !== "") {
-      const filter = dataList3.data.filter((obj) =>
+      const filter = dataList3?.data.filter((obj) =>
         obj.title.includes(searchText)
       );
       setLoading(true);
@@ -290,11 +292,29 @@ export const Search = () => {
     }
   }, [dataList3, focus, searchText]);
 
+  // 쿼리 키워드 데이터(history 변동 시)
+  useEffect(() => {
+    if (keyword) {
+      const filter = dataList3?.data.filter((obj) =>
+        obj.title.includes(keyword)
+      );
+      setLoading(true);
+      setResultItem(filter);
+    }
+  }, [dataList3?.data, keyword]);
+
+  // input value 값 넣기
+  useEffect(() => {
+    if (isSubmit) {
+      inputRef.current.value = keyword || searchText;
+    } else return;
+  }, [isSubmit, keyword, searchText]);
+
   // 검색어 디바운스
   const onChangeText = debounce((e) => {
     setIsSubmit(false);
     setSearchText(e.target.value);
-  }, 100);
+  }, 300);
 
   // 검색어 지우기
   const searchDelete = () => {
@@ -303,22 +323,25 @@ export const Search = () => {
     inputRef.current.value = "";
   };
 
-  // // 검색(form enter)했는지 체크
-  // useEffect(() => {
-  //   if (isSubmit) {
-  //     setResultSubmit(true);
-  //   } else {
-  //     setResultSubmit(false);
-  //   }
-  // }, [isSubmit]);
-
   // 검색(form enter)했는지 체크
-  const onSubmit = (e) => {
-    e.preventDefault();
-    // navigate(`/search/${searchText}`);
-    setIsSubmit(true);
-    inputRef.current.value = "";
-  };
+  const onSubmit = useCallback(
+    (e) => {
+      if (loading) {
+        e.preventDefault();
+        setIsSubmit(true);
+        inputRef.current.value = "";
+        navigate({
+          pathname: "/search",
+          search: `?keyword=${searchText}`,
+        });
+        setLoading(false);
+        inputRef.current.blur();
+      }
+    },
+    [loading, navigate, searchText]
+  );
+
+  // 라우터 input / keyword로 나눠서 해보기!!!!!!!
 
   return (
     <Container>
@@ -334,6 +357,8 @@ export const Search = () => {
             </SearchIcon>
             <SearchInput
               type="text"
+              name="searchText"
+              // value={searchText}
               ref={inputRef}
               onChange={onChangeText}
               onFocus={() => setFocus(true)}
@@ -350,7 +375,14 @@ export const Search = () => {
         </SearchForm>
       </SearchBox>
 
-      {isSubmit ? (
+      {/* <Routes>
+        <Route
+          path={`/search`}
+          element={<SearchResultItem2 dataList={resultItem} />}
+        />
+      </Routes> */}
+
+      {isSubmit && keyword ? (
         <SearchResultItem2 dataList={resultItem} />
       ) : (
         <>
@@ -366,19 +398,6 @@ export const Search = () => {
                     return (
                       <ResultList key={index}>
                         <Link to={`/detail/${list.product}`}>
-                          {/* 1. split 방법 */}
-                          {/* {searchText !== "" &&
-                          list.title.includes(searchText) ? (
-                            <>
-                              {list.title.split(searchText)[0]}
-                              <em style={{ color: "#ff447f" }}>{searchText}</em>
-                              {list.title.split(searchText)[1]}
-                            </>
-                          ) : (
-                            list.title
-                          )} */}
-
-                          {/* ✔ 2. 정규식 방법 */}
                           {parts.map((part, index) =>
                             part.toLowerCase() === searchText.toLowerCase() ? (
                               <em style={{ color: "#ff447f" }} key={index}>

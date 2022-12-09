@@ -61,7 +61,7 @@ export const Category = () => {
           num={3}
           selected={selected}
           onSelected={onSelected}
-          url={"/product"}
+          url={"/product/realtime"}
           text={"상품"}
         />
         <CategoryMenuBtn

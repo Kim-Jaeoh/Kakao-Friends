@@ -1,0 +1,73 @@
+:root {
+  --swiper-navigation-size: 44px;
+  /*
+  --swiper-navigation-color: var(--swiper-theme-color);
+  */
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  cursor: pointer;
+  color: #000;
+  z-index: 30;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.swiper-button-prev.swiper-button-disabled,
+.swiper-button-next.swiper-button-disabled {
+  opacity: 0.35;
+  cursor: auto;
+  pointer-events: none;
+}
+
+.swiper-button-next {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: url("https://s2.svgbox.net/materialui.svg?ic=arrow_forward_ios");
+  background-color: #fff;
+  background-size: 60% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.swiper-button-prev {
+  background: url("https://s2.svgbox.net/materialui.svg?ic=arrow_back_ios");
+  background-color: #fff;
+  background-size: 60% auto;
+  background-position: 7px;
+  background-repeat: no-repeat;
+}
+
+.swiper-button-prev,
+.swiper-rtl .swiper-button-next {
+  left: 20px;
+  right: auto;
+}
+
+.swiper-button-prev:after,
+.swiper-rtl .swiper-button-next:after {
+  content: "";
+}
+
+.swiper-button-next,
+.swiper-rtl .swiper-button-prev {
+  right: 20px;
+  left: auto;
+}
+
+.swiper-button-next:after,
+.swiper-rtl .swiper-button-prev:after {
+  content: "";
+}
+
+.swiper-button-lock {
+  display: none;
+}
+/*# sourceMappingURL=navigation.css.map */

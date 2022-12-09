@@ -163,39 +163,55 @@ export const DetailProduct = () => {
   const { id } = useParams();
   const { viewedItems } = useLocalStorage();
 
-  const {
-    data: dataList,
-    isLoading,
-    refetch,
-  } = useQuery("productList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
   const _plugins = [
     new AutoPlay({ duration: 3000, direction: "NEXT", stopOnHover: true }),
   ];
 
+  // axios
   useEffect(() => {
-    if (isLoading === false) {
-      const item = dataList?.data[id - 1];
+    const api = async () => {
+      await axios
+        .get(`http://localhost:4000/ProductListData?product=${id}`)
+        .then((e) =>
+          setProduct([
+            {
+              id: e.data[0]?.id,
+              product: e.data[0]?.product,
+              title: e.data[0]?.title,
+              price: e.data[0]?.price,
+              image: e.data[0]?.image,
+              amount: e.data[0]?.amount, // 잔여 수량
+              quanity: count, // 구매할 수량
+            },
+          ])
+        );
+    };
+    api();
+  }, [count, id]);
 
-      setProduct([
-        {
-          id: item?.id,
-          product: item?.product,
-          title: item?.title,
-          price: item?.price,
-          image: item?.image,
-          amount: item?.amount, // 잔여 수량
-          quanity: count, // 구매할 수량
-        },
-      ]);
-    } else {
-      setProduct(dataList?.data[id - 1]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
-      // setProduct(dataList?.data[0]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
-    }
-  }, [count, dataList?.data, isLoading, id, refetch]);
+  // const { data: dataList, isLoading } = useQuery("producList", ProductListApi, {
+  //   refetchOnWindowFocus: false,
+  //   onError: (e) => console.log(e.message),
+  // });
+
+  // useEffect(() => {
+  //   if (isLoading === false) {
+  //     const item = dataList?.data[id - 1];
+  //     setProduct([
+  //       {
+  //         id: item?.id,
+  //         product: item?.product,
+  //         title: item?.title,
+  //         price: item?.price,
+  //         image: item?.image,
+  //         amount: item?.amount, // 잔여 수량
+  //         quanity: count, // 구매할 수량
+  //       },
+  //     ]);
+  //   } else {
+  //     setProduct(dataList?.data[id - 1]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
+  //   }
+  // }, [count, dataList?.data, id, isLoading]);
 
   const toggleButtonModal = () => {
     setbuttonModal((prev) => !prev);

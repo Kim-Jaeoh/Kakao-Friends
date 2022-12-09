@@ -146,7 +146,6 @@ export const ProductSeen = ({ productId }) => {
       onError: (e) => console.log(e.message),
     }
   );
-  const { id } = useParams();
 
   // localStorage 받아오기
   useEffect(() => {

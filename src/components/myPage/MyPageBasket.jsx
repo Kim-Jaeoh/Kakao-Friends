@@ -19,6 +19,7 @@ import { usePriceComma } from "../../hooks/usePriceComma";
 import { ProductRecommend } from "../utils/ProductRecommend";
 import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
+import useInfinityScroll from "../../hooks/useInfinityScroll";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -640,10 +641,6 @@ const MyPageBasket = ({ userObj }) => {
     currentBasket,
     "basket"
   );
-
-  useEffect(() => {
-    console.log(currentBasket);
-  }, [currentBasket]);
 
   // 상품 가격
   useEffect(() => {
