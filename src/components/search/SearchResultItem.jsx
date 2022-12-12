@@ -3,17 +3,18 @@ import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { usePriceComma } from "../../hooks/usePriceComma";
+import useInfinityScroll from "../../hooks/useInfinityScroll";
+
+import { NotInfo } from "../utils/NotInfo";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
-import axios from "axios";
-import { cloneDeep, debounce } from "lodash";
-import useInfinityScroll from "../../hooks/useInfinityScroll";
-import { RouterHeader } from "../header/RouterHeader";
-import { CiSearch } from "react-icons/ci";
-import { IoMdCloseCircle } from "react-icons/io";
-import { Footer } from "../utils/Footer";
 
 const Container = styled.div`
   width: 100%;
@@ -90,8 +91,7 @@ const ResetButton = styled.div`
 `;
 
 const BasketRecommendBox = styled.div`
-  /* padding-top: 36px; */
-  /* border-top: 4px solid #f7f7f7; */
+  position: relative;
 
   > strong {
     display: block;
@@ -219,122 +219,76 @@ const SearchResultBox = styled.div`
   }
 `;
 
-export const SearchResultItem = ({ searchValue }) => {
-  const [loading, setLoading] = useState(false);
-  const [focus, setFocus] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [resultItem, setResultItem] = useState([]);
-  const [color, setColor] = useState([]);
-  const inputRef = useRef();
+export const SearchResultItem = () => {
+  const [api, setApi] = useState(false);
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword");
 
-  const navigate = useNavigate();
+  const { ref, dataList } = useInfinityScroll(api, 10); // 무한스크롤 커스텀 훅
 
-  const api = "http://localhost:4000/ProductListData";
+  useEffect(() => {
+    setApi(`http://localhost:4000/ProductListData?q=${keyword}&`);
+  }, [dataList, keyword]);
 
-  // const { ref, dataList } = useInfinityScroll(api, 8); // 무한스크롤 커스텀 훅
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
-  const { state } = useLocation();
-
-  const { result: dataList } = state;
-
-  useEffect(() => {
-    if (focus && searchText !== "") {
-      const filter = dataList?.data.filter((obj) =>
-        obj.title.includes(searchText)
-      );
-      setLoading(true);
-      setResultItem(filter);
-    } else {
-      setLoading(false);
-      setResultItem([]);
-    }
-  }, [dataList, focus, searchText]);
-
-  // 검색어 디바운스
-  const onChangeText = debounce((e) => {
-    setSearchText(e.target.value);
-  }, 200);
-
-  const searchDelete = () => {
-    setSearchText("");
-    inputRef.current.value = "";
-  };
-
-  const noEnter = (e) => {
-    console.log(`/search/keyword/${searchText}`);
-    navigate(`/search/keyword/${searchText}`, {
-      state: { result: resultItem },
-    });
-  };
-
   return (
-    <Container>
-      <RouterHeader title={"검색"} />
-
-      <SearchBox>
-        <SearchForm onSubmit={noEnter}>
-          {/* <SearchForm onSubmit={(e) => e.preventDefault()}> */}
-          <SearchContents>
-            <SearchIcon>
-              <div>
-                <CiSearch />
-              </div>
-            </SearchIcon>
-            <SearchInput
-              type="text"
-              ref={inputRef}
-              onChange={onChangeText}
-              onFocus={() => setFocus(true)}
-              // onBlur={() => setFocus(false)}
+    <BasketRecommendBox>
+      {keyword && (
+        <>
+          <SearchResultBox>
+            <span>
+              총 <strong>{dataList.length}</strong> 개
+            </span>
+          </SearchResultBox>
+          {keyword && dataList?.length !== 0 ? (
+            <BasketRecommendListBox>
+              {dataList?.map((list, index) => (
+                <BasketRecommendList key={list.id}>
+                  <RecommendListBox>
+                    <RecommendListImage to={`/detail/${list.product}`}>
+                      <img src={list.image} alt={list.title} />
+                    </RecommendListImage>
+                    <RecommendListText>
+                      <strong>{list.title}</strong>
+                      <RecomendListPrice>
+                        <span>{PriceComma(list.price)}</span>원
+                      </RecomendListPrice>
+                      <BagButton onClick={(e) => toggleIcon(list)}>
+                        {currentBasket?.filter(
+                          (obj) => obj.product === list.product
+                        ).length > 0 ? (
+                          <BsBagFill style={{ color: "#ff447f" }} />
+                        ) : (
+                          <BsBag />
+                        )}
+                      </BagButton>
+                    </RecommendListText>
+                  </RecommendListBox>
+                </BasketRecommendList>
+              ))}
+            </BasketRecommendListBox>
+          ) : (
+            <NotInfo
+              url={
+                "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221202/101742/assets/images/m960/ico_empty_ryan.png"
+              }
+              title={"검색 결과가 없습니다."}
+              text={"다른 검색어를 입력하시거나, "}
+              text2={"철자 및 띄어쓰기를 확인해주세요."}
             />
-            {searchText && (
-              <ResetButton onClick={searchDelete}>
-                <span>
-                  <IoMdCloseCircle />
-                </span>
-              </ResetButton>
-            )}
-          </SearchContents>
-        </SearchForm>
-      </SearchBox>
-
-      <BasketRecommendBox>
-        <SearchResultBox>
-          <span>
-            총 <strong>{dataList.length}</strong> 개
-          </span>
-        </SearchResultBox>
-        <BasketRecommendListBox>
-          {dataList?.map((list, index) => (
-            <BasketRecommendList key={list.product}>
-              <RecommendListBox>
-                <RecommendListImage to={`/detail/${list.product}`}>
-                  <img src={list.image} alt={list.title} />
-                </RecommendListImage>
-                <RecommendListText>
-                  <strong>{list.title}</strong>
-                  <RecomendListPrice>
-                    <span>{PriceComma(list.price)}</span>원
-                  </RecomendListPrice>
-                  <BagButton onClick={(e) => toggleIcon(list)}>
-                    {currentBasket?.filter(
-                      (obj) => obj.product === list.product
-                    ).length > 0 ? (
-                      <BsBagFill style={{ color: "#ff447f" }} />
-                    ) : (
-                      <BsBag />
-                    )}
-                  </BagButton>
-                </RecommendListText>
-              </RecommendListBox>
-            </BasketRecommendList>
-          ))}
-        </BasketRecommendListBox>
-      </BasketRecommendBox>
-      <Footer />
-    </Container>
+          )}
+        </>
+      )}
+      <div
+        ref={ref}
+        style={{
+          position: "absolute",
+          bottom: "0px",
+        }}
+      />
+    </BasketRecommendBox>
   );
 };

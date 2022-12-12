@@ -121,7 +121,7 @@ export const Header = () => {
                 <img alt="KAKAO FRIENDS" src={logo} />
               </Logo>
               <Icons>
-                <Link to="/search/input">
+                <Link to="/search">
                   <IconBox>
                     <FiSearch />
                   </IconBox>

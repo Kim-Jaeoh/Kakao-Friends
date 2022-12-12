@@ -3,9 +3,7 @@ import styled from "@emotion/styled";
 import { useQuery } from "react-query";
 import { RouterHeader } from "../components/header/RouterHeader";
 import { PromotionApi } from "../apis/dataApi";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const Container = styled.div`
   position: relative;

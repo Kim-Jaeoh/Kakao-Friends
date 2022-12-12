@@ -155,7 +155,7 @@ const OrderButton = styled.button`
 `;
 
 export const DetailProduct = () => {
-  const [slideIndex, setSlideIndex] = useState(0);
+  // const [slideIndex, setSlideIndex] = useState(0); // 상세 이미지 더 있을 시
   const [product, setProduct] = useState([]);
   const [count, setCount] = useState(1);
   const [buttonModal, setbuttonModal] = useState(false);
@@ -166,6 +166,10 @@ export const DetailProduct = () => {
   const _plugins = [
     new AutoPlay({ duration: 3000, direction: "NEXT", stopOnHover: true }),
   ];
+
+  const api = async () => {
+    await axios.get(`http://localhost:4000/ProductListData?product=${id}`);
+  };
 
   // axios
   useEffect(() => {
@@ -189,29 +193,16 @@ export const DetailProduct = () => {
     api();
   }, [count, id]);
 
-  // const { data: dataList, isLoading } = useQuery("producList", ProductListApi, {
-  //   refetchOnWindowFocus: false,
-  //   onError: (e) => console.log(e.message),
-  // });
-
-  // useEffect(() => {
-  //   if (isLoading === false) {
-  //     const item = dataList?.data[id - 1];
-  //     setProduct([
-  //       {
-  //         id: item?.id,
-  //         product: item?.product,
-  //         title: item?.title,
-  //         price: item?.price,
-  //         image: item?.image,
-  //         amount: item?.amount, // 잔여 수량
-  //         quanity: count, // 구매할 수량
-  //       },
-  //     ]);
-  //   } else {
-  //     setProduct(dataList?.data[id - 1]); // 첫 렌더 시 데이터 없는 경우 에러 노출 되기에 원래 값을 넣어 방지
+  // const { data: dataList, isLoading } = useQuery(
+  //   "producList",
+  //   // api(),
+  //   async () =>
+  //     await axios.get(`http://localhost:4000/ProductListData?product=${id}`),
+  //   {
+  //     refetchOnWindowFocus: false,
+  //     onError: (e) => console.log(e.message),
   //   }
-  // }, [count, dataList?.data, id, isLoading]);
+  // );
 
   const toggleButtonModal = () => {
     setbuttonModal((prev) => !prev);
@@ -232,9 +223,9 @@ export const DetailProduct = () => {
                 defaultIndex={0}
                 autoInit={true}
                 ref={flickingRef}
-                onChanged={(e) => {
-                  setSlideIndex(e.index);
-                }}
+                // onChanged={(e) => {
+                //   setSlideIndex(e.index);
+                // }}
                 changeOnHold={false}
                 moveType={"strict"}
                 plugins={_plugins}

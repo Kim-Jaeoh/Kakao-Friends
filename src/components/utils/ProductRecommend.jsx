@@ -131,16 +131,14 @@ const BagButton = styled.button`
 
 export const ProductRecommend = ({ productId }) => {
   const [randomItem, setRandomItem] = useState([]);
-  const [refresh, setRefresh] = useState(false);
 
-  const { data: dataList, isLoading } = useQuery(
-    "productList",
-    ProductListApi,
-    {
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e.message),
-    }
-  );
+  const api = async () =>
+    await axios.get("http://localhost:4000/ProductListData?amount_ne=0");
+
+  const { data: dataList, isLoading } = useQuery("productList", api, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
@@ -150,7 +148,7 @@ export const ProductRecommend = ({ productId }) => {
   useEffect(() => {
     // 객체 깊은 복사
     let arr = cloneDeep(dataList?.data);
-    arr = arr?.filter((item) => item.amount !== 0);
+    // arr = arr?.filter((item) => item.amount !== 0); // 잔여 수량 0개 제외
 
     if (productId) {
       arr = arr?.filter((obj) => obj?.product !== productId);

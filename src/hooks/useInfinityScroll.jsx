@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { useInView } from "react-intersection-observer";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
@@ -29,6 +29,10 @@ const useInfinityScroll = (url, count) => {
       console.error(err);
     }
   }, [count, url]);
+
+  // useEffect(() => {
+  // fetch();
+  // }, []);
 
   useEffect(() => {
     if (inView && hasNextPage) {

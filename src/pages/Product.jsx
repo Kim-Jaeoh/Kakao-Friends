@@ -111,7 +111,6 @@ const Product = () => {
               selected={clickTabNumber}
             >
               <Link to="/product/steady">스테디</Link>
-              {/* <p>스테디</p> */}
             </TabTitle>
           </TabList>
 

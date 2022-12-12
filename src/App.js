@@ -20,7 +20,7 @@ import { Header } from "./components/header/Header";
 import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
 import { Promotion } from "./pages/Promotion";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { SearchResultItem2 } from "./components/search/SearchResultItem2";
+import { SearchResultItem2 } from "./components/search/SearchResultItem";
 
 const Container = styled.div`
   font-size: 14px;
