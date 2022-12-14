@@ -6,10 +6,10 @@ import { useLocation } from "react-router-dom";
 
 // 무한 스크롤
 const useInfinityScroll = (url, count) => {
+  // const [dataList, setDataList] = useState([]);
   const queryClient = useQueryClient();
 
   // react query 무한스크롤 방법
-  const [dataLists, setDataList] = useState([]);
   const fetchRepositories = async (page) => {
     const res = await axios.get(`${url}_limit=${count}&_page=${page}`);
     return res.data;
@@ -37,11 +37,6 @@ const useInfinityScroll = (url, count) => {
 
   const { ref, inView } = useInView();
 
-  // 데이터 합쳐서 저장
-  useEffect(() => {
-    dataList?.pages?.map((asd) => setDataList((prev) => [...prev, ...asd]));
-  }, [dataList?.pages]);
-
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -52,17 +47,21 @@ const useInfinityScroll = (url, count) => {
     console.log(dataList);
   }, [dataList]);
 
-  // 라우터 이동 시 데이터 초기화 (뒤로가기 시에는 위치 저장)
-  useEffect(() => {
-    return () => {
-      queryClient.setQueryData(["infiniteProduct", url], (dataList) => ({
-        pages: dataList?.pages.slice(0, 1),
-        pageParams: dataList?.pageParams?.slice(0, 1),
-        // pages: dataList?.pages?.splice(1, dataList.pages.length - 1),
-        // pageParams: dataList?.pageParams?.splice(1, dataList.pages.length - 1),
-      }));
-    };
-  }, [queryClient, url]);
+  // useState 하는 방법!!!
+  // // 데이터 합쳐서 저장
+  // useEffect(() => {
+  //   dataList?.pages?.map((asd) => setDataList((prev) => [...prev, ...asd]));
+  // }, [dataList?.pages]);
+
+  // // 라우터 이동 시 데이터 초기화 (뒤로가기 시에는 위치 저장)
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.setQueryData(["infiniteProduct", url], (dataList) => ({
+  //       pages: dataList?.pages.slice(0, 1),
+  //       pageParams: dataList?.pageParams?.slice(0, 1),
+  //     }));
+  //   };
+  // }, [queryClient, url]);
 
   return { ref, dataList };
 };

@@ -57,6 +57,43 @@ export const ProductInnerList = forwardRef(({ dataItem }, ref) => {
             </React.Fragment>
           );
         })}
+
+      {/* // useState 할 때 방법!!! */}
+      {/* {dataItem &&
+        dataItem?.map((list, index) => (
+          <ListItem key={index}>
+            <ListItemNumberBox>
+              {index + 1 < 4 ? (
+                <ListItemRank>{index + 1}</ListItemRank>
+              ) : (
+                <ListItemNumber>{index + 1}</ListItemNumber>
+              )}
+            </ListItemNumberBox>
+            <ProductBox>
+              <Link to={`/detail/${list.product}`}>
+                <ProductImage>
+                  <img src={list.image} alt={list.title} />
+                </ProductImage>
+              </Link>
+              <ProductTextBox>
+                <ProductText>
+                  <strong>{list.title}</strong>
+                </ProductText>
+                <ProductPrice>
+                  <span>{list.price}</span>원
+                </ProductPrice>
+                <ProductBag onClick={() => toggleIcon(list)}>
+                  {currentBasket?.filter((obj) => obj.product === list.product)
+                    .length > 0 ? (
+                    <BsBagFill />
+                  ) : (
+                    <BsBag />
+                  )}
+                </ProductBag>
+              </ProductTextBox>
+            </ProductBox>
+          </ListItem>
+        ))} */}
       <div
         ref={ref}
         style={{
