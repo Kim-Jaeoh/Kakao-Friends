@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { useQuery } from "react-query";
 import { BannerListApi } from "../../apis/dataApi.js";
+import { Footer } from "../utils/Footer.jsx";
 
 const Container = styled.div`
   display: block;

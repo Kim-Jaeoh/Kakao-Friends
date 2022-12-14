@@ -135,10 +135,14 @@ export const ProductRecommend = ({ productId }) => {
   const api = async () =>
     await axios.get("http://localhost:4000/ProductListData?amount_ne=0");
 
-  const { data: dataList, isLoading } = useQuery("productList", api, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
+  const { data: dataList, isLoading } = useQuery(
+    ["productList", productId],
+    api,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 

@@ -61,12 +61,12 @@ export const Main = () => {
           <MainBanner>
             <MainContents />
           </MainBanner>
-          <BeltBanner to="/promotion/2" state={"카카오페이 11월 즉시할인"}>
+          <BeltBanner to="/promotion/2" state={"카카오페이 12월 즉시할인"}>
             <BennerContents
               // resize={resize}
               // checkSize={size}
               src={resize ? beltbannerMo : beltbannerPc}
-              alt="카카오페이로 결제 시 3천원 할인!"
+              alt="카카오페이로 결제 시 최대 5천원 할인!"
             />
           </BeltBanner>
           <MainSlideContents />

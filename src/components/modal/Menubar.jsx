@@ -318,8 +318,20 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const modalFixed = useModalScrollFixed(menuModal); // 모달 스크롤 픽스
+
+  const category = [
+    "전체",
+    "토이",
+    "리빙",
+    "잡화",
+    "문구",
+    "의류",
+    "디지털",
+    "여행/레져",
+    "식품",
+    "테마 기획전",
+  ];
 
   const { data: dataList1, isLoading } = useQuery(
     "character",
@@ -330,10 +342,10 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
     }
   );
 
-  const { data: dataList2 } = useQuery("category", CategoryListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
+  // const { data: dataList2 } = useQuery("category", CategoryListApi, {
+  //   refetchOnWindowFocus: false,
+  //   onError: (e) => console.log(e.message),
+  // });
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -471,9 +483,9 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
               <ListContents>
                 <CategoryListBox>
                   {!isLoading &&
-                    dataList2?.data.map((list) => (
-                      <CategoryList key={list.id}>
-                        <Link>{list.title}</Link>
+                    category.map((list, index) => (
+                      <CategoryList key={index}>
+                        <Link>{list}</Link>
                       </CategoryList>
                     ))}
                 </CategoryListBox>

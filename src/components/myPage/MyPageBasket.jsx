@@ -567,17 +567,12 @@ const MyPageBasket = ({ userObj }) => {
     setTotalProgress(Math.round((cartPrice / 30000) * 100));
   }, [cartPrice, totalProgress]);
 
-  // 페이지 이탈 시 전체 체크 활성화
-  useEffect(() => {
-    // 첫 렌더링 시 체크됐던 목록 담기
-    // setCheckItems(currentBasket.map((obj) => obj.product));
-
-    return () => {
-      currentBasket.map((obj) => {
-        return dispatch(CheckItem(obj));
-      });
-    };
-  }, []);
+  // // 페이지 이탈 시 전체 체크 활성화
+  // useEffect(() => {
+  //   return () => {
+  //     currentBasket.map((obj) => dispatch(CheckItem(obj)));
+  //   };
+  // }, []);
 
   // 체크된 목록 숫자
   useEffect(() => {
@@ -592,10 +587,7 @@ const MyPageBasket = ({ userObj }) => {
 
   // 선택 삭제
   const selectDelete = () => {
-    const filter = currentBasket?.filter(
-      (item) => item.check === false
-      // (item) => !checkItems.includes(item.product)
-    );
+    const filter = currentBasket?.filter((item) => item.check === false);
     dispatch(setBasket(filter));
   };
 
@@ -622,9 +614,7 @@ const MyPageBasket = ({ userObj }) => {
   const checkAllHandler = (checked) => {
     if (checked) {
       // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
-      const idArray = [];
       currentBasket.map((obj) => {
-        idArray.push(obj.product);
         return dispatch(CheckItem(obj));
       });
     } else {

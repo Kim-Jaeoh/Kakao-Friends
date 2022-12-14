@@ -117,14 +117,27 @@ export const SearchMain = () => {
     }
   );
 
-  const { data: dataList2, isLoading2 } = useQuery(
-    "category",
-    CategoryListApi,
-    {
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e.message),
-    }
-  );
+  const category = [
+    "전체",
+    "토이",
+    "리빙",
+    "잡화",
+    "문구",
+    "의류",
+    "디지털",
+    "여행/레져",
+    "식품",
+    "테마 기획전",
+  ];
+
+  // const { data: dataList2, isLoading2 } = useQuery(
+  //   "category",
+  //   CategoryListApi,
+  //   {
+  //     refetchOnWindowFocus: false,
+  //     onError: (e) => console.log(e.message),
+  //   }
+  // );
 
   return (
     <SearchCategoryBox>
@@ -145,12 +158,11 @@ export const SearchMain = () => {
       <SearchCategoryTextBox>
         <span>카테고리</span>
         <SearchCategoryTextList>
-          {!isLoading2 &&
-            dataList2?.data.map((list, index) => (
-              <SearchCategoryText key={list.id}>
-                <Link>{list.title}</Link>
-              </SearchCategoryText>
-            ))}
+          {category.map((list, index) => (
+            <SearchCategoryText key={index}>
+              <Link>{list}</Link>
+            </SearchCategoryText>
+          ))}
         </SearchCategoryTextList>
       </SearchCategoryTextBox>
     </SearchCategoryBox>
