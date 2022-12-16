@@ -21,6 +21,8 @@ export const DetailProductModal = ({
   setCount,
 }) => {
   const [popupModal, setPopupModal] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
+
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -40,6 +42,19 @@ export const DetailProductModal = ({
       setCount((product.quanity += 1));
     }
   };
+
+  // 수량 키보드 변경
+  const onChange = useCallback(
+    (e) => {
+      const productCount = (product.quanity = e.target.value);
+      if (isFocus) {
+        setCount(productCount.replace(/(^0+)/, "1"));
+      }
+      // if (isFocus === true) {
+      // }
+    },
+    [isFocus, product, setCount]
+  );
 
   // 주문하기 새창
   const orderClick = () => {
@@ -72,16 +87,22 @@ export const DetailProductModal = ({
                       >
                         <BiMinus />
                       </QuanityButton>
-                      <input
+                      <ItemQuanityNumber>{product.quanity}</ItemQuanityNumber>
+                      {/* <input
                         type="number"
                         value={product.quanity}
-                        // onFocus={() => setIsFocus(true)}
-                        // onBlur={() => setIsFocus(false)}
+                        onFocus={() => setIsFocus(true)}
+                        onBlur={() => setIsFocus(false)}
                         min="1"
                         max="99"
-                        onChange={(e) => setCount((prev) => (prev += 1))}
+                        // onInput={(e) =>
+                        //   e.target.value.replace(
+                        //     (/[^0-9.]/g, "").replace(/(\..*)\./g, "$1" | /(^0+)/, "")
+                        //   )
+                        // }
+                        // onChange={onChange}
                         onWheel={(e) => e.target.blur()} // 마우스 휠 막기
-                      />
+                      /> */}
                       <QuanityButton
                         quanity={product.quanity}
                         type="button"
@@ -249,6 +270,11 @@ const ItemCounter = styled.div`
   }
 `;
 
+const ItemQuanityNumber = styled.div`
+  cursor: default;
+  user-select: none;
+`;
+
 const QuanityButton = styled.button`
   position: absolute;
   top: 6px;
@@ -265,6 +291,7 @@ const QuanityButton = styled.button`
     svg {
       color: ${(props) => (props.quanity > 1 ? "#3c404b" : "#dedfe0")};
     }
+    cursor: ${(props) => (props.quanity > 1 ? "pointer" : "default")};
   }
 
   :last-of-type {
@@ -272,6 +299,7 @@ const QuanityButton = styled.button`
     svg {
       color: ${(props) => (props.quanity >= 1 ? "#3c404b" : "#dedfe0")};
     }
+    cursor: ${(props) => (props.quanity < 99 ? "pointer" : "default")};
   }
 
   svg {

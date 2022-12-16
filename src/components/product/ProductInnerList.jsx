@@ -1,66 +1,35 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useQueryClient } from "react-query";
+import useInfinityScroll from "../../hooks/useInfinityScroll";
 
-export const ProductInnerList = forwardRef(({ dataItem }, ref) => {
+export const ProductInnerList = ({ api }) => {
   const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
+  const queryClient = useQueryClient();
+
+  const { ref, dataList: dataItem } = useInfinityScroll(api, 16); // 무한스크롤 커스텀 훅
 
   useEffect(() => {
-    if (dataItem) {
-    }
-  }, []);
+    console.log(dataItem?.pages);
+  }, [dataItem]);
+
+  // 라우터 이탈 시 데이터 clean up으로리셋
+  useEffect(() => {
+    return () => {
+      queryClient.setQueryData(["infiniteProduct", api], (data) => ({
+        pages: data?.pages.slice(0, 1),
+        pageParams: data?.pageParams?.slice(0, 1),
+      }));
+    };
+  }, [queryClient, api]);
 
   return (
     <ListBox>
       {dataItem &&
-        dataItem?.pages?.map((page, idx) => {
-          return (
-            <React.Fragment key={idx}>
-              {page.map((list, index) => (
-                <ListItem key={list.id}>
-                  <ListItemNumberBox>
-                    {index + 1 < 4 ? (
-                      <ListItemRank>{index + 1}</ListItemRank>
-                    ) : (
-                      <ListItemNumber>{index + 1}</ListItemNumber>
-                    )}
-                  </ListItemNumberBox>
-                  <ProductBox>
-                    <Link to={`/detail/${list.product}`}>
-                      <ProductImage>
-                        <img src={list.image} alt={list.title} />
-                      </ProductImage>
-                    </Link>
-                    <ProductTextBox>
-                      <ProductText>
-                        <strong>{list.title}</strong>
-                      </ProductText>
-                      <ProductPrice>
-                        <span>{list.price}</span>원
-                      </ProductPrice>
-                      <ProductBag onClick={() => toggleIcon(list)}>
-                        {currentBasket?.filter(
-                          (obj) => obj.product === list.product
-                        ).length > 0 ? (
-                          <BsBagFill />
-                        ) : (
-                          <BsBag />
-                        )}
-                      </ProductBag>
-                    </ProductTextBox>
-                  </ProductBox>
-                </ListItem>
-              ))}
-            </React.Fragment>
-          );
-        })}
-
-      {/* // useState 할 때 방법!!! */}
-      {/* {dataItem &&
-        dataItem?.map((list, index) => (
+        dataItem?.pages?.flat().map((list, index) => (
           <ListItem key={index}>
             <ListItemNumberBox>
               {index + 1 < 4 ? (
@@ -93,7 +62,8 @@ export const ProductInnerList = forwardRef(({ dataItem }, ref) => {
               </ProductTextBox>
             </ProductBox>
           </ListItem>
-        ))} */}
+        ))}
+
       <div
         ref={ref}
         style={{
@@ -103,7 +73,7 @@ export const ProductInnerList = forwardRef(({ dataItem }, ref) => {
       />
     </ListBox>
   );
-});
+};
 
 const ListBox = styled.ol`
   margin: 2px 14px 0 13px;

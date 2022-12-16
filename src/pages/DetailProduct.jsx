@@ -161,48 +161,45 @@ export const DetailProduct = () => {
   const [buttonModal, setbuttonModal] = useState(false);
   const flickingRef = useRef(null);
   const { id } = useParams();
-  const { viewedItems } = useLocalStorage();
+  const { viewedItems } = useLocalStorage(); // 로컬 저장 커스텀 훅
 
   const _plugins = [
     new AutoPlay({ duration: 3000, direction: "NEXT", stopOnHover: true }),
   ];
 
   const api = async () => {
-    await axios.get(`http://localhost:4000/ProductListData?product=${id}`);
+    return await axios.get(
+      `http://localhost:4000/ProductListData?product=${id}`
+    );
   };
 
-  // axios
-  useEffect(() => {
-    const api = async () => {
-      await axios
-        .get(`http://localhost:4000/ProductListData?product=${id}`)
-        .then((e) =>
-          setProduct([
-            {
-              id: e.data[0]?.id,
-              product: e.data[0]?.product,
-              title: e.data[0]?.title,
-              price: e.data[0]?.price,
-              image: e.data[0]?.image,
-              amount: e.data[0]?.amount, // 잔여 수량
-              quanity: count, // 구매할 수량
-            },
-          ])
-        );
-    };
-    api();
-  }, [count, id]);
+  const { data, isLoading } = useQuery(["producList", id], api, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
 
-  // const { data: dataList, isLoading } = useQuery(
-  //   "producList",
-  //   // api(),
-  //   async () =>
-  //     await axios.get(`http://localhost:4000/ProductListData?product=${id}`),
-  //   {
-  //     refetchOnWindowFocus: false,
-  //     onError: (e) => console.log(e.message),
-  //   }
-  // );
+  useEffect(() => {
+    if (data) {
+      const dataList = data?.data[0];
+
+      setProduct([
+        {
+          id: dataList?.id,
+          product: dataList?.product,
+          title: dataList?.title,
+          price: dataList?.price,
+          image: dataList?.image,
+          amount: dataList?.amount, // 잔여 수량
+          quanity: count, // 구매할 수량
+        },
+      ]);
+    }
+  }, [count, data, id]);
+
+  // 라우터 변경 시 clean up으로 구매 수량 리셋
+  useEffect(() => {
+    return () => setCount(1);
+  }, [id]);
 
   const toggleButtonModal = () => {
     setbuttonModal((prev) => !prev);

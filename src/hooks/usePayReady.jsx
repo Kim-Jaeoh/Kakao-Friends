@@ -44,13 +44,13 @@ export const usePayReady = (list, type) => {
             // 설정한 매개변수들
             params,
             headers: {
-              // 카카오 developers에 등록한 admin키를 헤더에 줘야 한다.
+              // 카카오 developers에 등록한 admin키 주기
               Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
               "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
             },
           })
           .then((response) => {
-            // 응답에서 필요한 data만 뽑는다.
+            // 응답에서 필요한 data 구조분해
             const {
               data: { next_redirect_pc_url, tid },
             } = response;

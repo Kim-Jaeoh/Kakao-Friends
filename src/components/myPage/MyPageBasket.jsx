@@ -387,6 +387,11 @@ const ItemCounter = styled.div`
   }
 `;
 
+const ItemQuanityNumber = styled.div`
+  cursor: default;
+  user-select: none;
+`;
+
 const QuanityButton = styled.button`
   position: absolute;
   top: 6px;
@@ -512,8 +517,8 @@ const MyPageBasket = ({ userObj }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
 
-  const [popupModal, setPopupModal] = useState(false);
-  const togglePopupModal = () => setPopupModal((prev) => !prev);
+  const [popupModal, setPopupModal] = useState(false); // 구매 팝업 상태 값
+  const togglePopupModal = () => setPopupModal((prev) => !prev); // 구매 팝업
 
   const { currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const { PriceReComma, PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
@@ -521,7 +526,7 @@ const MyPageBasket = ({ userObj }) => {
   const { next_redirect_pc_url: payReadyURL } = usePayReady(
     currentBasket,
     "basket"
-  );
+  ); // 카카오페이 구매 커스텀 훅
 
   // 상품 가격
   useEffect(() => {
@@ -567,12 +572,12 @@ const MyPageBasket = ({ userObj }) => {
     setTotalProgress(Math.round((cartPrice / 30000) * 100));
   }, [cartPrice, totalProgress]);
 
-  // // 페이지 이탈 시 전체 체크 활성화
-  // useEffect(() => {
-  //   return () => {
-  //     currentBasket.map((obj) => dispatch(CheckItem(obj)));
-  //   };
-  // }, []);
+  // 페이지 이탈 시 전체 체크 활성화
+  useEffect(() => {
+    return () => {
+      currentBasket.map((obj) => dispatch(CheckItem(obj)));
+    };
+  }, []);
 
   // 체크된 목록 숫자
   useEffect(() => {
@@ -591,7 +596,7 @@ const MyPageBasket = ({ userObj }) => {
     dispatch(setBasket(filter));
   };
 
-  // 수량 변경
+  // 수량 키보드 변경
   const onChange = useCallback(
     (list, value) => {
       if (isFocus === true) {
@@ -635,11 +640,6 @@ const MyPageBasket = ({ userObj }) => {
       togglePopupModal();
     }
   };
-
-  //
-  const currentOrder = useSelector((state) => state.user.order);
-
-  //
 
   return (
     <>
@@ -771,7 +771,10 @@ const MyPageBasket = ({ userObj }) => {
                               >
                                 <BiMinus />
                               </QuanityButton>
-                              <input
+                              <ItemQuanityNumber>
+                                {list.quanity}
+                              </ItemQuanityNumber>
+                              {/* <input
                                 type="number"
                                 value={list.quanity}
                                 onFocus={() => setIsFocus(true)}
@@ -780,7 +783,7 @@ const MyPageBasket = ({ userObj }) => {
                                 max="99"
                                 onChange={(e) => onChange(list, e.target.value)}
                                 onWheel={(e) => e.target.blur()} // 마우스 휠 막기
-                              />
+                              /> */}
                               <QuanityButton
                                 quanity={list.quanity}
                                 type="button"

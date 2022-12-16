@@ -8,5 +8,5 @@ export const ProductSteady = () => {
 
   const { ref, dataList } = useInfinityScroll(api, 16); // 무한스크롤 커스텀 훅
 
-  return <ProductInnerList ref={ref} dataItem={dataList} />;
+  return <ProductInnerList api={api} />;
 };

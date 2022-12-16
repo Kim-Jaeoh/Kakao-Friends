@@ -16,7 +16,7 @@ export const MyPagePayResult = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [myInfo, setMyInfo] = useState({});
-  const [currentData, setCurrentData] = useState([]);
+  const [dataType, setDataType] = useState([]);
   const [filterInfo, setFilterInfo] = useState({});
   const currentOrder = useSelector((state) => state.user.order);
   const currentBasket = useSelector((state) => state.user.basket);
@@ -37,7 +37,7 @@ export const MyPagePayResult = () => {
   // search에 따라 데이터 값 설정
   useEffect(() => {
     const type = searchParams.get("type");
-    setCurrentData(type === "direct" ? currentOrder : currentBasket);
+    setDataType(type === "direct" ? currentOrder : currentBasket);
   }, [currentBasket, currentOrder, searchParams]);
 
   // 본인 정보 가져오기
@@ -56,7 +56,7 @@ export const MyPagePayResult = () => {
   // 잔여 수량 변경
   const { mutate } = useMutation(
     (amount) =>
-      currentData.map((order) => {
+      dataType.map((order) => {
         return axios.patch(
           `http://localhost:4000/productListData/${order.product}`,
           amount
@@ -85,7 +85,7 @@ export const MyPagePayResult = () => {
         }).then(async (response) => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
-          currentData.map((order) => {
+          dataType.map((order) => {
             return mutate({
               amount: dataList?.data[order.id - 1].amount - order.quanity,
             });
@@ -106,7 +106,7 @@ export const MyPagePayResult = () => {
             {
               tid: result.tid || "",
               created_at: result.created_at || "",
-              orderInfo: currentData?.map((order) => ({
+              orderInfo: dataType?.map((order) => ({
                 quanity: order.quanity,
                 price: order.price,
                 product: order.product,
