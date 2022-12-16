@@ -21,6 +21,8 @@ import { MyPagePayResult } from "./components/myPage/MyPagePayResult";
 import { Promotion } from "./pages/Promotion";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SearchResultItem2 } from "./components/search/SearchResultItem";
+import { ProductRealTime } from "./components/product/ProductRealTime";
+import { ProductSteady } from "./components/product/ProductSteady";
 
 const Container = styled.div`
   font-size: 14px;

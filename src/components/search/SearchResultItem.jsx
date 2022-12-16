@@ -15,6 +15,7 @@ import useInfinityScroll from "../../hooks/useInfinityScroll";
 import { NotInfo } from "../utils/NotInfo";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
+import axios from "axios";
 
 const Container = styled.div`
   width: 100%;
@@ -220,19 +221,25 @@ const SearchResultBox = styled.div`
 `;
 
 export const SearchResultItem = () => {
-  const [api, setApi] = useState(false);
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword");
 
-  const { ref, dataList } = useInfinityScroll(api, 10); // 무한스크롤 커스텀 훅
-
-  useEffect(() => {
-    setApi(`http://localhost:4000/ProductListData?q=${keyword}&`);
-  }, [dataList, keyword]);
-
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
-
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
+
+  const api = `http://localhost:4000/ProductListData?q=${keyword}&`;
+  const { ref, dataList } = useInfinityScroll(api, 9); // 무한스크롤 커스텀 훅
+
+  const DataLength = useCallback(async () => {
+    return await axios.get(
+      `http://localhost:4000/ProductListData?q=${keyword}`
+    );
+  }, [keyword]);
+
+  const { data: dataLength } = useQuery("productList", DataLength, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log("이거임", e.message),
+  });
 
   return (
     <BasketRecommendBox>
@@ -240,12 +247,12 @@ export const SearchResultItem = () => {
         <>
           <SearchResultBox>
             <span>
-              총 <strong>{dataList.length}</strong> 개
+              총 <strong>{dataLength?.data.length}</strong> 개
             </span>
           </SearchResultBox>
-          {keyword && dataList?.length !== 0 ? (
+          {keyword && dataList?.pages?.flat().length !== 0 ? (
             <BasketRecommendListBox>
-              {dataList?.map((list, index) => (
+              {dataList?.pages?.flat().map((list, index) => (
                 <BasketRecommendList key={list.id}>
                   <RecommendListBox>
                     <RecommendListImage to={`/detail/${list.product}`}>
@@ -286,7 +293,7 @@ export const SearchResultItem = () => {
         ref={ref}
         style={{
           position: "absolute",
-          bottom: "0px",
+          bottom: "200px",
         }}
       />
     </BasketRecommendBox>

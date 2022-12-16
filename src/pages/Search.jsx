@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { IoMdCloseCircle } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { Footer } from "../components/utils/Footer";
@@ -87,27 +93,13 @@ const ResetButton = styled.div`
 
 export const Search = () => {
   const [focus, setFocus] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [searchText, setSearchText] = useState("");
   const inputRef = useRef();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { pathname } = useLocation();
   const keyword = searchParams.get("keyword");
-
-  useEffect(() => {
-    // 검색창 첫 화면에서 클릭 및 검색어 있을 시 라우터 이동 (검색 목록)
-    if (focus && searchText.length >= 1) {
-      navigate({
-        pathname: "/search/input",
-      });
-    }
-
-    // 입력값 없을 때 검색창 첫 화면으로 이동
-    if (searchText.length === 0) {
-      navigate({
-        pathname: "/search",
-      });
-    }
-  }, [focus, keyword, navigate, searchText]);
 
   // 검색어 디바운스
   const onChangeText = debounce((e) => {
@@ -130,22 +122,28 @@ export const Search = () => {
         search: `?keyword=${searchText}`,
       });
       inputRef.current.blur();
+      setIsSubmit(true);
     },
     [navigate, searchText]
   );
 
   const onClick = () => {
     setFocus(true);
-
-    // 검색 결과 리스트 라우터에서 input 클릭 시 라우터 이동
-    if (keyword) {
-      setFocus(false);
-      navigate({
-        pathname: "/search/input",
-        search: `?keyword=${searchText}`,
-      });
-    }
+    setIsSubmit(false);
+    // navigate({
+    //   // pathname: "/search",
+    //   pathname: "/search/input",
+    //   // search: `?keyword=${searchText}`,
+    // });
   };
+
+  useEffect(() => {
+    if (!focus && keyword) {
+      setIsSubmit(true);
+      inputRef.current.value = keyword;
+    }
+    return () => setIsSubmit(false);
+  }, [focus, keyword, setIsSubmit]);
 
   return (
     <Container>
@@ -176,15 +174,24 @@ export const Search = () => {
         </SearchForm>
       </SearchBox>
 
-      <Routes>
-        <Route path={"/"} element={<SearchMain />} />
+      {!isSubmit ? (
+        <>
+          {focus && searchText.length >= 1 ? (
+            <SearchResultList setFocus={setFocus} searchText={searchText} />
+          ) : (
+            <SearchMain />
+          )}
+        </>
+      ) : (
+        <Routes>
+          {/* <Route path={"/"} element={<SearchMain />} />
         <Route
-          path={"/input"}
+        path={"/input"}
           element={<SearchResultList focus={focus} searchText={searchText} />}
-        />
-        <Route path={"/result"} element={<SearchResultItem />} />
-      </Routes>
-
+        /> */}
+          <Route path={"/result"} element={<SearchResultItem />} />
+        </Routes>
+      )}
       <Footer />
     </Container>
   );

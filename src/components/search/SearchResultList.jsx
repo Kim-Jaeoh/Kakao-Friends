@@ -36,7 +36,7 @@ const NotResultBox = styled.div`
   }
 `;
 
-export const SearchResultList = ({ focus, searchText }) => {
+export const SearchResultList = ({ setFocus, searchText }) => {
   const [resultItem, setResultItem] = useState([]);
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword");
@@ -49,10 +49,14 @@ export const SearchResultList = ({ focus, searchText }) => {
   //   [searchText]
   // );
 
-  const { data: dataList } = useQuery("productList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
+  const { data: dataList } = useQuery(
+    ["productList", searchText],
+    ProductListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
 
   useEffect(() => {
     const filter = dataList?.data.filter((list) =>
@@ -60,6 +64,10 @@ export const SearchResultList = ({ focus, searchText }) => {
     );
     setResultItem(filter);
   }, [dataList?.data, searchText]);
+
+  // useEffect(() => {
+  //   return () => setFocus(false);
+  // }, [setFocus]);
 
   return (
     <>

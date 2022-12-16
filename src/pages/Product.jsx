@@ -103,14 +103,14 @@ const Product = () => {
               num={1}
               selected={clickTabNumber}
             >
-              <Link to="/product/realtime">실시간</Link>
+              <Link to="realtime">실시간</Link>
             </TabTitle>
             <TabTitle
               onClick={() => toggleTab(2)}
               num={2}
               selected={clickTabNumber}
             >
-              <Link to="/product/steady">스테디</Link>
+              <Link to="steady">스테디</Link>
             </TabTitle>
           </TabList>
 
