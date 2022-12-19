@@ -57,6 +57,10 @@ const Icons = styled.div`
   display: flex;
   position: absolute;
   right: 12px;
+
+  > div {
+    cursor: default;
+  }
 `;
 
 const Logo = styled(Link)`

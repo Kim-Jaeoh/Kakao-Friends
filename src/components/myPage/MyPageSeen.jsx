@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 import { NotInfo } from "../utils/NotInfo";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const Container = styled.div``;
 
@@ -166,40 +167,29 @@ const ListDelete = styled.button`
 
 export const MyPageSeen = () => {
   const [seenArray, setSeenArray] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [view, setView] = useState([]);
+  const { viewedItems } = useLocalStorage(); // 로컬 저장 커스텀 훅
 
-  const { data: dataList } = useQuery("ProductList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onSuccess: (e) => setLoading(true),
-    onError: (e) => console.log(e.message),
-  });
-
-  // localStorage 받아오기
-  useEffect(() => {
-    let view = localStorage.getItem("viewedItems");
-
-    if (view == null) {
-      view = [];
-    } else {
-      // view 자료를 꺼내 따옴표를 제거하고 다시 myArr에 저장한다.
-      view = JSON.parse(view);
+  const { data: dataList, isLoading } = useQuery(
+    "ProductList",
+    ProductListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
     }
-    setView(view);
-  }, []);
+  );
 
   useEffect(() => {
     // 본 순서대로 나열되게 새로 map을 이용하여 저장함
-    let arr = view?.map((item) => dataList?.data[item - 1]);
+    let arr = viewedItems?.map((item) => dataList?.data[item - 1]);
     setSeenArray(arr);
-  }, [dataList?.data, loading, view]);
+  }, [dataList?.data, viewedItems]);
 
   const deleteViewedItem = (item) => {
-    const filter = seenArray?.filter((arr) => arr.id !== item);
-    setSeenArray(filter);
+    const stateFilter = seenArray?.filter((arr) => arr.id !== item);
+    setSeenArray(stateFilter);
 
-    const filter2 = view?.filter((arr) => arr !== item);
-    localStorage.setItem("viewedItems", JSON.stringify(filter2));
+    const localFilter = viewedItems?.filter((arr) => arr !== item);
+    localStorage.setItem("viewedItems", JSON.stringify(localFilter));
   };
 
   const allDeleteViewedItem = () => {
@@ -222,7 +212,7 @@ export const MyPageSeen = () => {
           </Wrapper>
 
           <ListCart>
-            {loading
+            {!isLoading
               ? seenArray?.map((list, index) => {
                   return (
                     <List key={index}>

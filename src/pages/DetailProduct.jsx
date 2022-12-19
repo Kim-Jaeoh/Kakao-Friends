@@ -27,7 +27,7 @@ import axios from "axios";
 
 const Container = styled.main`
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: 70px;
 `;
 
 const SliderBox = styled.div`
@@ -51,41 +51,41 @@ const SliderItem = styled.div`
   }
 `;
 
-const PaginationButton = styled.div`
-  position: absolute;
-  z-index: 10;
-  bottom: 0px;
-  width: 100%;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
+// const PaginationButton = styled.div`
+//   position: absolute;
+//   z-index: 10;
+//   bottom: 0px;
+//   width: 100%;
+//   height: 20px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   user-select: none;
 
-  span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    span {
-      border-radius: 100%;
-      display: inline-block;
-      font-size: 1rem;
-      width: 4px;
-      height: 4px;
-      background-color: #dedfe0;
-      margin: 0 2px;
-    }
-  }
+//   span {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     span {
+//       border-radius: 100%;
+//       display: inline-block;
+//       font-size: 1rem;
+//       width: 4px;
+//       height: 4px;
+//       background-color: #dedfe0;
+//       margin: 0 2px;
+//     }
+//   }
 
-  span:nth-of-type(${(props) => props.slideIndex + 1}) {
-    span {
-      background-color: #000;
-      transform: scaleX(30px);
-      width: 12px;
-      border-radius: 3px;
-    }
-  }
-`;
+//   span:nth-of-type(${(props) => props.slideIndex + 1}) {
+//     span {
+//       background-color: #000;
+//       transform: scaleX(30px);
+//       width: 12px;
+//       border-radius: 3px;
+//     }
+//   }
+// `;
 
 const ProductInfoBox = styled.div`
   border-bottom: 1px solid #e6e6e6;
@@ -267,7 +267,7 @@ export const DetailProduct = () => {
               )}
             </BasketBottomButton>
             <ProductRecommend productId={item.product} />
-            <ProductSeen productId={item.product} />
+            {viewedItems.length > 1 && <ProductSeen productId={item.product} />}
             {buttonModal && (
               <DetailProductModal
                 products={product}

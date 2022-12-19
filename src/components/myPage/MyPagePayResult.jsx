@@ -2,8 +2,8 @@ import axios from "axios";
 import styled from "@emotion/styled";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useSearchParams } from "react-router-dom";
 import { dbService } from "../../fbase";
 import character from "../../assets/order_complete_lion.gif";
 import { Footer } from "../utils/Footer";
@@ -12,7 +12,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 
 export const MyPagePayResult = () => {
-  const { search } = useLocation();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [myInfo, setMyInfo] = useState({});
@@ -40,7 +39,7 @@ export const MyPagePayResult = () => {
     setDataType(type === "direct" ? currentOrder : currentBasket);
   }, [currentBasket, currentOrder, searchParams]);
 
-  // 본인 정보 가져오기
+  // Firebase 본인 정보 가져오기
   useEffect(() => {
     onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
       setLoading(true);
@@ -48,6 +47,7 @@ export const MyPagePayResult = () => {
     });
   }, [currentUser.email]);
 
+  // 상품 리스트 데이터 가져오기
   const { data: dataList } = useQuery("productList", ProductListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
@@ -85,6 +85,8 @@ export const MyPagePayResult = () => {
         }).then(async (response) => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
+
+          // 상품 잔여 수량 mutation으로 변경
           dataType.map((order) => {
             return mutate({
               amount: dataList?.data[order.id - 1].amount - order.quanity,
@@ -116,14 +118,13 @@ export const MyPagePayResult = () => {
               type: result.payment_method_type === "MONEY" ? "현금" : "카드",
             },
           ],
-        });
-        console.log("ok");
+        }).then((res) => console.log(res));
       };
       userInfo();
     }
   }, [result]);
 
-  // 구매한 제품 firebase로부터 데이터 받아오기
+  // 업데이트 된 주문 내역 Firebase로부터 데이터 받아오기
   useEffect(() => {
     if (result && loading) {
       setFilterInfo(
@@ -133,88 +134,92 @@ export const MyPagePayResult = () => {
   }, [loading, myInfo?.orderList, result]);
 
   return (
-    <Container>
-      {myInfo && (
-        <>
-          <OrderInfoBox>
-            <CharacterBox>
-              <img src={character} alt="" />
-            </CharacterBox>
-            <OrderInfoText>
-              <OrderInfoTitle>주문이 완료되었어요!</OrderInfoTitle>
-              <OrderInfoSub>
-                주문하신 내역은&nbsp;
-                <Link to="/mypage/orderlist">'마이 - 주문내역'</Link>{" "}
-                페이지에서도 확인하실 수 있습니다.
-              </OrderInfoSub>
-            </OrderInfoText>
-          </OrderInfoBox>
+    <>
+      <Container>
+        {filterInfo && (
+          <>
+            <OrderInfoBox>
+              <CharacterBox>
+                <img src={character} alt="order lion" />
+              </CharacterBox>
+              <OrderInfoText>
+                <OrderInfoTitle>주문이 완료되었어요!</OrderInfoTitle>
+                <OrderInfoSub>
+                  주문하신 내역은&nbsp;
+                  <Link to="/mypage/orderlist">'마이 - 주문내역'</Link>
+                  &nbsp;페이지에서도 확인하실 수 있습니다.
+                </OrderInfoSub>
+              </OrderInfoText>
+            </OrderInfoBox>
 
-          <OrderInfoCategory>
-            <OrderListBox>
-              <OrderCategoryText>주문상품 정보</OrderCategoryText>
-              {filterInfo?.orderInfo?.map((list, index) => {
-                return (
-                  <OrderList key={index}>
-                    <ListContents>
-                      <ListImageBox to={`/detail/${list.product}`}>
-                        <ListImage>
-                          <img src={list.image} alt={list.title} />
-                        </ListImage>
-                      </ListImageBox>
-                      <ListInfoBox to={`/detail/${list.product}`}>
-                        <ListInfo>
-                          <ListTitle>{list.title}</ListTitle>
-                          <ListPrice>
-                            <span>{list.price}</span>원&nbsp;/&nbsp;
-                            <span>{list.quanity}</span>개
-                          </ListPrice>
-                        </ListInfo>
-                      </ListInfoBox>
-                    </ListContents>
-                  </OrderList>
-                );
-              })}
-            </OrderListBox>
-          </OrderInfoCategory>
+            <OrderInfoCategory>
+              <OrderListBox>
+                <OrderCategoryText>주문상품 정보</OrderCategoryText>
+                {filterInfo?.orderInfo?.map((list, index) => {
+                  return (
+                    <OrderList key={index}>
+                      <ListContents>
+                        <ListImageBox to={`/detail/${list.product}`}>
+                          <ListImage>
+                            <img src={list.image} alt={list.title} />
+                          </ListImage>
+                        </ListImageBox>
+                        <ListInfoBox to={`/detail/${list.product}`}>
+                          <ListInfo>
+                            <ListTitle>{list.title}</ListTitle>
+                            <ListPrice>
+                              <span>{list.price}</span>원&nbsp;/&nbsp;
+                              <span>{list.quanity}</span>개
+                            </ListPrice>
+                          </ListInfo>
+                        </ListInfoBox>
+                      </ListContents>
+                    </OrderList>
+                  );
+                })}
+              </OrderListBox>
+            </OrderInfoCategory>
 
-          <OrderInfoCategory>
-            <OrderCategoryText>주문 정보</OrderCategoryText>
-            <OrderPayInfo>
-              <OrderPayText>
-                주문번호&nbsp;<span>{filterInfo?.tid}</span>
-              </OrderPayText>
-              <OrderPayText>
-                결제일시&nbsp;<span>{timeToString(filterInfo)}</span>
-              </OrderPayText>
-              <OrderPayText>
-                결제수단&nbsp;<span>{filterInfo?.type}</span>
-              </OrderPayText>
-            </OrderPayInfo>
-          </OrderInfoCategory>
-          <Footer />
-        </>
-      )}
-    </Container>
+            <OrderInfoCategory>
+              <OrderCategoryText>주문 정보</OrderCategoryText>
+              <OrderPayInfo>
+                <OrderPayText>
+                  주문번호&nbsp;<span>{filterInfo?.tid}</span>
+                </OrderPayText>
+                <OrderPayText>
+                  결제일시&nbsp;<span>{timeToString(filterInfo)}</span>
+                </OrderPayText>
+                <OrderPayText>
+                  결제수단&nbsp;<span>{filterInfo?.type}</span>
+                </OrderPayText>
+              </OrderPayInfo>
+            </OrderInfoCategory>
+          </>
+        )}
+      </Container>
+      <Footer />
+    </>
   );
 };
 
 const Container = styled.main`
   position: relative;
   padding: 20px;
+  background-color: #f2f2f2;
 `;
 
 const OrderInfoBox = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  border-bottom: 4px solid #f7f7f7;
+  background-color: #fff;
+  border-bottom: 4px solid #f2f2f2;
 `;
 
 const CharacterBox = styled.div`
   position: absolute;
   right: 0;
-  bottom: 10px;
+  /* bottom: 0; */
   overflow: hidden;
   width: 100px;
 
@@ -225,8 +230,8 @@ const CharacterBox = styled.div`
 `;
 
 const OrderInfoText = styled.div`
-  padding: 15px 20px;
-  margin-bottom: 15px;
+  padding: 40px 20px;
+  /* margin-bottom: 15px; */
 `;
 
 const OrderInfoTitle = styled.h2`
@@ -237,37 +242,42 @@ const OrderInfoTitle = styled.h2`
 const OrderInfoSub = styled.p`
   a {
     text-decoration: underline;
+    text-underline-position: under;
   }
 `;
 
 const OrderInfoCategory = styled.div`
+  background-color: #fff;
+  padding: 20px;
   /* margin-bottom: 25px; */
   :not(:last-of-type) {
-    border-bottom: 2px solid #f7f7f7;
+    border-bottom: 2px solid #f2f2f2;
   }
 `;
 
 const OrderCategoryText = styled.strong`
   display: block;
-  padding: 20px;
+  margin-bottom: 20px;
   font-size: 16px;
   font-weight: bold;
   color: #747475;
 `;
 
 export const OrderListBox = styled.ul`
-  margin-bottom: 25px;
   overflow: hidden;
+  :not(:last-of-type) {
+    margin-bottom: 25px;
+  }
 `;
 
 export const OrderList = styled.li`
   position: relative;
-  margin: 0px 20px;
+  margin: 20px 0px 0;
   padding: 0 28px 0px 0;
 
   :not(:last-of-type) {
     padding-bottom: 20px;
-    border-bottom: 1px solid #f7f7f7;
+    border-bottom: 1px solid #f2f2f2;
   }
 `;
 
@@ -347,7 +357,7 @@ const ListPrice = styled.div`
 `;
 
 const OrderPayInfo = styled.div`
-  padding: 0 20px;
+  /* padding: 0 20px; */
 `;
 
 const OrderPayText = styled.span`

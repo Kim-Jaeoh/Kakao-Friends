@@ -20,7 +20,7 @@ const Container = styled.main`
 
 const Wrapper = styled.article`
   overflow: hidden;
-  /* padding-bottom: 100px; */
+  padding-bottom: 76px;
 `;
 
 const WrapperTitle = styled.div`

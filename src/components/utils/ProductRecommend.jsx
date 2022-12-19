@@ -151,18 +151,14 @@ export const ProductRecommend = ({ productId }) => {
   // 추천 목록 랜덤화
   useEffect(() => {
     // 객체 깊은 복사
-    // let arr = cloneDeep(dataList?.data); // 렌더링이 2번 돼서 cloneDeep으로 해결
-    let arr = dataList?.data; // 렌더링이 2번 돼서 cloneDeep으로 해결
+    let arr = cloneDeep(dataList?.data); // 렌더링이 2번 돼서 cloneDeep으로 해결
 
     if (productId) {
       arr = arr?.filter((obj) => obj?.product !== productId);
     }
 
     const randomArray = (array) => {
-      // - 방법 1
-      // array?.sort(() => Math.floor(Math.random() - 0.5));
-
-      // - ✔ 방법 2 (피셔-예이츠)
+      // (피셔-예이츠)
       for (let index = array?.length - 1; index > 0; index--) {
         // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
         const randomPosition = Math.floor(Math.random() * (index + 1));
@@ -176,11 +172,7 @@ export const ProductRecommend = ({ productId }) => {
 
     randomArray(arr);
     setRandomItem(arr);
-  }, [dataList?.data, isLoading, productId]);
-
-  // useEffect(() => {
-  //   console.log(randomItem);
-  // }, [randomItem]);
+  }, [dataList?.data, productId]);
 
   return (
     <BasketRecommendBox>

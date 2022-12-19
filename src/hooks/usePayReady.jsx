@@ -1,12 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setOrder } from "../reducer/user";
 
 export const usePayReady = (list, type) => {
   const [obj, setObj] = useState([]);
   const dispatch = useDispatch();
 
+  // 요청 단계 완료 시 승인 단계로 넘어가지는 URL (search 타입 지정)
   const appUrl = `http://localhost:3000/mypage/payresult?type=${
     type === "direct" ? "direct" : "basket"
   }`;

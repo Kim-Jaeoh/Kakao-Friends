@@ -20,7 +20,7 @@ const Container = styled.main`
 
 const Article = styled.div`
   overflow: hidden;
-  /* padding-bottom: 100px; */
+  padding-bottom: 100px;
 `;
 
 const MainBanner = styled.article`

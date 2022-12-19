@@ -1,8 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Modal } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import KakaoLogo from "../../assets/logo_foot_kakao.png";
 import { IoCloseOutline } from "react-icons/io5";
 import { AuthModal } from "./AuthModal";
 import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
@@ -49,12 +47,6 @@ const ImageBox = styled.div`
   width: 128px;
   height: 128px;
   margin: 0 auto;
-  /* width: 70px;
-  height: 30px;
-  margin: 0 auto;
-  text-align: center;
-  padding-top: 50px;
-  padding-bottom: 24px; */
 `;
 
 const Image = styled.img`
@@ -135,12 +127,7 @@ const LoginButtonLogo = styled.div`
   }
 `;
 
-export const LoginPopupModal = ({
-  popupModal,
-  setPopupModal,
-  togglePopupModal,
-  type,
-}) => {
+export const LoginPopupModal = ({ popupModal, togglePopupModal, type }) => {
   const [signModal, setSignModal] = useState(false);
   const toggleSignModal = () => setSignModal((prev) => !prev);
 

@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { useSelector } from "react-redux";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const BasketRecommendBox = styled.div`
   padding-top: 36px;
@@ -130,44 +130,24 @@ const BagButton = styled.button`
 
 export const ProductSeen = ({ productId }) => {
   const [seenArray, setSeenArray] = useState([]);
-  // const [loading, setLoading] = useState(false);
-  const [view, setView] = useState([]);
+  const { viewedItems } = useLocalStorage(); // 로컬 저장 커스텀 훅
 
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
 
-  const { data: dataList, isLoading } = useQuery(
-    "productList",
-    ProductListApi,
-    {
-      refetchOnWindowFocus: false,
-      // onSuccess: (e) => setLoading(true),
-      onError: (e) => console.log(e.message),
-    }
-  );
-
-  // localStorage 받아오기
-  useEffect(() => {
-    let view = localStorage.getItem("viewedItems");
-
-    if (view == null) {
-      view = [];
-    } else {
-      // view 자료를 꺼내 따옴표를 제거하고 다시 myArr에 저장한다.
-      view = JSON.parse(view);
-    }
-    setView(view);
-  }, []);
+  const { data: dataList } = useQuery("productList", ProductListApi, {
+    refetchOnWindowFocus: false,
+    // onSuccess: (e) => setLoading(true),
+    onError: (e) => console.log(e.message),
+  });
 
   useEffect(() => {
-    if (!view) return;
-
     // 본 순서대로 나열되게 새로 map을 이용하여 저장함
-    let arr = view?.map((item) => dataList?.data[item - 1]);
+    let arr = viewedItems?.map((item) => dataList?.data[item - 1]);
     const filter = arr?.filter((item) => item?.product !== productId);
     setSeenArray(filter);
-  }, [dataList?.data, productId, view]);
+  }, [dataList?.data, productId, viewedItems]);
 
   return (
     <BasketRecommendBox>

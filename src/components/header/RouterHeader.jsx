@@ -31,6 +31,12 @@ const IconBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  :last-of-type {
+    > div {
+      cursor: default;
+    }
+  }
 `;
 
 const Icon = styled.div`

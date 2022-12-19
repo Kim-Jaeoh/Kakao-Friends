@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const EmptyBasketBox = styled.div`
   padding: 30% 0;
-  margin-bottom: -80px;
+  /* margin-bottom: -80px; */
   /* margin-bottom: -100px; */
 `;
 

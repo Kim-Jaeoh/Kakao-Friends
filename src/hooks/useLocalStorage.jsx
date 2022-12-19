@@ -4,12 +4,9 @@ import { useLocation, useParams } from "react-router-dom";
 export const useLocalStorage = () => {
   let { id } = useParams();
   const { pathname } = useLocation();
-  const [viewed, setViewed] = useState(false);
   const [viewedItems, setViewedItems] = useState([]);
 
   useEffect(() => {
-    setViewed(true);
-
     // localStorage의 데이터를 꺼냄
     let view = localStorage.getItem("viewedItems");
 
@@ -21,28 +18,26 @@ export const useLocalStorage = () => {
       view = JSON.parse(view);
     }
 
-    // 현재 상품 id를 view 저장한다.
-    if (view.length <= 20) {
-      view.unshift(+id);
-    } else {
-      view.pop();
-      view.unshift(+id);
+    if (id) {
+      // 현재 상품 id를 view 저장
+      if (view.length <= 20) {
+        view.unshift(+id);
+      } else {
+        view.pop();
+        view.unshift(+id);
+      }
+
+      // 중복된 데이터를 넣지 않는 set 자료형에 view를 담아 중복을 제거
+      view = new Set(view);
+
+      // 중복 제거된 set 자료형의 view를 일반 배열로 변경
+      view = [...view];
     }
 
-    // 중복된 데이터를 넣지 않는 set 자료형에 view를 담아 중복을 제거
-    view = new Set(view);
-
-    // 중복 제거된 set 자료형의 view를 일반 배열로 변경
-    view = [...view];
-
-    // setViewed(view);
     // localStorage에 데이터를 JSON 자료형으로 저장
     localStorage.setItem("viewedItems", JSON.stringify(view));
-
     setViewedItems(view);
-
-    return () => setViewed(false);
-  }, [id, pathname, viewed]);
+  }, [id, pathname]);
 
   return { viewedItems, setViewedItems };
 };

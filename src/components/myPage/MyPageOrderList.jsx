@@ -143,7 +143,7 @@ export const MyPageOrderList = () => {
 
 export const Container = styled.div`
   padding: 20px;
-  margin-bottom: -100px;
+  /* margin-bottom: -100px; */
   background-color: #f2f2f2;
 `;
 
@@ -158,7 +158,7 @@ export const Orderbox = styled.div`
 
 export const OrderInfo = styled.div`
   padding: 15px 20px;
-  border-bottom: 1px solid #f7f7f7;
+  border-bottom: 1px solid #f2f2f2;
 
   > a {
     display: flex;
@@ -190,8 +190,6 @@ export const OrderInfo = styled.div`
 
 export const OrderListBox = styled.ul`
   overflow: hidden;
-  /* border-bottom: 2px solid #f7f7f7; */
-  /* border: 1px solid red; */
 `;
 
 export const OrderList = styled.li`
@@ -200,7 +198,7 @@ export const OrderList = styled.li`
   padding: 0 28px 20px 0;
 
   :not(:last-of-type) {
-    border-bottom: 1px solid #f7f7f7;
+    border-bottom: 1px solid #f2f2f2;
   }
 `;
 

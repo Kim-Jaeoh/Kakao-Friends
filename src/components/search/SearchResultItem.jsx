@@ -105,10 +105,10 @@ const BasketRecommendBox = styled.div`
 `;
 
 const BasketRecommendListBox = styled.ul`
-  padding: 0 13px 0 12px;
+  padding: 0 13px 100px 12px;
 
   @media screen and (min-width: 640px) {
-    padding: 0 14px;
+    padding: 0 14px 100px;
   }
 `;
 

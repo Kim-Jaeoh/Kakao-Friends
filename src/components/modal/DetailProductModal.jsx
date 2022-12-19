@@ -1,10 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Modal } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import KakaoLogo from "../../assets/logo_foot_kakao.png";
-import { IoCloseOutline } from "react-icons/io5";
-import { AuthModal } from "./AuthModal";
 import { BiMinus, BiPlus } from "react-icons/bi";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
@@ -21,18 +17,15 @@ export const DetailProductModal = ({
   setCount,
 }) => {
   const [popupModal, setPopupModal] = useState(false);
-  const [isFocus, setIsFocus] = useState(false);
-
-  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const currentUser = useSelector((state) => state.user.currentUser);
 
+  const product = products[0];
   const togglePopupModal = () => setPopupModal((prev) => !prev);
 
-  const product = products[0];
-
+  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const modalFixed = useModalScrollFixed(buttonModal); // 모달 스크롤 픽스
-  const { next_redirect_pc_url: payReadyURL } = usePayReady(products, "direct");
-  const { PriceDeleteComma, PriceComma } = usePriceComma(product.price);
+  const { next_redirect_pc_url: payReadyURL } = usePayReady(products, "direct"); // 카카오페이 구매 로직 커스텀 훅
+  const { PriceDeleteComma, PriceComma } = usePriceComma(product.price); // 금액 comma
 
   // 제품 수량 변경
   const countValue = (type) => {
@@ -43,18 +36,18 @@ export const DetailProductModal = ({
     }
   };
 
-  // 수량 키보드 변경
-  const onChange = useCallback(
-    (e) => {
-      const productCount = (product.quanity = e.target.value);
-      if (isFocus) {
-        setCount(productCount.replace(/(^0+)/, "1"));
-      }
-      // if (isFocus === true) {
-      // }
-    },
-    [isFocus, product, setCount]
-  );
+  // // 수량 키보드 변경
+  // const onChange = useCallback(
+  //   (e) => {
+  //     const productCount = (product.quanity = e.target.value);
+  //     if (isFocus) {
+  //       setCount(productCount.replace(/(^0+)/, "1"));
+  //     }
+  //     // if (isFocus === true) {
+  //     // }
+  //   },
+  //   [isFocus, product, setCount]
+  // );
 
   // 주문하기 새창
   const orderClick = () => {
@@ -148,7 +141,6 @@ export const DetailProductModal = ({
       {popupModal && !currentUser.email && (
         <LoginPopupModal
           popupModal={popupModal}
-          setPopupModal={setPopupModal}
           togglePopupModal={togglePopupModal}
           type={"two modal"}
         />
@@ -157,22 +149,7 @@ export const DetailProductModal = ({
   );
 };
 
-const Wrapper = styled.div`
-  /* height: 100vh;
-  overflow-y: scroll;
-  outline: none;
-  font-size: 14px;
-  line-height: 1.5;
-  font-family: Inter, Spoqa Han Sans Neo, Apple SD Gothic Neo, Malgun Gothic,
-    \b9d1\c740\ace0\b515, sans-serif;
-  color: #000;
-  letter-spacing: -0.015em;
-
-  a {
-    color: #000;
-    text-decoration: none;
-  } */
-`;
+const Wrapper = styled.div``;
 
 const Container = styled.div`
   display: flex;
@@ -196,7 +173,6 @@ const Box = styled.div`
   flex-direction: column;
   width: 100%;
   max-height: 82vh;
-  /* padding-top: 32px; */
   border-radius: 16px 16px 0 0;
   background-color: #fff;
   box-sizing: border-box;
@@ -210,7 +186,6 @@ const CountBox = styled.div`
   min-height: 0;
   padding-bottom: 24px;
   overflow-y: auto;
-  /* min-height: 283px; */
   padding: 32px 20px;
   box-sizing: border-box;
 `;
@@ -221,8 +196,6 @@ const CountTextBox = styled.div`
   align-items: center;
   width: 100%;
   height: 36px;
-  /* padding-right: 1px; */
-  /* padding-bottom: 24px; */
   background: #fff;
   box-sizing: border-box;
 
@@ -234,9 +207,7 @@ const CountTextBox = styled.div`
   }
 `;
 
-const ItemCounterBox = styled.div`
-  /* margin-top: 10px; */
-`;
+const ItemCounterBox = styled.div``;
 
 const ItemCounter = styled.div`
   display: block;
