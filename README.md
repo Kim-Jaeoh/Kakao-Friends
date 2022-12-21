@@ -1,15 +1,9 @@
 # Kakao-Friends clone
-![](https://velog.velcdn.com/images/rlawodh123/post/c1ac9329-115d-48e8-9e99-7697e1e8fbb9/image.gif)
 
-![](https://velog.velcdn.com/images/rlawodh123/post/31d4fffc-c158-4622-a02e-0ae4fd5f684c/image.gif)
+<br>
 
-![](https://velog.velcdn.com/images/rlawodh123/post/e85e7fd3-4ec9-4e84-8b34-e9b05432cd1c/image.gif)
-
-![](https://velog.velcdn.com/images/rlawodh123/post/8d57a14b-a057-4eba-99a3-4bb1bf524293/image.gif)
-
-![](https://velog.velcdn.com/images/rlawodh123/post/9815d7f1-e56b-4338-af3e-285c1fc84fbf/image.gif)
-
-
+![](https://velog.velcdn.com/images/rlawodh123/post/3820ec2e-265d-44a3-ae3c-3eff9bb0dc0e/image.gif)
+![](https://velog.velcdn.com/images/rlawodh123/post/29d59179-c00f-4afe-9090-80ec5ea7a902/image.png)
 <br>
 
 ## 📋 Project
@@ -22,3 +16,5 @@
 <br>
 
 [🔍 자세한 내용 보러가기 (velog 포스팅)](https://velog.io/@rlawodh123/React-%EC%B9%B4%EC%B9%B4%EC%98%A4-%ED%94%84%EB%A0%8C%EC%A6%88%EC%83%B5-%ED%81%B4%EB%A1%A0-%EC%BD%94%EB%94%A9)
+
+[📌 카카오 프렌즈샵](https://store.kakaofriends.com/home)
