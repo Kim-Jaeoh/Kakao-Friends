@@ -1,20 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { Header } from "../components/header/Header";
-import {
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { MyPageSeen } from "../components/myPage/MyPageSeen";
-import { MyPageAct } from "../components/myPage/MyPageAct";
 import MyPageBasket from "../components/myPage/MyPageBasket";
 import { MyPageOrderList } from "../components/myPage/MyPageOrderList";
-import { doc, onSnapshot } from "firebase/firestore";
-import { dbService } from "../fbase";
 import { useSelector } from "react-redux";
 import { Footer } from "../components/utils/Footer";
 import { LoginPopupModal } from "../components/modal/LoginPopupModal";
@@ -88,12 +77,10 @@ export const MyPage = ({ userObj }) => {
   useEffect(() => {
     if (pathname.includes("/seen")) {
       setSelected(1);
-    } else if (pathname.includes("/act")) {
-      setSelected(2);
     } else if (pathname.includes("/basket")) {
-      setSelected(3);
+      setSelected(2);
     } else if (pathname.includes("/orderlist")) {
-      setSelected(4);
+      setSelected(3);
     }
   }, [pathname]);
 
@@ -124,18 +111,8 @@ export const MyPage = ({ userObj }) => {
               <span>최근 본</span>
             </ListLink>
           </TabList>
-          {/* <TabList>
-            <ListLink
-              onClick={click}
-              to={isLoggedIn && "/mypage/act"}
-              num={2}
-              selected={selected}
-            >
-              <span>내 활동</span>
-            </ListLink>
-          </TabList> */}
           <TabList>
-            <ListLink to="/mypage/basket" num={3} selected={selected}>
+            <ListLink to="/mypage/basket" num={2} selected={selected}>
               <span>장바구니</span>
               {currentBasket.length !== 0 && (
                 <TabListNumber>{currentBasket.length}</TabListNumber>
@@ -146,7 +123,7 @@ export const MyPage = ({ userObj }) => {
             <ListLink
               onClick={click}
               to={isLoggedIn && "/mypage/orderlist"}
-              num={4}
+              num={3}
               selected={selected}
             >
               <span>주문내역</span>
@@ -156,7 +133,6 @@ export const MyPage = ({ userObj }) => {
 
         <Routes>
           <Route path="/seen" element={<MyPageSeen />} />
-          <Route path="/act" element={<MyPageAct isLoggedIn={isLoggedIn} />} />
           <Route path="/basket" element={<MyPageBasket userObj={userObj} />} />
           <Route path="/orderlist" element={<MyPageOrderList />} />
         </Routes>

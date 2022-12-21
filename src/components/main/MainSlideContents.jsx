@@ -1,16 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import "../../styles/swiperModules/swiper.scss";
-// import "../../styles/swiperModules/pagination.scss";
-// import "../../styles/swiperModules/navigation.scss";
 import { Link } from "react-router-dom";
 import { BsBag, BsFillPauseFill, BsPlayFill, BsBagFill } from "react-icons/bs";
-import Flicking, { ViewportSlot } from "@egjs/react-flicking";
-import { Arrow, Pagination } from "@egjs/flicking-plugins";
-import "@egjs/flicking-plugins/dist/pagination.css";
+import Flicking from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
-import "@egjs/flicking-plugins/dist/arrow.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { useQuery } from "react-query";
@@ -124,18 +117,6 @@ const SlideVideoBox = styled.div`
   border: 1px solid #dedfe0;
   border-bottom: 0;
   border-radius: 10px 10px 0 0;
-  /* ::before {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 10;
-    border: 1px solid #dedfe0;
-    border-bottom: 0;
-    border-radius: 10px 10px 0 0;
-    content: "";
-  } */
 `;
 
 const SlideVideo = styled.video`

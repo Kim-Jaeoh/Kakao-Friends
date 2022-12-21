@@ -24,7 +24,7 @@ export const useLocalStorage = () => {
         view.unshift(+id);
       } else {
         view.pop();
-        view.unshift(+id);
+        // view.unshift(+id);
       }
 
       // 중복된 데이터를 넣지 않는 set 자료형에 view를 담아 중복을 제거

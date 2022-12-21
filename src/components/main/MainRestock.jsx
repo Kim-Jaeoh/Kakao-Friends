@@ -1,10 +1,4 @@
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import Flicking from "@egjs/react-flicking";
@@ -13,8 +7,7 @@ import { useHandleISize } from "../../hooks/useHandleISize";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useQuery } from "react-query";
-import { ProductListApi, RestockListApi } from "../../apis/dataApi";
-import { useBasketToggle } from "../../hooks/useBasketToggle";
+import { ProductListApi } from "../../apis/dataApi";
 
 const Container = styled.div`
   /* position: relative; */

@@ -6,7 +6,8 @@ export const CHECK_ITEM = "CHECK_ITEM";
 export const UNCHECK_ITEM = "UNCHECK_ITEM";
 export const INCREMENT = "INCREMENT";
 export const DECREMENT = "DECREMENT";
-export const INPUTCHANGE = "INPUTCHANGE";
+export const INPUT_CHANGE = "INPUT_CHANGE";
+export const SET_CART_PRICE = "SET_CART_PRICE";
 
 export const setLoginToken = (loginToken) => ({
   type: SET_LOGIN_TOKEN,
@@ -49,9 +50,14 @@ export const Decrement = (item) => ({
 });
 
 export const InputChange = (item, value) => ({
-  type: INPUTCHANGE,
+  type: INPUT_CHANGE,
   payload: item,
   value: value,
+});
+
+export const setCartPrice = (item) => ({
+  type: SET_CART_PRICE,
+  payload: item,
 });
 
 const initialState = {
@@ -80,6 +86,7 @@ const initialState = {
     created_at: "",
     orderInfo: {},
   },
+  cartPrice: "",
 };
 
 const user = (state = initialState, action) => {
@@ -150,7 +157,7 @@ const user = (state = initialState, action) => {
         basket: [...state.basket],
       };
 
-    case INPUTCHANGE:
+    case INPUT_CHANGE:
       const change = state.basket.find((item) => item.id === action.payload.id);
       if (change) {
         change.quanity = action.value;
@@ -159,6 +166,12 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         basket: [...state.basket],
+      };
+
+    case SET_CART_PRICE:
+      return {
+        ...state,
+        cartPrice: action.payload,
       };
 
     default:

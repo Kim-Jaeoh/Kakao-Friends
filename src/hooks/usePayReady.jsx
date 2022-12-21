@@ -79,8 +79,9 @@ export const usePayReady = (list, type) => {
           });
       };
       postKakaopay();
+      // return () => localStorage.setItem("tid", "");
     }
-  }, [dispatch, list, type]);
+  }, [appUrl, dispatch, list, type]);
 
   const { next_redirect_pc_url } = obj;
 

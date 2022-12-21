@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { orderListApi } from "../../apis/dataApi";
-import { IoIosArrowForward } from "react-icons/io";
 import { NotInfo } from "../utils/NotInfo";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../../fbase";
 
 export const MyPageOrderList = () => {
@@ -24,11 +13,6 @@ export const MyPageOrderList = () => {
   const [myInfo, setMyInfo] = useState([]);
   const [payStatus, setPayStatus] = useState("");
   const currentUser = useSelector((state) => state.user.currentUser);
-
-  // const { data, isLoading } = useQuery("orderList", orderListApi, {
-  //   refetchOnWindowFocus: false,
-  //   onError: (e) => console.log(e),
-  // });
 
   const { timeToString } = useTimeStamp(); // 시간 포멧 커스텀 훅
 
@@ -45,11 +29,18 @@ export const MyPageOrderList = () => {
     return setPayStatus(paymentMap[paymentType]);
   };
 
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
+      setMyInfo(doc.data());
+    });
+  }, [currentUser.email]);
+
   // 시간 순서별
   useEffect(() => {
     setOrderList(
       myInfo?.orderList
-        ?.map((asd) => asd)
+        ?.map((list) => list)
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     );
   }, [myInfo?.orderList]);
@@ -72,13 +63,6 @@ export const MyPageOrderList = () => {
     );
   }, [myInfo?.orderList]);
 
-  // 본인 정보 가져오기
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
-      setMyInfo(doc.data());
-    });
-  }, [currentUser.email]);
-
   return (
     <Container>
       {orderList?.length !== 0 ? (
@@ -89,10 +73,7 @@ export const MyPageOrderList = () => {
               return (
                 <Orderbox key={order.tid}>
                   <OrderInfo>
-                    <Link>
-                      <span>주문번호 {order.tid}</span>
-                      <IoIosArrowForward />
-                    </Link>
+                    <span>주문번호 {order.tid}</span>
                     <p>{timeToString(order)}</p>
                   </OrderInfo>
 
@@ -111,7 +92,7 @@ export const MyPageOrderList = () => {
                                 <ListTitle>{list.title}</ListTitle>
                                 <ListPrice>
                                   <span>{list.price}</span>원&nbsp;/&nbsp;
-                                  <span>{list.amount}</span>개
+                                  <span>{list.quanity}</span>개
                                 </ListPrice>
                               </ListInfo>
                               <ListStatus>
@@ -272,9 +253,9 @@ const ListPrice = styled.div`
   line-height: 24px;
   vertical-align: top;
 
-  span {
-    font-size: 16px;
-  }
+  /* span {
+    font-size: 15px;
+  } */
 `;
 
 const ListStatus = styled.p`

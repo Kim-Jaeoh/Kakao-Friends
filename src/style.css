@@ -54,6 +54,10 @@
   src: url("../src/styles/fonts/Pretendard-Bold.woff2") format("woff2");
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body,
 th,
 td,
