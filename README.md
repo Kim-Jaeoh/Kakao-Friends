@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+# Kakao-Friends clone
+![](https://velog.velcdn.com/images/rlawodh123/post/c1ac9329-115d-48e8-9e99-7697e1e8fbb9/image.gif)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![](https://velog.velcdn.com/images/rlawodh123/post/31d4fffc-c158-4622-a02e-0ae4fd5f684c/image.gif)
 
-## Available Scripts
+![](https://velog.velcdn.com/images/rlawodh123/post/e85e7fd3-4ec9-4e84-8b34-e9b05432cd1c/image.gif)
 
-In the project directory, you can run:
+![](https://velog.velcdn.com/images/rlawodh123/post/8d57a14b-a057-4eba-99a3-4bb1bf524293/image.gif)
 
-### `npm start`
+![](https://velog.velcdn.com/images/rlawodh123/post/9815d7f1-e56b-4338-af3e-285c1fc84fbf/image.gif)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<br>
 
-### `npm test`
+## 📋 Project
+>
+- 이번 프로젝트는 장바구니, 구매(결제)가 가능한 스토어샵을 목표로 카카오 프렌즈샵을 클론하여 코딩해보았습니다.
+  - 선정 이유 : 모바일 기준으로 제작된 웹앱과 깔끔한 UI로 구성되어 있어 만들어보면 재밌겠다라는 생각이 들어서 선정하게 되었습니다!
+<br>
+- 자세한 내용들은 페이지별로 나누어 작성했습니다.
+<br>
+- 현재 카카오 프렌즈샵 사이트의 레이아웃이 변경되어 클론된 사이트와 차이가 있을 수 있습니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<br>
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[🔍 자세한 내용 보러가기 (velog 포스팅)](https://velog.io/@rlawodh123/React-%EC%B9%B4%EC%B9%B4%EC%98%A4-%ED%94%84%EB%A0%8C%EC%A6%88%EC%83%B5-%ED%81%B4%EB%A1%A0-%EC%BD%94%EB%94%A9)
