@@ -3,7 +3,8 @@
 <br>
 
 ![](https://velog.velcdn.com/images/rlawodh123/post/3820ec2e-265d-44a3-ae3c-3eff9bb0dc0e/image.gif)
-![](https://velog.velcdn.com/images/rlawodh123/post/29d59179-c00f-4afe-9090-80ec5ea7a902/image.png)
+![](https://velog.velcdn.com/images/rlawodh123/post/c5c8f447-cdc6-41bc-bd1e-0e0c5ee8bedb/image.png)
+
 <br>
 
 ## 📋 Project
