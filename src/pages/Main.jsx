@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
 import { MainContents } from "../components/main/MainContents";
 import beltbannerPc from "../assets/belt_banner_pc.jpg";
 import beltbannerMo from "../assets/belt_banner_mo.jpg";
@@ -9,7 +8,6 @@ import { MainSeriesContents } from "../components/main/MainSeriesContents";
 import { MainCharacterItem } from "../components/main/MainCharacterItem";
 import { MainRecommend } from "../components/main/MainRecommend";
 import { MainRestock } from "../components/main/MainRestock";
-import { Header } from "../components/header/Header";
 import { Footer } from "../components/utils/Footer";
 import { Link } from "react-router-dom";
 
@@ -44,8 +42,6 @@ const BeltBanner = styled(Link)`
 const BennerContents = styled.img`
   display: block;
   width: 100%;
-  /* width: ${(props) =>
-    props.resize ? `calc(${props.checkSize}px - 40px)` : "530px"}; */
   max-width: 530px;
   min-width: 320px;
   margin: 0 auto;
@@ -53,7 +49,7 @@ const BennerContents = styled.img`
 `;
 
 const Main = () => {
-  const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
   return (
     <>
       <Container>
@@ -67,6 +63,7 @@ const Main = () => {
               // checkSize={size}
               src={resize ? beltbannerMo : beltbannerPc}
               alt="카카오페이로 결제 시 최대 5천원 할인!"
+              loading="lazy"
             />
           </BeltBanner>
           <MainSlideContents />

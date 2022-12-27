@@ -9,9 +9,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 
-const Container = styled.div`
-  /* position: relative; */
-`;
+const Container = styled.div``;
 
 const Title = styled.div`
   position: relative;
@@ -200,11 +198,6 @@ export const MainRestock = () => {
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
 
-  // const { data: dataList, isLoading } = useQuery("restock", RestockListApi, {
-  //   refetchOnWindowFocus: false,
-  //   onError: (e) => console.log(e.message),
-  // });
-
   const { data: dataList, isLoading } = useQuery(
     "productList",
     ProductListApi,
@@ -320,7 +313,11 @@ export const MainRestock = () => {
               <div key={list.id}>
                 <ListBox>
                   <Link to={`/detail/${list.product}`}>
-                    <ListImage src={list.image} alt={list.title} />
+                    <ListImage
+                      src={list.image}
+                      alt={list.title}
+                      loading="lazy"
+                    />
                     <ListTitle>{list.title}</ListTitle>
                   </Link>
                   <BellButton onClick={() => toggleBell(index)}>

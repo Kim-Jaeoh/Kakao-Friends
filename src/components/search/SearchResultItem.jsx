@@ -1,95 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import styled from "@emotion/styled";
-import { useSelector } from "react-redux";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import useInfinityScroll from "../../hooks/useInfinityScroll";
 
 import { NotInfo } from "../utils/NotInfo";
 import { useQuery } from "react-query";
-import { ProductListApi } from "../../apis/dataApi";
 import axios from "axios";
-
-const Container = styled.div`
-  width: 100%;
-  outline: none;
-`;
-
-const SearchBox = styled.div`
-  position: relative;
-  padding: 14px 20px 13px;
-  border-bottom: 1px solid #dedfe0;
-  background-color: #fff;
-`;
-
-const SearchForm = styled.form``;
-
-const SearchContents = styled.div`
-  position: relative;
-  height: 25px;
-  padding: 9px 40px 9px 10px;
-  border-radius: 21px;
-  background-color: #f2f2f2;
-  display: flex;
-  align-items: center;
-`;
-
-const SearchIcon = styled.label`
-  width: 24px;
-  height: 24px;
-  font-size: 23px;
-  /* margin-left: 10px; */
-  text-align: center;
-  margin-right: 6px;
-
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-    }
-  }
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  border: 0;
-  font-size: 16px;
-  line-height: 25px;
-  background-color: transparent;
-  outline: none;
-  resize: none;
-`;
-
-const ResetButton = styled.div`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  right: 7px;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
-
-  span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      color: #cacbcc;
-      font-size: 22px;
-    }
-  }
-`;
 
 const BasketRecommendBox = styled.div`
   position: relative;
@@ -203,10 +122,6 @@ const BagButton = styled.button`
     justify-content: center;
     margin: 6px;
   }
-
-  /* @media screen and (min-width: 640px) {
-    right: 6px;
-  } */
 `;
 
 const SearchResultBox = styled.div`
@@ -256,7 +171,7 @@ export const SearchResultItem = () => {
                 <BasketRecommendList key={list.id}>
                   <RecommendListBox>
                     <RecommendListImage to={`/detail/${list.product}`}>
-                      <img src={list.image} alt={list.title} />
+                      <img src={list.image} alt={list.title} loading="lazy" />
                     </RecommendListImage>
                     <RecommendListText>
                       <strong>{list.title}</strong>

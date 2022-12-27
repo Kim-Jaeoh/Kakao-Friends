@@ -8,7 +8,7 @@ import { BsBag, BsBagFill } from "react-icons/bs";
 import { usePayReady } from "../../hooks/usePayReady";
 import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 import { LoginPopupModal } from "./LoginPopupModal";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 export const DetailProductModal = ({
@@ -20,10 +20,7 @@ export const DetailProductModal = ({
   const [loginPopupModal, setLoginPopupModal] = useState(false);
   const [productPrice, setProductPrice] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.currentUser);
   const currentLoginToken = useSelector((state) => state.user.loginToken);
-  const currentTotalPrice = useSelector((state) => state.user.totalPrice);
 
   const product = products[0];
   const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);

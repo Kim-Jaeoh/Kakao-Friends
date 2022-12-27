@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
-import axios from "axios";
 
 const ResultBox = styled.div`
   padding: 0 0 80px;
@@ -39,15 +38,6 @@ const NotResultBox = styled.div`
 export const SearchResultList = ({ setFocus, searchText }) => {
   const [resultItem, setResultItem] = useState([]);
   const [searchParams] = useSearchParams();
-  const keyword = searchParams.get("keyword");
-
-  // const api = useCallback(
-  //   async () =>
-  //     await axios.get(
-  //       `http://localhost:4000/ProductListData?title_like=${searchText}&`
-  //     ),
-  //   [searchText]
-  // );
 
   const { data: dataList } = useQuery(
     ["productList", searchText],
@@ -64,10 +54,6 @@ export const SearchResultList = ({ setFocus, searchText }) => {
     );
     setResultItem(filter);
   }, [dataList?.data, searchText]);
-
-  // useEffect(() => {
-  //   return () => setFocus(false);
-  // }, [setFocus]);
 
   return (
     <>

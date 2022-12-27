@@ -754,7 +754,11 @@ const MyPageBasket = () => {
                         </ListCheckIcon>
                         <ListImageBox to={`/detail/${list.product}`}>
                           <ListImage>
-                            <img src={list.image} alt={list.title} />
+                            <img
+                              src={list.image}
+                              alt={list.title}
+                              loading="lazy"
+                            />
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox>

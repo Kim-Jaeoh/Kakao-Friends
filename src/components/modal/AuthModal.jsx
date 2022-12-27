@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import { authService, dbService } from "../../fbase";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../../reducer/user";
 import { useNavigate } from "react-router-dom";
 import KakaoLogo from "../../assets/logo_foot_kakao.png";
@@ -313,7 +313,7 @@ export const AuthModal = ({ signModal, toggleSignModal, toggleModal }) => {
       <Wrapper>
         <Container>
           <LogoBox>
-            <Logo src={KakaoLogo} alt="kakao" />
+            <Logo src={KakaoLogo} alt="kakao" loading="lazy" />
           </LogoBox>
           <ListDelete onClick={toggleSignModal}>
             <IoCloseOutline />

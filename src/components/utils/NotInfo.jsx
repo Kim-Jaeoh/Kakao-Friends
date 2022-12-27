@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
@@ -61,7 +60,7 @@ export const NotInfo = ({ url, title, text, text2, btn }) => {
   return (
     <EmptyBasketBox>
       <EmptyBasketCharacter>
-        <img src={url} alt="" />
+        <img src={url} alt="not info" loading="lazy" />
       </EmptyBasketCharacter>
       {title && <EmptyTitle>{title}</EmptyTitle>}
       {!text2 ? (

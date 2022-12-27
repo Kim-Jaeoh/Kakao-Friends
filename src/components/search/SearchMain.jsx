@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { useQuery } from "react-query";
-import { CategoryListApi, MenuCharacterListApi } from "../../apis/dataApi";
+import { MenuCharacterListApi } from "../../apis/dataApi";
 import { Link } from "react-router-dom";
 
 const SearchCategoryBox = styled.div`
@@ -31,7 +31,7 @@ const SearchCharacterList = styled.li`
     margin-bottom: 18px;
   }
 
-  > div {
+  > a {
     display: block;
     padding: 0 10px 0 10px;
     @media screen and (min-width: 640px) {
@@ -130,28 +130,19 @@ export const SearchMain = () => {
     "테마 기획전",
   ];
 
-  // const { data: dataList2, isLoading2 } = useQuery(
-  //   "category",
-  //   CategoryListApi,
-  //   {
-  //     refetchOnWindowFocus: false,
-  //     onError: (e) => console.log(e.message),
-  //   }
-  // );
-
   return (
     <SearchCategoryBox>
       <SearchCharacterListBox>
         {!isLoading1 &&
           dataList1?.data.map((list, index) => (
             <SearchCharacterList key={list.id}>
-              <div>
+              <Link to={`/search/result?keyword=${list.title}`}>
                 <SearchCharacterImage
                   image={list.image}
                   imageH={list.imageHover}
                 />
                 <SearchCharacterText>{list.title}</SearchCharacterText>
-              </div>
+              </Link>
             </SearchCharacterList>
           ))}
       </SearchCharacterListBox>

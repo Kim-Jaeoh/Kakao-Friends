@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import CategoryMenuBtn from "./CategoryMenuBtn";
 
 const Container = styled.nav`
@@ -43,13 +43,6 @@ export const Category = () => {
           url={"/"}
           text={"홈"}
         />
-        {/* <CategoryMenuBtn
-          num={2}
-          selected={selected}
-          url={"/event"}
-          onSelected={onSelected}
-          text={"할로윈이벤트"}
-        /> */}
         <CategoryMenuBtn
           num={2}
           selected={selected}

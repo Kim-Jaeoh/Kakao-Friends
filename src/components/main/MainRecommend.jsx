@@ -52,7 +52,7 @@ const CategoryList = styled.li`
     padding: 0 8px;
   }
 
-  a {
+  /* div {
     display: block;
     overflow: hidden;
     height: 100%;
@@ -65,6 +65,21 @@ const CategoryList = styled.li`
     @media screen and (min-width: 640px) {
       padding: 28px 0 18px;
     }
+  } */
+`;
+
+const ListImageBox = styled.div`
+  display: block;
+  overflow: hidden;
+  height: 100%;
+  padding: 16px 0 10px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: rgba(245, 245, 245, 0.77);
+  box-sizing: border-box;
+
+  @media screen and (min-width: 640px) {
+    padding: 28px 0 18px;
   }
 `;
 
@@ -118,39 +133,39 @@ export const MainRecommend = () => {
 
       <CategoryBox>
         <CategoryList>
-          <Link to="/">
+          <ListImageBox>
             <ListImage>
-              <img src={listImage1} alt="미니인형" />
+              <img src={listImage1} alt="미니인형" loading="lazy" />
             </ListImage>
             <ListTitle>미니인형</ListTitle>
-          </Link>
+          </ListImageBox>
         </CategoryList>
 
         <CategoryList>
-          <Link to="/">
+          <ListImageBox>
             <ListImage>
-              <img src={listImage2} alt="생활소품" />
+              <img src={listImage2} alt="생활소품" loading="lazy" />
             </ListImage>
             <ListTitle>생활소품</ListTitle>
-          </Link>
+          </ListImageBox>
         </CategoryList>
 
         <CategoryList>
-          <Link to="/">
+          <ListImageBox>
             <ListImage>
-              <img src={listImage3} alt="데스크 소품" />
+              <img src={listImage3} alt="데스크 소품" loading="lazy" />
             </ListImage>
             <ListTitle>데스크 소품</ListTitle>
-          </Link>
+          </ListImageBox>
         </CategoryList>
 
         <CategoryList>
-          <Link to="/">
+          <ListImageBox>
             <ListImage>
-              <img src={listImage4} alt="소형 전자" />
+              <img src={listImage4} alt="소형 전자" loading="lazy" />
             </ListImage>
             <ListTitle>소형 전자</ListTitle>
-          </Link>
+          </ListImageBox>
         </CategoryList>
       </CategoryBox>
     </Container>

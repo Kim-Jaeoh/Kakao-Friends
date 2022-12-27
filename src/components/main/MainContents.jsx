@@ -1,10 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import React from "react";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { useQuery } from "react-query";
 import { BannerListApi } from "../../apis/dataApi.js";
-import { Footer } from "../utils/Footer.jsx";
 
 const Container = styled.div`
   display: block;
@@ -117,7 +114,12 @@ export const MainContents = () => {
                   <source src={list.video} type="video/mp4" />
                 </MainContentsVideo>
               ) : (
-                <MainContentsImage src={list.image} height={list.height} />
+                <MainContentsImage
+                  src={list.image}
+                  height={list.height}
+                  alt={list.title}
+                  loading="lazy"
+                />
               )}
               <MainContentsText>
                 {list.title2 ? (

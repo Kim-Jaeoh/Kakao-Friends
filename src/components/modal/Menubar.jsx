@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Drawer } from "@mui/material";
 import styled from "@emotion/styled";
-import { Link, useNavigate } from "react-router-dom";
-import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
+import { Link, useLocation } from "react-router-dom";
+import { IoIosArrowDown } from "react-icons/io";
 import { SlLock } from "react-icons/sl";
 import menuBannerImg from "../../assets/bn_addtalk.png";
 import MuiAccordion from "@mui/material/Accordion";
@@ -10,14 +10,10 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { useQuery } from "react-query";
 import { MenuCharacterListApi } from "../../apis/dataApi";
-import { AuthModal } from "./AuthModal";
-import { authService } from "../../fbase";
 import { AiOutlineBell } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
-import { setBasket, setCurrentUser, setLoginToken } from "../../reducer/user";
+import { useSelector } from "react-redux";
 import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 import { LoginPopupModal } from "./LoginPopupModal";
-import axios from "axios";
 import { useKakaoAuth } from "../../hooks/useKakaoAuth";
 
 const Container = styled.div`
@@ -303,13 +299,9 @@ const CategoryList = styled.li`
 
 export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
   const [expanded, setExpanded] = useState("");
-  const [signModal, setSignModal] = useState(false);
   const [loginPopupModal, setLoginPopupModal] = useState(false);
-  const toggleSignModal = () => setSignModal((prev) => !prev);
   const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
   const currentUser = useSelector((state) => state.user.currentUser);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const modalFixed = useModalScrollFixed(menuModal); // 모달 스크롤 픽스
   const { onLogInClick, onLogOutClick } = useKakaoAuth(); // 카카오 auth 커스텀 훅
 
@@ -373,17 +365,9 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
                 </NotUserCheck>
               </>
             ) : (
-              <>
-                <UserLogin onClick={onLogInClick}>
-                  <em>로그인</em>이 필요해요!
-                </UserLogin>
-                {/* <NotUserCheck>
-                  비회원 주문조회
-                  <span style={{ fontSize: "16px" }}>
-                    <IoIosArrowForward />
-                  </span>
-                </NotUserCheck> */}
-              </>
+              <UserLogin onClick={onLogInClick}>
+                <em>로그인</em>이 필요해요!
+              </UserLogin>
             )}
           </UserInfoBox>
 
@@ -421,7 +405,10 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
                   {!isLoading &&
                     dataList?.data.map((list, index) => (
                       <CharacterList key={list.id}>
-                        <Link>
+                        <Link
+                          onClick={toggleModal}
+                          to={`/search/result?keyword=${list.title}`}
+                        >
                           <CharacterListImage
                             image={list.image}
                             imageH={list.imageHover}
@@ -503,13 +490,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
             )}
           </ListMenu>
         </Container>
-        {/* {signModal && (
-          <AuthModal
-            signModal={signModal}
-            toggleSignModal={toggleSignModal}
-            toggleModal={toggleModal}
-          />
-        )} */}
+
         {!isLoggedIn && (
           <LoginPopupModal
             loginPopupModal={loginPopupModal}

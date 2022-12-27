@@ -36,7 +36,7 @@ const ProductInnerList = ({ api }) => {
             <ProductBox>
               <Link to={`/detail/${list.product}`}>
                 <ProductImage>
-                  <img src={list.image} alt={list.title} />
+                  <img src={list.image} alt={list.title} loading="lazy" />
                 </ProductImage>
               </Link>
               <ProductTextBox>

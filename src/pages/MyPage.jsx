@@ -106,7 +106,6 @@ const MyPage = ({ userObj }) => {
   return (
     <>
       <Container>
-        {/* <Header /> */}
         <TabListBox>
           <TabList>
             <ListLink to="/mypage/seen" num={1} selected={selected}>

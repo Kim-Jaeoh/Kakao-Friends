@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import { useQuery } from "react-query";
 import { RouterHeader } from "../components/header/RouterHeader";
 import { PromotionApi } from "../apis/dataApi";
-import { Link, useLocation, useParams } from "react-router-dom";
-import axios from "axios";
+import { Link, useParams } from "react-router-dom";
 import { Footer } from "../components/utils/Footer";
 
 const Container = styled.div`
@@ -42,10 +41,10 @@ const Promotion = () => {
                 <div key={index}>
                   {list.url ? (
                     <Link to={list.url}>
-                      <img src={list.image} alt="" />
+                      <img src={list.image} alt="" loading="lazy" />
                     </Link>
                   ) : (
-                    <img src={list.image} alt="" />
+                    <img src={list.image} alt="" loading="lazy" />
                   )}
                 </div>
               );

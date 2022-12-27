@@ -173,7 +173,7 @@ const MyPagePayResult = () => {
           <>
             <OrderInfoBox>
               <CharacterBox>
-                <img src={character} alt="order lion" />
+                <img src={character} alt="order lion" loading="lazy" />
               </CharacterBox>
               <OrderInfoText>
                 <OrderInfoTitle>주문이 완료되었어요!</OrderInfoTitle>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { BsBag } from "react-icons/bs";
@@ -22,8 +22,6 @@ const Title = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: right bottom;
-  /* background-position: center center; */
-  /* background-size: 100%; */
 
   strong {
     display: -webkit-inline-box;
@@ -114,7 +112,6 @@ const SliderItemInfo = styled.div`
 
       span {
         font-size: 16px;
-        /* vertical-align: top; */
       }
     }
   }
@@ -209,7 +206,6 @@ export const MainCharacterItemList = ({
   }, [listData, resize]);
 
   return (
-    // <Wrapper>
     <Wrapper style={{ width: !resize ? "640px" : size + "px" }}>
       <Title style={{ backgroundImage: `url(${titleBanner})` }}>
         <strong>
@@ -225,7 +221,7 @@ export const MainCharacterItemList = ({
                 <SliderItem>
                   <Link to={`/detail/${list.product}`}>
                     <SliderImage>
-                      <img src={list.image} alt="제품" />
+                      <img src={list.image} alt="제품" loading="lazy" />
                     </SliderImage>
                   </Link>
 

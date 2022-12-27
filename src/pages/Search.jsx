@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import {
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
 import { IoMdCloseCircle } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { Footer } from "../components/utils/Footer";
@@ -45,7 +39,6 @@ const SearchIcon = styled.label`
   width: 24px;
   height: 24px;
   font-size: 23px;
-  /* margin-left: 10px; */
   text-align: center;
   margin-right: 6px;
 
@@ -98,7 +91,6 @@ const Search = () => {
   const inputRef = useRef();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { pathname } = useLocation();
   const keyword = searchParams.get("keyword");
 
   // 검색어 디바운스
@@ -130,11 +122,6 @@ const Search = () => {
   const onClick = () => {
     setFocus(true);
     setIsSubmit(false);
-    // navigate({
-    //   // pathname: "/search",
-    //   pathname: "/search/input",
-    //   // search: `?keyword=${searchText}`,
-    // });
   };
 
   useEffect(() => {
@@ -184,11 +171,6 @@ const Search = () => {
         </>
       ) : (
         <Routes>
-          {/* <Route path={"/"} element={<SearchMain />} />
-        <Route
-        path={"/input"}
-          element={<SearchResultList focus={focus} searchText={searchText} />}
-        /> */}
           <Route path={"/result"} element={<SearchResultItem />} />
         </Routes>
       )}

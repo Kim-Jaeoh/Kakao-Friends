@@ -57,7 +57,7 @@ const AboutInfo = styled.div`
   line-height: 0;
 `;
 
-const ListInfo = styled.div`
+const ListInfo = styled.dl`
   padding: 10px 0 8px;
   font-size: 11px;
   letter-spacing: -0.045em;

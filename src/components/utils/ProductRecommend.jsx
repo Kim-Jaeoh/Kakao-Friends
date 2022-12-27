@@ -184,7 +184,7 @@ export const ProductRecommend = ({ productId }) => {
           <BasketRecommendList key={list.product}>
             <RecommendListBox>
               <RecommendListImage to={`/detail/${list.product}`}>
-                <img src={list.image} alt={list.title} />
+                <img src={list.image} alt={list.title} loading="lazy" />
               </RecommendListImage>
               <RecommendListText>
                 <strong>{list.title}</strong>

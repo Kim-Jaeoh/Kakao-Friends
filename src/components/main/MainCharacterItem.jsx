@@ -1,6 +1,6 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import Flicking, { ViewportSlot } from "@egjs/react-flicking";
+import Flicking from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";

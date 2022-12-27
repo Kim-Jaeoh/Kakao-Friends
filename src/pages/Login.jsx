@@ -1,15 +1,11 @@
 import axios from "axios";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Spinner } from "../components/utils/Spinner";
-import { dbService } from "../fbase";
 import { useKakaoAuth } from "../hooks/useKakaoAuth";
-import { setBasket, setCurrentUser, setLoginToken } from "../reducer/user";
+import { setLoginToken } from "../reducer/user";
 
 const Login = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const code = new URL(window.location.href).searchParams.get("code");
   const { userInfo } = useKakaoAuth(); // 카카오 로그인 커스텀 훅
@@ -40,8 +36,6 @@ const Login = () => {
   useEffect(() => {
     if (!code) return;
     getKakaoToken();
-    // if (currentUser.uid) {
-    // }
   }, [code, currentUser.uid]);
 
   return <Spinner />;

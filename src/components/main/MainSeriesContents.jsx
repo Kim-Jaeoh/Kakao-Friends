@@ -190,20 +190,12 @@ export const MainSeriesContents = () => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [hover, setHover] = useState(false);
-  const [clickIcon, setClickIcon] = useState(false);
-  const [clickNumber, setClickNumber] = useState([]);
-
   const { toggleIcon, currentBasket } = useBasketToggle();
 
   const { data: dataList, isLoading } = useQuery("seriesList", SeriesListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
   });
-
-  // // 영상 autoPlay 시 아이콘 숨김
-  // useEffect(() => {
-  //   setHover(false);
-  // }, []);
 
   const togglePlay = () => {
     if (hover) {
@@ -216,17 +208,6 @@ export const MainSeriesContents = () => {
       }
     }
   };
-
-  // const onMouseOverButton = (e) => {
-  //   if (isPlaying) {
-  //     setHover(false);
-  //   }
-  // };
-  // const onMouseOutButton = (e) => {
-  //   if (isPlaying) {
-  //     setHover(true);
-  //   }
-  // };
 
   const onClick = () => {
     setHover((prev) => !prev);
@@ -287,7 +268,7 @@ export const MainSeriesContents = () => {
                 <List key={list.id}>
                   <ListLink to={`/detail/${list.product}`}>
                     <ListImage>
-                      <img src={list.image} alt={list.title} />
+                      <img src={list.image} alt={list.title} loading="lazy" />
                     </ListImage>
                     <ListText>
                       <ListTitle>{list.title}</ListTitle>

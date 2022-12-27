@@ -1,27 +1,19 @@
 import React, { useRef } from "react";
 import styled from "@emotion/styled";
 import { RouterHeader } from "../components/header/RouterHeader";
-import Flicking, { ViewportSlot } from "@egjs/react-flicking";
+import Flicking from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
-import { Arrow, AutoPlay, Pagination } from "@egjs/flicking-plugins";
+import { AutoPlay, Pagination } from "@egjs/flicking-plugins";
 import "@egjs/flicking-plugins/dist/pagination.css";
 import { useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
-import { ProductListApi } from "../apis/dataApi";
-import {
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useQuery } from "react-query";
+import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Rating } from "../components/utils/Rating";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { AiOutlineBell } from "react-icons/ai";
 import { ProductRecommend } from "../components/utils/ProductRecommend";
 import { ProductSeen } from "../components/utils/ProductSeen";
-import { usePayReady } from "../hooks/usePayReady";
-import { useSelector } from "react-redux";
 import { DetailProductModal } from "../components/modal/DetailProductModal";
 import axios from "axios";
 
@@ -228,7 +220,7 @@ const DetailProduct = () => {
                 plugins={_plugins}
               >
                 <SliderItem>
-                  <img src={item.image} alt="" />
+                  <img src={item.image} alt="" loading="lazy" />
                 </SliderItem>
                 {/* {item.detailImage.map((item, index) => (
                 <SliderItem key={index}>

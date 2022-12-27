@@ -46,7 +46,7 @@ const IconBox = styled.div`
   padding: 5px;
   cursor: pointer;
 
-  a {
+  svg {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -123,7 +123,7 @@ export const Header = () => {
                 <AiOutlineMenu />
               </IconBox>
               <Logo to="/">
-                <img alt="KAKAO FRIENDS" src={logo} />
+                <img alt="KAKAO FRIENDS" src={logo} loading="lazy" />
               </Logo>
               <Icons>
                 <Link to="/search">
