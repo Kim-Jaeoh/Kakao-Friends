@@ -8,11 +8,13 @@ import { useSelector } from "react-redux";
 import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../../fbase";
 
-export const MyPageOrderList = () => {
+const MyPageOrderList = () => {
   const [orderList, setOrderList] = useState([]);
   const [myInfo, setMyInfo] = useState([]);
+  // const [docRef, setDocRef] = useState("");
   const [payStatus, setPayStatus] = useState("");
   const currentUser = useSelector((state) => state.user.currentUser);
+  const currentBasket = useSelector((state) => state.user.basket);
 
   const { timeToString } = useTimeStamp(); // 시간 포멧 커스텀 훅
 
@@ -29,12 +31,22 @@ export const MyPageOrderList = () => {
     return setPayStatus(paymentMap[paymentType]);
   };
 
-  // 본인 정보 가져오기
+  // // docRef state 설정
+  // useEffect(() => {
+  //   if (currentUser.uid) {
+  //     setDocRef(doc(dbService, "userInfo", currentUser.uid.toString()));
+  //   }
+  // }, [currentUser.uid]);
+
+  // Firebase 본인 정보 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
-      setMyInfo(doc.data());
-    });
-  }, [currentUser.email]);
+    const docRef = doc(dbService, "userInfo", currentUser.uid.toString());
+    if (docRef) {
+      onSnapshot(docRef, (doc) => {
+        setMyInfo(doc.data());
+      });
+    }
+  }, [currentUser.uid]);
 
   // 시간 순서별
   useEffect(() => {
@@ -49,17 +61,17 @@ export const MyPageOrderList = () => {
   useEffect(() => {
     myInfo?.orderList?.map(
       async (obj) =>
-        await axios
-          .get("/v1/payment/order", {
-            params: { cid: "TC0ONETIME", tid: obj.tid },
-            headers: {
-              Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
-              "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-            },
-          })
-          .then((r) => {
-            executePayment(r.data.status);
-          })
+        await axios({
+          method: "GET",
+          url: "https://kapi.kakao.com/v1/payment/order",
+          params: { cid: "TC0ONETIME", tid: obj.tid },
+          headers: {
+            Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
+            "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+          },
+        }).then((r) => {
+          executePayment(r.data.status);
+        })
     );
   }, [myInfo?.orderList]);
 
@@ -122,13 +134,15 @@ export const MyPageOrderList = () => {
   );
 };
 
-export const Container = styled.div`
+export default MyPageOrderList;
+
+const Container = styled.div`
   padding: 20px;
   /* margin-bottom: -100px; */
   background-color: #f2f2f2;
 `;
 
-export const Orderbox = styled.div`
+const Orderbox = styled.div`
   position: relative;
   background-color: #fff;
 
@@ -137,7 +151,7 @@ export const Orderbox = styled.div`
   }
 `;
 
-export const OrderInfo = styled.div`
+const OrderInfo = styled.div`
   padding: 15px 20px;
   border-bottom: 1px solid #f2f2f2;
 
@@ -169,11 +183,11 @@ export const OrderInfo = styled.div`
   }
 `;
 
-export const OrderListBox = styled.ul`
+const OrderListBox = styled.ul`
   overflow: hidden;
 `;
 
-export const OrderList = styled.li`
+const OrderList = styled.li`
   position: relative;
   margin: 20px 20px 0;
   padding: 0 28px 20px 0;

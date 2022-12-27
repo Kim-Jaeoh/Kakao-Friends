@@ -101,7 +101,8 @@ export const Header = () => {
       pathname.includes("detail") ||
       pathname.includes("search") ||
       pathname.includes("event") ||
-      pathname.includes("promotion")
+      pathname.includes("promotion") ||
+      pathname.includes("login")
     ) {
       setShowHeader(false);
     } else {

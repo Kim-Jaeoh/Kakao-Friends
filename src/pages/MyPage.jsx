@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
-import { MyPageSeen } from "../components/myPage/MyPageSeen";
-import MyPageBasket from "../components/myPage/MyPageBasket";
-import { MyPageOrderList } from "../components/myPage/MyPageOrderList";
 import { useSelector } from "react-redux";
 import { Footer } from "../components/utils/Footer";
 import { LoginPopupModal } from "../components/modal/LoginPopupModal";
+const MyPageSeen = lazy(() => import("../components/myPage/MyPageSeen"));
+const MyPageBasket = lazy(() => import("../components/myPage/MyPageBasket"));
+const MyPageOrderList = lazy(() =>
+  import("../components/myPage/MyPageOrderList")
+);
 
 const Container = styled.main`
   position: relative;
@@ -67,12 +69,14 @@ const TabListNumber = styled.span`
   align-items: center;
 `;
 
-export const MyPage = ({ userObj }) => {
+const MyPage = ({ userObj }) => {
   const [selected, setSelected] = useState(3);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginPopupModal, setLoginPopupModal] = useState(false);
   const { pathname } = useLocation();
   const currentBasket = useSelector((state) => state.user.basket);
   const loginToken = useSelector((state) => state.user.loginToken);
+  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
 
   useEffect(() => {
     if (pathname.includes("/seen")) {
@@ -84,9 +88,7 @@ export const MyPage = ({ userObj }) => {
     }
   }, [pathname]);
 
-  const [popupModal, setPopupModal] = useState(false);
-  const togglePopupModal = () => setPopupModal((prev) => !prev);
-
+  // 로그인 상태 확인
   useEffect(() => {
     if (loginToken === "logout") {
       setIsLoggedIn(false);
@@ -97,7 +99,7 @@ export const MyPage = ({ userObj }) => {
 
   const click = () => {
     if (isLoggedIn === false) {
-      setPopupModal(true);
+      setLoginPopupModal(true);
     }
   };
 
@@ -133,15 +135,14 @@ export const MyPage = ({ userObj }) => {
 
         <Routes>
           <Route path="/seen" element={<MyPageSeen />} />
-          <Route path="/basket" element={<MyPageBasket userObj={userObj} />} />
+          <Route path="/basket" element={<MyPageBasket />} />
           <Route path="/orderlist" element={<MyPageOrderList />} />
         </Routes>
 
         {!isLoggedIn && (
           <LoginPopupModal
-            popupModal={popupModal}
-            setPopupModal={setPopupModal}
-            togglePopupModal={togglePopupModal}
+            loginPopupModal={loginPopupModal}
+            toggleLoginPopupModal={toggleLoginPopupModal}
           />
         )}
         {!pathname.includes("/basket") && <Footer />}
@@ -149,3 +150,5 @@ export const MyPage = ({ userObj }) => {
     </>
   );
 };
+
+export default MyPage;

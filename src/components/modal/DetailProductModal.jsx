@@ -8,7 +8,8 @@ import { BsBag, BsBagFill } from "react-icons/bs";
 import { usePayReady } from "../../hooks/usePayReady";
 import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 import { LoginPopupModal } from "./LoginPopupModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export const DetailProductModal = ({
   buttonModal,
@@ -16,16 +17,38 @@ export const DetailProductModal = ({
   products,
   setCount,
 }) => {
-  const [popupModal, setPopupModal] = useState(false);
+  const [loginPopupModal, setLoginPopupModal] = useState(false);
+  const [productPrice, setProductPrice] = useState("");
+  const [totalPrice, setTotalPrice] = useState("");
+  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
+  const currentLoginToken = useSelector((state) => state.user.loginToken);
+  const currentTotalPrice = useSelector((state) => state.user.totalPrice);
 
   const product = products[0];
-  const togglePopupModal = () => setPopupModal((prev) => !prev);
+  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const modalFixed = useModalScrollFixed(buttonModal); // 모달 스크롤 픽스
-  const { next_redirect_pc_url: payReadyURL } = usePayReady(products, "direct"); // 카카오페이 구매 로직 커스텀 훅
+  const { next_redirect_pc_url: payReadyURL } = usePayReady(
+    products,
+    totalPrice,
+    "direct"
+  ); // 카카오페이 구매 로직 커스텀 훅
   const { PriceDeleteComma, PriceComma } = usePriceComma(product.price); // 금액 comma
+
+  useEffect(() => {
+    setProductPrice(PriceDeleteComma(product.price) * product?.quanity);
+  }, [product.price, product?.quanity]);
+
+  // 전체 가격
+  useEffect(() => {
+    if (productPrice === 0) {
+      setTotalPrice("3000");
+    } else {
+      setTotalPrice(productPrice >= 30000 ? productPrice : productPrice + 3000);
+    }
+  }, [productPrice]);
 
   // 제품 수량 변경
   const countValue = (type) => {
@@ -51,10 +74,10 @@ export const DetailProductModal = ({
 
   // 주문하기 새창
   const orderClick = () => {
-    if (currentUser.email) {
+    if (currentLoginToken === "login") {
       window.location.href = `${payReadyURL}`;
     } else {
-      togglePopupModal();
+      toggleLoginPopupModal();
     }
   };
 
@@ -108,15 +131,18 @@ export const DetailProductModal = ({
                 </CountTextBox>
               </CountBox>
               <PriceTextBox>
-                <PriceTitle>총 제품금액</PriceTitle>
+                <PriceTitle>상품 금액</PriceTitle>
+                <PriceText>{PriceComma(productPrice)}원</PriceText>
+              </PriceTextBox>
+              <PriceTextBox>
+                <PriceTitle>배송비</PriceTitle>
                 <PriceText>
-                  <span>
-                    {PriceComma(
-                      PriceDeleteComma(product.price) * product?.quanity
-                    )}
-                  </span>
-                  원
+                  {productPrice >= 30000 ? "무료" : "3,000원"}
                 </PriceText>
+              </PriceTextBox>
+              <PriceTextBox>
+                <PriceTitle>총 결제금액</PriceTitle>
+                <PriceText>{PriceComma(totalPrice)}원</PriceText>
               </PriceTextBox>
               <BuyButtonBox>
                 <BuyButton>
@@ -138,10 +164,10 @@ export const DetailProductModal = ({
           </Container>
         </Wrapper>
       </Modal>
-      {popupModal && !currentUser.email && (
+      {loginPopupModal && (
         <LoginPopupModal
-          popupModal={popupModal}
-          togglePopupModal={togglePopupModal}
+          loginPopupModal={loginPopupModal}
+          toggleLoginPopupModal={toggleLoginPopupModal}
           type={"two modal"}
         />
       )}
@@ -289,6 +315,19 @@ const PriceTextBox = styled.div`
   border-top: 1px solid #eff0f2;
   background: #fff;
   box-sizing: border-box;
+
+  &:nth-of-type(4) {
+    span {
+      font-size: 20px;
+      color: #000;
+      font-weight: bold;
+    }
+    strong {
+      font-size: 22px;
+      line-height: 24px;
+      font-weight: bold;
+    }
+  }
 `;
 
 const PriceTitle = styled.span`
@@ -298,13 +337,13 @@ const PriceTitle = styled.span`
 `;
 
 const PriceText = styled.strong`
-  font-size: 18px;
+  font-size: 16px;
   line-height: 22px;
-  font-weight: bold;
-  span {
+
+  /* span {
     font-size: 20px;
     line-height: 24px;
-  }
+  } */
 `;
 
 const BuyButtonBox = styled.div`

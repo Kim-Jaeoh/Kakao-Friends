@@ -193,6 +193,8 @@ export const MainSeriesContents = () => {
   const [clickIcon, setClickIcon] = useState(false);
   const [clickNumber, setClickNumber] = useState([]);
 
+  const { toggleIcon, currentBasket } = useBasketToggle();
+
   const { data: dataList, isLoading } = useQuery("seriesList", SeriesListApi, {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
@@ -241,8 +243,6 @@ export const MainSeriesContents = () => {
 
     return () => clearTimeout();
   }, [hover]);
-
-  const { toggleIcon, currentBasket } = useBasketToggle();
 
   return (
     <Container>

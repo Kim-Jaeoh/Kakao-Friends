@@ -52,7 +52,7 @@ const BennerContents = styled.img`
   border-radius: 8px;
 `;
 
-export const Main = () => {
+const Main = () => {
   const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
   return (
     <>
@@ -80,3 +80,5 @@ export const Main = () => {
     </>
   );
 };
+
+export default Main;

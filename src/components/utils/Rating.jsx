@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
 import { useMutation } from "react-query";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Wrap = styled.div`
   display: flex;
@@ -28,7 +28,7 @@ const Stars = styled.div`
     margin: 0 1px;
   }
 
-  & svg {
+  svg {
     color: gray;
     cursor: pointer;
   }
@@ -37,7 +37,7 @@ const Stars = styled.div`
     color: #ff477e;
   }
 
-  & svg:hover ~ svg {
+  svg:hover ~ svg {
     color: gray;
   }
 
@@ -59,38 +59,6 @@ export const Rating = ({ productId, rate }) => {
       clickStates[i] = i <= index ? true : false;
     }
     setClicked(clickStates);
-  };
-
-  useEffect(() => {
-    sendReview();
-  }, [clicked]); //컨디마 컨디업
-
-  // const addTodo = async (newTodo) => {
-  //   const API = "http://localhost:4000/BestListData";
-  //   const { data } = await axios.post(`${API}?id=${productId}`, newTodo);
-  //   return data;
-  // };
-
-  // const { mutate, isLoading, isError, error, isSuccess } = useMutation(
-  //   addTodo
-  //   // {
-  //   //   onSuccess: (e) => console.log(e),
-  //   // }
-  // );
-
-  const sendReview = () => {
-    let score = clicked.filter(Boolean).length;
-    // mutate({ rate: score });
-    // fetch('http://52.78.63.175:8000/movie', {
-    //   method: 'POST',
-    //   Headers: {
-    //     Authroization: 'e7f59ef4b4900fe5aa839fcbe7c5ceb7',
-    //   },
-    //   body: JSON.stringify({
-    //     movie_id:1
-    //     star: score,
-    //   }),
-    // });
   };
 
   return (

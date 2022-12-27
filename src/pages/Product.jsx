@@ -1,15 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Footer } from "../components/utils/Footer";
-import {
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { ProductSteady } from "../components/product/ProductSteady";
 import { ProductRealTime } from "../components/product/ProductRealTime";
 

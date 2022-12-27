@@ -2,7 +2,7 @@ import axios from "axios";
 import styled from "@emotion/styled";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 import { dbService } from "../../fbase";
 import character from "../../assets/order_complete_lion.gif";
@@ -10,17 +10,19 @@ import { Footer } from "../utils/Footer";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
+import { setBasket } from "../../reducer/user";
 
-export const MyPagePayResult = () => {
+const MyPagePayResult = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [myInfo, setMyInfo] = useState({});
   const [dataType, setDataType] = useState([]);
   const [filterInfo, setFilterInfo] = useState({});
+  const dispatch = useDispatch();
   const currentOrder = useSelector((state) => state.user.order);
   const currentBasket = useSelector((state) => state.user.basket);
   const currentUser = useSelector((state) => state.user.currentUser);
-  const dbRef = doc(dbService, "users", currentUser.email);
+  const dbRef = doc(dbService, "userInfo", currentUser.uid.toString());
   const { timeToString } = useTimeStamp();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
@@ -33,6 +35,12 @@ export const MyPagePayResult = () => {
     pg_token: searchParams.get("pg_token"),
   };
 
+  // 상품 리스트 데이터 가져오기
+  const { data: dataList } = useQuery("productList", ProductListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
   // search에 따라 데이터 값 설정
   useEffect(() => {
     const type = searchParams.get("type");
@@ -41,17 +49,11 @@ export const MyPagePayResult = () => {
 
   // Firebase 본인 정보 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", currentUser.email), (doc) => {
+    onSnapshot(dbRef, (doc) => {
       setLoading(true);
       setMyInfo(doc.data());
     });
-  }, [currentUser.email]);
-
-  // 상품 리스트 데이터 가져오기
-  const { data: dataList } = useQuery("productList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
+  }, [currentUser.uid, dbRef]);
 
   // 잔여 수량 변경
   const { mutate } = useMutation(
@@ -75,7 +77,7 @@ export const MyPagePayResult = () => {
     if (loading && params.pg_token) {
       const postKakaopay = async () => {
         await axios({
-          url: "/v1/payment/approve",
+          url: "https://kapi.kakao.com/v1/payment/approve",
           method: "POST",
           headers: {
             Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_ADMIN_KEY}`,
@@ -100,7 +102,7 @@ export const MyPagePayResult = () => {
 
   // 주문 내역 firebase 업데이트
   useEffect(() => {
-    if (result && loading) {
+    if (params.pg_token && result && loading) {
       const userInfo = async () => {
         await updateDoc(dbRef, {
           orderList: [
@@ -118,11 +120,42 @@ export const MyPagePayResult = () => {
               type: result.payment_method_type === "MONEY" ? "현금" : "카드",
             },
           ],
-        }).then((res) => console.log(res));
+        }).then((res) => {
+          let item = [];
+
+          // 구매한 제품 localStorage에 저장
+          dataType.map((order) => {
+            item.push(order.product);
+            return localStorage.setItem("buyItem", JSON.stringify(item));
+          });
+
+          // 구매한 제품 장바구니에서 삭제
+          orderItemBasketRemove();
+        });
       };
       userInfo();
     }
-  }, [result]);
+  }, [result, dataType]);
+
+  // 구매한 제품 장바구니에서 삭제
+  const orderItemBasketRemove = async () => {
+    const localBuyItem = localStorage.getItem("buyItem");
+
+    if (localBuyItem) {
+      console.log("?");
+      const fbFilter = myInfo?.basket?.filter(
+        (info) => !localBuyItem?.includes(info.product)
+      );
+      const currentFilter = currentBasket?.filter(
+        (basket) => !localBuyItem?.includes(basket.product)
+      );
+
+      dispatch(setBasket(currentFilter));
+      await updateDoc(dbRef, {
+        basket: fbFilter,
+      }).then(localStorage.removeItem("buyItem"));
+    }
+  };
 
   // 업데이트 된 주문 내역 Firebase로부터 데이터 받아오기
   useEffect(() => {
@@ -202,6 +235,8 @@ export const MyPagePayResult = () => {
   );
 };
 
+export default MyPagePayResult;
+
 const Container = styled.main`
   position: relative;
   padding: 20px;
@@ -230,13 +265,13 @@ const CharacterBox = styled.div`
 `;
 
 const OrderInfoText = styled.div`
-  padding: 40px 20px;
-  /* margin-bottom: 15px; */
+  padding: 30px 20px;
 `;
 
 const OrderInfoTitle = styled.h2`
   font-weight: bold;
-  font-size: 22px;
+  font-size: 24px;
+  margin-bottom: 6px;
 `;
 
 const OrderInfoSub = styled.p`

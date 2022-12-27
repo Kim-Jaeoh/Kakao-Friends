@@ -4,6 +4,7 @@ import { Modal } from "@mui/material";
 import { IoCloseOutline } from "react-icons/io5";
 import { AuthModal } from "./AuthModal";
 import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
+import { useKakaoAuth } from "../../hooks/useKakaoAuth";
 
 const Wrapper = styled.div`
   overflow-y: scroll;
@@ -127,23 +128,28 @@ const LoginButtonLogo = styled.div`
   }
 `;
 
-export const LoginPopupModal = ({ popupModal, togglePopupModal, type }) => {
-  const [signModal, setSignModal] = useState(false);
-  const toggleSignModal = () => setSignModal((prev) => !prev);
+export const LoginPopupModal = ({
+  loginPopupModal,
+  toggleLoginPopupModal,
+  type,
+}) => {
+  // const [signModal, setSignModal] = useState(false);
+  // const toggleSignModal = () => setSignModal((prev) => !prev);
 
   // 모달 스크롤 픽스 (type이 있는 경우는 모달이 2중이고, 하나 닫았을 때 스크롤이 다시 되는 걸 방지하기 위해 별도의 값을 넣음)
-  const modalFixed = useModalScrollFixed(popupModal, type);
+  const modalFixed = useModalScrollFixed(loginPopupModal, type);
+  const { onLogInClick } = useKakaoAuth(); // 카카오 auth 커스텀 훅
 
   return (
     <>
       <Modal
-        open={popupModal}
-        onClose={togglePopupModal}
+        open={loginPopupModal}
+        onClose={toggleLoginPopupModal}
         disableScrollLock={true}
       >
         <Wrapper>
           <Container>
-            <ListDelete onClick={togglePopupModal}>
+            <ListDelete onClick={toggleLoginPopupModal}>
               <IoCloseOutline />
             </ListDelete>
             <ImageBox>
@@ -157,7 +163,7 @@ export const LoginPopupModal = ({ popupModal, togglePopupModal, type }) => {
               <span>앗! 깜빡, 로그인하고 이용하기❤️️</span>
             </SubTitleBox>
             <LoginButtonBox>
-              <LoginButton onClick={toggleSignModal}>
+              <LoginButton onClick={onLogInClick}>
                 <LoginButtonLogo>
                   <img
                     src="https://www.nicepng.com/png/full/388-3888984_open-png.png"
@@ -170,13 +176,13 @@ export const LoginPopupModal = ({ popupModal, togglePopupModal, type }) => {
           </Container>
         </Wrapper>
       </Modal>
-      {signModal && (
+      {/* {signModal && (
         <AuthModal
           signModal={signModal}
           toggleSignModal={toggleSignModal}
           toggleModal={toggleSignModal}
         />
-      )}
+      )} */}
     </>
   );
 };

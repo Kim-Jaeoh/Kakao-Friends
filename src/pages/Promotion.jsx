@@ -21,7 +21,7 @@ const ImageBox = styled.div`
   }
 `;
 
-export const Promotion = () => {
+const Promotion = () => {
   const { id } = useParams();
   // const {state} = useLocation();
 
@@ -29,17 +29,6 @@ export const Promotion = () => {
     refetchOnWindowFocus: false,
     onError: (e) => console.log(e.message),
   });
-
-  // const { data: dataList, isLoading } = useQuery(
-  //   "proApi",
-  //   async () => await axios.get(`http://localhost:4000/promotionlist/${id}`),
-  //   // promotionApi,
-  //   {
-  //     refetchOnMount: "always",
-  //     refetchOnWindowFocus: false,
-  //     onError: (e) => console.log(e.message),
-  //   }
-  // );
 
   return (
     <>
@@ -68,3 +57,5 @@ export const Promotion = () => {
     </>
   );
 };
+
+export default Promotion;

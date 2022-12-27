@@ -91,7 +91,7 @@ const ResetButton = styled.div`
   }
 `;
 
-export const Search = () => {
+const Search = () => {
   const [focus, setFocus] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -196,3 +196,5 @@ export const Search = () => {
     </Container>
   );
 };
+
+export default Search;

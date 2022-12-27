@@ -9,6 +9,8 @@ import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 import axios from "axios";
 import { cloneDeep } from "lodash";
+import { doc, onSnapshot } from "firebase/firestore";
+import { dbService } from "../../fbase";
 
 const BasketRecommendBox = styled.div`
   padding-top: 36px;

@@ -12,6 +12,7 @@ import {
   InputChange,
   setBasket,
   setCartPrice,
+  setTotalPrice,
   UnCheckItem,
 } from "../../reducer/user";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
@@ -21,6 +22,7 @@ import { ProductRecommend } from "../utils/ProductRecommend";
 import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
 import useInfinityScroll from "../../hooks/useInfinityScroll";
+import { updateDoc } from "firebase/firestore";
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -514,23 +516,26 @@ const MyPageBasket = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentPrice = useSelector((state) => state.user.cartPrice);
+  const currentTotalPrice = useSelector((state) => state.user.totalPrice);
 
   const [popupModal, setPopupModal] = useState(false); // 구매 팝업 상태 값
   const togglePopupModal = () => setPopupModal((prev) => !prev); // 구매 팝업
 
-  const { currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
+  const { currentBasket, myInfo, docRef } = useBasketToggle(); //장바구니 커스텀 훅
   const { PriceReComma, PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
 
   const { next_redirect_pc_url: payReadyURL } = usePayReady(
     currentBasket,
+    totalPrice,
     "basket"
   ); // 카카오페이 구매 커스텀 훅
 
   // 상품 가격
   useEffect(() => {
     // 체크된 것들만 계산
-    const checkItem = currentBasket.filter((item) => item.check);
+    if (!currentBasket) return;
 
+    const checkItem = currentBasket.filter((item) => item.check);
     if (checkItem.length !== 0) {
       dispatch(
         setCartPrice(
@@ -547,13 +552,17 @@ const MyPageBasket = () => {
   // 전체 가격
   useEffect(() => {
     if (currentPrice === 0) {
-      setTotalPrice("3,000");
+      setTotalPrice("3000");
+      // dispatch(setTotalPrice("3000"));
     } else {
-      setTotalPrice(
-        PriceComma(currentPrice >= 30000 ? currentPrice : currentPrice + 3000)
-      );
+      // dispatch(
+      //   setTotalPrice(
+      //     currentPrice >= 30000 ? currentPrice : currentPrice + 3000
+      //   )
+      // );
+      setTotalPrice(currentPrice >= 30000 ? currentPrice : currentPrice + 3000);
     }
-  }, [PriceComma, currentPrice]);
+  }, [currentPrice]);
 
   // 배송 금액 바
   useEffect(() => {
@@ -573,15 +582,31 @@ const MyPageBasket = () => {
   }, [currentBasket]);
 
   // 장바구니 개별 삭제
-  const BasketDeleteItem = (itemId) => {
+  const BasketDeleteItem = async (itemId) => {
     const filter = currentBasket?.filter((item) => item.product !== itemId);
     dispatch(setBasket(filter));
+
+    if (currentUser.uid) {
+      const fbFilter = myInfo?.basket?.filter(
+        (item) => item?.product !== itemId
+      );
+      await updateDoc(docRef, {
+        basket: fbFilter,
+      });
+    }
   };
 
   // 선택 삭제
-  const selectDelete = () => {
+  const selectDelete = async () => {
     const filter = currentBasket?.filter((item) => item.check === false);
     dispatch(setBasket(filter));
+
+    if (currentUser.uid) {
+      const fbFilter = myInfo?.basket?.filter((item) => item?.check === false);
+      await updateDoc(docRef, {
+        basket: fbFilter,
+      });
+    }
   };
 
   // // 수량 키보드 변경
@@ -620,7 +645,7 @@ const MyPageBasket = () => {
 
   // 주문하기 새창
   const orderClick = () => {
-    if (currentUser.email) {
+    if (currentUser.uid) {
       if (currentBasket.find((item) => item.check === true)) {
         window.location.href = `${payReadyURL}`;
       }
@@ -645,7 +670,7 @@ const MyPageBasket = () => {
           <BasketBox>
             <BasketList>
               <DeliveryInfoBox>
-                {currentPrice && totalPrice && (
+                {totalPrice && (
                   <>
                     <DeliveryInfo>
                       <DeliveryFreeTextBox>
@@ -653,14 +678,12 @@ const MyPageBasket = () => {
                           <span>무료 배송</span>
                         ) : (
                           <>
-                            <span>
-                              {PriceComma(33000 - PriceDeleteComma(totalPrice))}
-                            </span>
-                            원 추가 시 무료 배송
+                            <span>{PriceComma(33000 - totalPrice)}</span>원 추가
+                            시 무료 배송
                           </>
                         )}
                       </DeliveryFreeTextBox>
-                      {!currentPrice >= 30000 && (
+                      {currentPrice <= 30000 && (
                         <DeliveryPriceSave to="/product/realtime">
                           배송비 절약하기
                           <span>
@@ -798,20 +821,22 @@ const MyPageBasket = () => {
                 </BasketListPrice>
                 <BasketListPrice>
                   <strong>총 결제금액</strong>
-                  <strong>{totalPrice}원</strong>
+                  <strong>{PriceComma(totalPrice)}원</strong>
                 </BasketListPrice>
               </BasketListTotalPrice>
               <DescCart>장바구니 상품은 최대 90일까지 보관됩니다.</DescCart>
             </BasketBillBox>
             <BasketBottomButton>
               <OrderButton noChecked={currentPrice === 0} onClick={orderClick}>
-                {currentPrice === 0 ? "주문하기" : `${totalPrice}원 주문하기`}
+                {currentPrice === 0
+                  ? "주문하기"
+                  : `${PriceComma(totalPrice)}원 주문하기`}
               </OrderButton>
             </BasketBottomButton>
           </BasketBox>
         )}
         <ProductRecommend />
-        {popupModal && !currentUser.email && (
+        {popupModal && !currentUser.uid && (
           <LoginPopupModal
             popupModal={popupModal}
             setPopupModal={setPopupModal}

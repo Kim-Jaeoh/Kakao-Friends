@@ -8,6 +8,7 @@ export const INCREMENT = "INCREMENT";
 export const DECREMENT = "DECREMENT";
 export const INPUT_CHANGE = "INPUT_CHANGE";
 export const SET_CART_PRICE = "SET_CART_PRICE";
+export const SET_TOTAL_PRICE = "SET_TOTAL_PRICE";
 
 export const setLoginToken = (loginToken) => ({
   type: SET_LOGIN_TOKEN,
@@ -60,6 +61,11 @@ export const setCartPrice = (item) => ({
   payload: item,
 });
 
+export const setTotalPrice = (item) => ({
+  type: SET_TOTAL_PRICE,
+  payload: item,
+});
+
 const initialState = {
   loginToken: "logout",
   currentUser: {
@@ -87,6 +93,7 @@ const initialState = {
     orderInfo: {},
   },
   cartPrice: "",
+  totalPrice: "",
 };
 
 const user = (state = initialState, action) => {
@@ -172,6 +179,12 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         cartPrice: action.payload,
+      };
+
+    case SET_TOTAL_PRICE:
+      return {
+        ...state,
+        totalPrice: action.payload,
       };
 
     default:

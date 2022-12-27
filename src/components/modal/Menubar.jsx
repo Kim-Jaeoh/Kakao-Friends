@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Drawer } from "@mui/material";
 import styled from "@emotion/styled";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 import { SlLock } from "react-icons/sl";
 import menuBannerImg from "../../assets/bn_addtalk.png";
@@ -9,14 +9,16 @@ import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { useQuery } from "react-query";
-import { CategoryListApi, MenuCharacterListApi } from "../../apis/dataApi";
+import { MenuCharacterListApi } from "../../apis/dataApi";
 import { AuthModal } from "./AuthModal";
-import { doc, onSnapshot } from "firebase/firestore";
-import { authService, dbService } from "../../fbase";
-import { AiOutlineBell, AiFillBell } from "react-icons/ai";
+import { authService } from "../../fbase";
+import { AiOutlineBell } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { setBasket, setCurrentUser, setLoginToken } from "../../reducer/user";
 import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
+import { LoginPopupModal } from "./LoginPopupModal";
+import axios from "axios";
+import { useKakaoAuth } from "../../hooks/useKakaoAuth";
 
 const Container = styled.div`
   overflow-y: scroll;
@@ -80,7 +82,6 @@ const NotUserCheck = styled.div`
   user-select: none;
 
   span {
-    /* font-size: 24px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -102,19 +103,8 @@ const List = styled.li`
   box-sizing: border-box;
 
   a {
-    /* display: flex; */
-    /* align-items: center; */
-    /* justify-content: space-between; */
-    /* width: 100%; */
-
     span {
       margin: 0 2px;
-    }
-
-    div {
-      /* width: 16px;
-      height: 16px; */
-      /* margin-top: 16px; */
     }
   }
 `;
@@ -314,11 +304,14 @@ const CategoryList = styled.li`
 export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
   const [expanded, setExpanded] = useState("");
   const [signModal, setSignModal] = useState(false);
+  const [loginPopupModal, setLoginPopupModal] = useState(false);
   const toggleSignModal = () => setSignModal((prev) => !prev);
+  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const modalFixed = useModalScrollFixed(menuModal); // 모달 스크롤 픽스
+  const { onLogInClick, onLogOutClick } = useKakaoAuth(); // 카카오 auth 커스텀 훅
 
   const category = [
     "전체",
@@ -333,7 +326,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
     "테마 기획전",
   ];
 
-  const { data: dataList1, isLoading } = useQuery(
+  const { data: dataList, isLoading } = useQuery(
     "character",
     MenuCharacterListApi,
     {
@@ -341,11 +334,6 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
       onError: (e) => console.log(e.message),
     }
   );
-
-  // const { data: dataList2 } = useQuery("category", CategoryListApi, {
-  //   refetchOnWindowFocus: false,
-  //   onError: (e) => console.log(e.message),
-  // });
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -360,27 +348,6 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
     }
     return () => clearTimeout();
   }, [menuModal]);
-
-  const onLogOutClick = () => {
-    const ok = window.confirm("로그아웃 하시겠어요?");
-    if (ok) {
-      authService.signOut();
-      dispatch(setLoginToken("logout"));
-      dispatch(
-        setCurrentUser({
-          uid: "",
-          displayName: "",
-          email: "",
-          createdAtId: "",
-          cart: [{}],
-          like: [],
-        })
-      );
-      dispatch(setBasket([]));
-      toggleModal();
-      navigate(0);
-    }
-  };
 
   return (
     <>
@@ -407,15 +374,15 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
               </>
             ) : (
               <>
-                <UserLogin onClick={toggleSignModal}>
+                <UserLogin onClick={onLogInClick}>
                   <em>로그인</em>이 필요해요!
                 </UserLogin>
-                <NotUserCheck>
+                {/* <NotUserCheck>
                   비회원 주문조회
                   <span style={{ fontSize: "16px" }}>
                     <IoIosArrowForward />
                   </span>
-                </NotUserCheck>
+                </NotUserCheck> */}
               </>
             )}
           </UserInfoBox>
@@ -424,8 +391,10 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
             <List onClick={toggleModal}>
               <Link to="/mypage/basket">장바구니 내역</Link>
             </List>
-            <ListLast onClick={toggleModal}>
-              <Link to="/mypage/orderlist">
+            <ListLast
+              onClick={isLoggedIn ? toggleModal : toggleLoginPopupModal}
+            >
+              <Link to={isLoggedIn && "/mypage/orderlist"}>
                 주문<span>·</span>배송 내역
               </Link>
             </ListLast>
@@ -450,7 +419,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
               <ListContents>
                 <CharacterListBox>
                   {!isLoading &&
-                    dataList1?.data.map((list, index) => (
+                    dataList?.data.map((list, index) => (
                       <CharacterList key={list.id}>
                         <Link>
                           <CharacterListImage
@@ -494,32 +463,20 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
 
             {/* 구분선 */}
 
-            <List>
-              <Link to="/">프렌즈 별다꾸</Link>
-            </List>
+            <List>프렌즈 별다꾸</List>
+            <ListLast>배경화면</ListLast>
+
+            {/* 구분선 */}
+
+            <List>공지사항</List>
+            <List>고객센터</List>
             <ListLast>
-              <Link to="/">배경화면</Link>
+              기프트카드 조회<span>·</span>환불
             </ListLast>
 
             {/* 구분선 */}
 
-            <List>
-              <Link to="/">공지사항</Link>
-            </List>
-            <List>
-              <Link to="/">고객센터</Link>
-            </List>
-            <ListLast>
-              <Link to="/">
-                기프트카드 조회<span>·</span>환불
-              </Link>
-            </ListLast>
-
-            {/* 구분선 */}
-
-            <List>
-              <Link to="/">카카오프렌즈샵 안내</Link>
-            </List>
+            <List>카카오프렌즈샵 안내</List>
             <MenuBanner>
               <div>
                 <img
@@ -530,7 +487,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
             </MenuBanner>
 
             {!isLoggedIn ? (
-              <LogInBox onClick={toggleSignModal}>
+              <LogInBox onClick={onLogInClick}>
                 <div>
                   <SlLock />
                 </div>
@@ -546,11 +503,17 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
             )}
           </ListMenu>
         </Container>
-        {signModal && (
+        {/* {signModal && (
           <AuthModal
             signModal={signModal}
             toggleSignModal={toggleSignModal}
             toggleModal={toggleModal}
+          />
+        )} */}
+        {!isLoggedIn && (
+          <LoginPopupModal
+            loginPopupModal={loginPopupModal}
+            toggleLoginPopupModal={toggleLoginPopupModal}
           />
         )}
       </Drawer>

@@ -249,6 +249,7 @@ export const MainSlideContents = () => {
   const [hover, setHover] = useState(false);
 
   const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+  const { toggleIcon, currentBasket } = useBasketToggle();
 
   const { data: dataList, isLoading } = useQuery("slideList", SlideListApi, {
     refetchOnWindowFocus: false,
@@ -340,8 +341,6 @@ export const MainSlideContents = () => {
 
     return () => clearTimeout();
   }, [hover]);
-
-  const { toggleIcon, currentBasket } = useBasketToggle();
 
   return (
     <>

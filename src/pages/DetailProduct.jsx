@@ -154,7 +154,7 @@ const OrderButton = styled.button`
   }
 `;
 
-export const DetailProduct = () => {
+const DetailProduct = () => {
   // const [slideIndex, setSlideIndex] = useState(0); // 상세 이미지 더 있을 시
   const [product, setProduct] = useState([]);
   const [count, setCount] = useState(1);
@@ -281,3 +281,5 @@ export const DetailProduct = () => {
     </>
   );
 };
+
+export default DetailProduct;

@@ -6,7 +6,7 @@ import { BsBag, BsBagFill } from "react-icons/bs";
 import { useQueryClient } from "react-query";
 import useInfinityScroll from "../../hooks/useInfinityScroll";
 
-export const ProductInnerList = ({ api }) => {
+const ProductInnerList = ({ api }) => {
   const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
   const { ref, dataList: dataItem } = useInfinityScroll(api, 16); // 무한스크롤 커스텀 훅
   const queryClient = useQueryClient();
@@ -69,6 +69,8 @@ export const ProductInnerList = ({ api }) => {
     </ListBox>
   );
 };
+
+export default ProductInnerList;
 
 const ListBox = styled.ol`
   margin: 2px 14px 0 13px;

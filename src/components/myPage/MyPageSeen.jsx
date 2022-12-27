@@ -165,7 +165,7 @@ const ListDelete = styled.button`
   }
 `;
 
-export const MyPageSeen = () => {
+const MyPageSeen = () => {
   const [seenArray, setSeenArray] = useState([]);
   const { viewedItems } = useLocalStorage(); // 로컬 저장 커스텀 훅
 
@@ -251,3 +251,5 @@ export const MyPageSeen = () => {
     </Container>
   );
 };
+
+export default MyPageSeen;
