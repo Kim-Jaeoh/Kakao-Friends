@@ -131,8 +131,10 @@ const BagButton = styled.button`
   } */
 `;
 
-export const ProductRecommend = ({ productId }) => {
+const ProductRecommend = ({ productId }) => {
   const [randomItem, setRandomItem] = useState([]);
+  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
+  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
   const api = async () =>
     await axios.get("http://localhost:4000/ProductListData?amount_ne=0");
@@ -145,10 +147,6 @@ export const ProductRecommend = ({ productId }) => {
       onError: (e) => console.log(e.message),
     }
   );
-
-  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
-
-  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
   // 추천 목록 랜덤화
   useEffect(() => {
@@ -191,7 +189,7 @@ export const ProductRecommend = ({ productId }) => {
                 <RecomendListPrice>
                   <span>{PriceComma(list.price)}</span>원
                 </RecomendListPrice>
-                <BagButton onClick={(e) => toggleIcon(list)}>
+                <BagButton onClick={() => toggleIcon(list)}>
                   {currentBasket?.filter((obj) => obj.product === list.product)
                     .length > 0 ? (
                     <BsBagFill style={{ color: "#ff447f" }} />
@@ -207,3 +205,5 @@ export const ProductRecommend = ({ productId }) => {
     </BasketRecommendBox>
   );
 };
+
+export default ProductRecommend;

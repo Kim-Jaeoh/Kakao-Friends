@@ -469,6 +469,7 @@ export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
                 <img
                   src={menuBannerImg}
                   alt="카톡 추가하고 프렌즈 소식을 받아보세요!"
+                  loading="lazy"
                 />
               </div>
             </MenuBanner>

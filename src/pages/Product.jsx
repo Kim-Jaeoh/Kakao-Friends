@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Footer } from "../components/utils/Footer";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { ProductSteady } from "../components/product/ProductSteady";
 import { ProductRealTime } from "../components/product/ProductRealTime";
 
@@ -74,9 +74,9 @@ const Product = () => {
   };
 
   useEffect(() => {
-    if (pathname.includes("realtime")) {
+    if (pathname.includes("/realtime")) {
       setClickTabNumber(1);
-    } else {
+    } else if (pathname.includes("/steady")) {
       setClickTabNumber(2);
     }
   }, [pathname]);
@@ -108,6 +108,10 @@ const Product = () => {
           <Routes>
             <Route path="/realtime" element={<ProductRealTime />} />
             <Route path="/steady" element={<ProductSteady />} />
+            <Route
+              path="/*"
+              element={<Navigate replace to="/product/realtime" />}
+            />
           </Routes>
         </Wrapper>
         <Footer />

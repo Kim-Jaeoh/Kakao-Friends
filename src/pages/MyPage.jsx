@@ -1,14 +1,18 @@
 import React, { lazy, useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Footer } from "../components/utils/Footer";
 import { LoginPopupModal } from "../components/modal/LoginPopupModal";
-const MyPageSeen = lazy(() => import("../components/myPage/MyPageSeen"));
-const MyPageBasket = lazy(() => import("../components/myPage/MyPageBasket"));
-const MyPageOrderList = lazy(() =>
-  import("../components/myPage/MyPageOrderList")
-);
+import MyPageSeen from "../components/myPage/MyPageSeen";
+import MyPageBasket from "../components/myPage/MyPageBasket";
+import MyPageOrderList from "../components/myPage/MyPageOrderList";
+
+// const MyPageSeen = lazy(() => import("../components/myPage/MyPageSeen"));
+// const MyPageBasket = lazy(() => import("../components/myPage/MyPageBasket"));
+// const MyPageOrderList = lazy(() =>
+//   import("../components/myPage/MyPageOrderList")
+// );
 
 const Container = styled.main`
   position: relative;
@@ -69,8 +73,8 @@ const TabListNumber = styled.span`
   align-items: center;
 `;
 
-const MyPage = ({ userObj }) => {
-  const [selected, setSelected] = useState(3);
+const MyPage = () => {
+  const [selected, setSelected] = useState(2);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginPopupModal, setLoginPopupModal] = useState(false);
   const { pathname } = useLocation();
@@ -135,7 +139,11 @@ const MyPage = ({ userObj }) => {
         <Routes>
           <Route path="/seen" element={<MyPageSeen />} />
           <Route path="/basket" element={<MyPageBasket />} />
-          <Route path="/orderlist" element={<MyPageOrderList />} />
+          <Route
+            path="/orderlist"
+            element={<MyPageOrderList isLoggedIn={isLoggedIn} />}
+          />
+          <Route path="/*" element={<Navigate replace to="/mypage/basket" />} />
         </Routes>
 
         {!isLoggedIn && (

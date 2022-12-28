@@ -128,7 +128,7 @@ const BagButton = styled.button`
   } */
 `;
 
-export const ProductSeen = ({ productId }) => {
+const ProductSeen = ({ productId }) => {
   const [seenArray, setSeenArray] = useState([]);
   const { viewedItems } = useLocalStorage(); // 로컬 저장 커스텀 훅
 
@@ -180,3 +180,5 @@ export const ProductSeen = ({ productId }) => {
     </BasketRecommendBox>
   );
 };
+
+export default ProductSeen;

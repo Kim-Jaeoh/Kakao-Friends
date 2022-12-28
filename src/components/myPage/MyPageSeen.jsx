@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy } from "react";
 import styled from "@emotion/styled";
 import { VscTrash } from "react-icons/vsc";
 import { IoCloseOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
-import { NotInfo } from "../utils/NotInfo";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+const NotInfo = lazy(() => import("../utils/NotInfo"));
 
 const Container = styled.div``;
 

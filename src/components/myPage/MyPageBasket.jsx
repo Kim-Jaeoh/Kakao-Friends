@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState, lazy } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
@@ -9,20 +9,18 @@ import {
   CheckItem,
   Decrement,
   Increment,
-  InputChange,
   setBasket,
   setCartPrice,
-  setTotalPrice,
   UnCheckItem,
 } from "../../reducer/user";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
-import { NotInfo } from "../utils/NotInfo";
 import { usePriceComma } from "../../hooks/usePriceComma";
-import { ProductRecommend } from "../utils/ProductRecommend";
 import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
-import useInfinityScroll from "../../hooks/useInfinityScroll";
 import { updateDoc } from "firebase/firestore";
+import ProductRecommend from "../utils/ProductRecommend";
+const NotInfo = lazy(() => import("../utils/NotInfo"));
+// const ProductRecommend = lazy(() => import("../utils/ProductRecommend"));
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -510,19 +508,19 @@ const OrderButton = styled.button`
 `;
 
 const MyPageBasket = () => {
-  const [CheckBasketList, setCheckBasketList] = useState(0);
+  const [checkBasketList, setCheckBasketList] = useState([]);
   const [totalPrice, setTotalPrice] = useState("");
+  const [currentPrice, setCurrentPrice] = useState(0);
   const [totalProgress, setTotalProgress] = useState(0);
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
-  const currentPrice = useSelector((state) => state.user.cartPrice);
-  const currentTotalPrice = useSelector((state) => state.user.totalPrice);
+  // const currentPrice = useSelector((state) => state.user.cartPrice);
 
   const [popupModal, setPopupModal] = useState(false); // 구매 팝업 상태 값
   const togglePopupModal = () => setPopupModal((prev) => !prev); // 구매 팝업
 
   const { currentBasket, myInfo, docRef } = useBasketToggle(); //장바구니 커스텀 훅
-  const { PriceReComma, PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
+  const { PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
 
   const { next_redirect_pc_url: payReadyURL } = usePayReady(
     currentBasket,
@@ -530,44 +528,10 @@ const MyPageBasket = () => {
     "basket"
   ); // 카카오페이 구매 커스텀 훅
 
-  // 상품 가격
-  useEffect(() => {
-    // 체크된 것들만 계산
-    if (!currentBasket) return;
-
-    const checkItem = currentBasket.filter((item) => item.check);
-    if (checkItem.length !== 0) {
-      dispatch(
-        setCartPrice(
-          checkItem
-            ?.map((item) => PriceDeleteComma(item.price) * item.quanity)
-            ?.reduce((l, r) => l + r)
-        )
-      );
-    } else {
-      dispatch(setCartPrice(0));
-    }
-  }, [PriceDeleteComma, currentBasket, dispatch]);
-
-  // 전체 가격
-  useEffect(() => {
-    if (currentPrice === 0) {
-      setTotalPrice("3000");
-      // dispatch(setTotalPrice("3000"));
-    } else {
-      // dispatch(
-      //   setTotalPrice(
-      //     currentPrice >= 30000 ? currentPrice : currentPrice + 3000
-      //   )
-      // );
-      setTotalPrice(currentPrice >= 30000 ? currentPrice : currentPrice + 3000);
-    }
-  }, [currentPrice]);
-
   // 배송 금액 바
   useEffect(() => {
     setTotalProgress(Math.round((currentPrice / 30000) * 100));
-  }, [currentPrice, totalProgress]);
+  }, [currentPrice]);
 
   // 페이지 이탈 시 전체 체크 활성화
   useEffect(() => {
@@ -576,10 +540,32 @@ const MyPageBasket = () => {
     };
   }, []);
 
-  // 체크된 목록 숫자
+  // 체크된 아이템 및 숫자
   useEffect(() => {
-    setCheckBasketList(currentBasket.filter((item) => item.check).length);
+    setCheckBasketList(currentBasket.filter((item) => item.check)); // 체크된 아이템 숫자
   }, [currentBasket]);
+
+  // 상품 가격 (체크된 것들만)
+  useEffect(() => {
+    if (checkBasketList.length !== 0) {
+      setCurrentPrice(
+        checkBasketList
+          ?.map((item) => PriceDeleteComma(item.price) * item.quanity)
+          ?.reduce((l, r) => l + r)
+      );
+    } else {
+      setCurrentPrice(0);
+    }
+  }, [currentBasket, checkBasketList]);
+
+  // 전체 가격
+  useEffect(() => {
+    if (currentPrice === 0) {
+      setTotalPrice("3000");
+    } else {
+      setTotalPrice(currentPrice >= 30000 ? currentPrice : currentPrice + 3000);
+    }
+  }, [currentPrice]);
 
   // 장바구니 개별 삭제
   const BasketDeleteItem = async (itemId) => {
@@ -710,14 +696,18 @@ const MyPageBasket = () => {
                     htmlFor="AllcheckBox"
                     name="AllcheckBox"
                     check={
-                      CheckBasketList === currentBasket.length ? true : false
+                      checkBasketList.length === currentBasket.length
+                        ? true
+                        : false
                     }
                   >
                     <CheckInput
                       id="AllcheckBox"
                       type="checkBox"
                       checked={
-                        CheckBasketList === currentBasket.length ? true : false
+                        checkBasketList.length === currentBasket.length
+                          ? true
+                          : false
                       }
                       onChange={(e) => {
                         checkAllHandler(e.target.checked);
@@ -725,7 +715,7 @@ const MyPageBasket = () => {
                     />
                     <IoCheckmarkCircleSharp />
                   </CheckIcon>
-                  전체 {CheckBasketList}
+                  전체 {checkBasketList.length}
                 </Check>
                 <SelectDelete type="button" onClick={selectDelete}>
                   선택 삭제
@@ -767,7 +757,7 @@ const MyPageBasket = () => {
                           </ListTitle>
                           <ListPriceBox>
                             <ListPrice>
-                              <span>{PriceReComma(list.price)}</span>원
+                              <span>{list.price}</span>원
                             </ListPrice>
                           </ListPriceBox>
                           <ItemCounterBox>
@@ -831,11 +821,16 @@ const MyPageBasket = () => {
               <DescCart>장바구니 상품은 최대 90일까지 보관됩니다.</DescCart>
             </BasketBillBox>
             <BasketBottomButton>
-              <OrderButton noChecked={currentPrice === 0} onClick={orderClick}>
-                {currentPrice === 0
-                  ? "주문하기"
-                  : `${PriceComma(totalPrice)}원 주문하기`}
-              </OrderButton>
+              {totalPrice && (
+                <OrderButton
+                  noChecked={currentPrice === 0}
+                  onClick={orderClick}
+                >
+                  {currentPrice === 0
+                    ? "주문하기"
+                    : `${PriceComma(totalPrice)}원 주문하기`}
+                </OrderButton>
+              )}
             </BasketBottomButton>
           </BasketBox>
         )}

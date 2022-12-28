@@ -1,14 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, lazy } from "react";
 import styled from "@emotion/styled";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 import { Link, useSearchParams } from "react-router-dom";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import useInfinityScroll from "../../hooks/useInfinityScroll";
-
-import { NotInfo } from "../utils/NotInfo";
 import { useQuery } from "react-query";
 import axios from "axios";
+const NotInfo = lazy(() => import("../utils/NotInfo"));
 
 const BasketRecommendBox = styled.div`
   position: relative;

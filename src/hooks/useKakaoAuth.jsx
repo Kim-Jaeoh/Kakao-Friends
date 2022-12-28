@@ -1,22 +1,26 @@
 import React, { useCallback } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setBasket, setCurrentUser, setLoginToken } from "../reducer/user";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { dbService } from "../fbase";
 
 export const useKakaoAuth = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const { pathname } = useLocation();
+
+  // 로그인 요청 url
+  const KakaoAutoUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&prompt=login`;
+
+  // 로그인 요청
+  const onLogInClick = useCallback(() => {
+    localStorage.setItem("pathname", pathname);
+    window.location.href = KakaoAutoUrl;
+  }, [KakaoAutoUrl, pathname]);
 
   // 카카오 로그인
-  const KakaoAutoUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}`;
-
-  const onLogInClick = () => (window.location.href = KakaoAutoUrl);
-
-  // 카카오 계정 정보
   const userInfo = async () => {
     await axios({
       method: "GET",
@@ -28,15 +32,16 @@ export const useKakaoAuth = () => {
       const docRef = doc(dbService, "userInfo", user.data.id.toString());
       const docSnap = await getDoc(docRef);
       const usersRef = collection(dbService, "userInfo");
-      dispatch(setBasket([]));
 
+      // firbase에 카카오 계정 정보 있을 시
       if (docSnap.exists()) {
+        // firebase에 있는 계정 정보 가져오기
         dispatch(
           setCurrentUser({
             ...docSnap.data(),
           })
         );
-        dispatch(setBasket([...docSnap.data().basket]));
+        dispatch(setBasket([...docSnap.data().basket])); // firebase에 있는 장바구니 내역 가져오기
       } else {
         await setDoc(doc(usersRef, user.data.id.toString()), {
           uid: user.data.id,
@@ -56,7 +61,8 @@ export const useKakaoAuth = () => {
         );
         dispatch(setBasket([]));
       }
-      navigate(-1);
+      navigate(localStorage.getItem("pathname"));
+      localStorage.removeItem("pathname");
     });
   };
 

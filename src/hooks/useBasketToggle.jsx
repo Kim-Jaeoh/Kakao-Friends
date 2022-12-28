@@ -1,10 +1,4 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { dbService } from "../fbase";
@@ -17,7 +11,6 @@ export const useBasketToggle = () => {
   const [isLogin, setIsLogin] = useState(false);
   const currentBasket = useSelector((state) => state.user.basket);
   const currentUser = useSelector((state) => state.user.currentUser);
-  const currentLoginToken = useSelector((state) => state.user.loginToken);
 
   useEffect(() => {
     if (currentUser.uid) {
@@ -33,11 +26,11 @@ export const useBasketToggle = () => {
         setIsLogin(true);
       });
     }
-
-    return () => setIsLogin(false);
+    // return () => setIsLogin(false);
   }, [docRef]);
 
-  const toggleIcon = useCallback(
+  const toggleIcon =
+    // useCallback(
     async (itemId, quanity) => {
       const currentFinded = currentBasket?.find(
         (item) => item.product === itemId.product
@@ -65,7 +58,7 @@ export const useBasketToggle = () => {
         dispatch(setBasket(currentFilter));
       }
 
-      if (isLogin) {
+      if (currentUser.uid) {
         const fbFinded = myInfo?.basket?.find(
           (item) => item.product === itemId.product
         );
@@ -93,9 +86,9 @@ export const useBasketToggle = () => {
           });
         }
       }
-    },
-    [currentBasket, dispatch, docRef, isLogin, myInfo?.basket]
-  );
+    };
+  // [currentBasket, dispatch, docRef, isLogin, myInfo?.basket]
+  // );
 
-  return { toggleIcon, currentBasket, myInfo, docRef };
+  return { toggleIcon, currentBasket, docRef, myInfo };
 };

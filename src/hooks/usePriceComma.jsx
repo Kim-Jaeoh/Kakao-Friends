@@ -13,15 +13,15 @@ export const usePriceComma = () => {
   }, []);
 
   const PriceDeleteComma = useCallback((price) => {
-    // if (totalPrice || cartPrice !== 0) {
+    // if (typeof price === "string") {
     return price?.split(",").join("");
-    // } else return;
+    // }
   }, []);
 
   const PriceComma = useCallback((price) => {
-    // if (totalPrice || cartPrice !== 0) {
+    // if (typeof price === "number") {
     return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    // } else return;
+    // }
   }, []);
 
   return { PriceReComma, PriceDeleteComma, PriceComma };

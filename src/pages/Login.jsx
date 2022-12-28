@@ -1,16 +1,17 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Spinner } from "../components/utils/Spinner";
 import { useKakaoAuth } from "../hooks/useKakaoAuth";
 import { setLoginToken } from "../reducer/user";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const code = new URL(window.location.href).searchParams.get("code");
   const { userInfo } = useKakaoAuth(); // 카카오 로그인 커스텀 훅
-  const currentUser = useSelector((state) => state.user.currentUser);
 
+  const code = new URL(window.location.href).searchParams.get("code");
+
+  // 토큰 받기
   const getKakaoToken = async () => {
     await axios({
       method: "POST",
@@ -27,8 +28,8 @@ const Login = () => {
     })
       .then((res) => {
         localStorage.setItem("token", res.data.access_token);
-        dispatch(setLoginToken("login"));
         userInfo();
+        dispatch(setLoginToken("login"));
       })
       .catch((e) => console.log(e));
   };
@@ -36,7 +37,7 @@ const Login = () => {
   useEffect(() => {
     if (!code) return;
     getKakaoToken();
-  }, [code, currentUser.uid]);
+  }, []);
 
   return <Spinner />;
 };

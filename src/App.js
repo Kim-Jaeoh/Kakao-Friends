@@ -1,26 +1,25 @@
-import { lazy, useEffect } from "react";
+import { lazy } from "react";
 import styled from "@emotion/styled";
-import { authService } from "./fbase";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Header } from "./components/header/Header";
 import { TopButton } from "./components/button/TopButton";
 import ScrollToTop from "./hooks/useScrollToTop";
 import { Suspense } from "react";
 import { Spinner } from "./components/utils/Spinner";
-import { useSelector } from "react-redux";
-import { doc, onSnapshot } from "firebase/firestore";
+import MyPage from "./pages/MyPage";
+import MyPagePayResult from "./components/myPage/MyPagePayResult";
 // const Main = lazy(() =>
 //   import("./pages/Main").then((module) => ({ default: module.Main })) // export 함수 시
 // );
 const Main = lazy(
   () => import("./pages/Main") // export default 시
 );
-const MyPage = lazy(() => import("./pages/MyPage"));
+// const MyPage = lazy(() => import("./pages/MyPage"));
 const DetailProduct = lazy(() => import("./pages/DetailProduct"));
 const Product = lazy(() => import("./pages/Product"));
-const MyPagePayResult = lazy(() =>
-  import("./components/myPage/MyPagePayResult")
-);
+// const MyPagePayResult = lazy(() =>
+//   import("./components/myPage/MyPagePayResult")
+// );
 const Search = lazy(() => import("./pages/Search"));
 const Promotion = lazy(() => import("./pages/Promotion"));
 const Login = lazy(() => import("./pages/Login"));

@@ -3,7 +3,12 @@ import styled from "@emotion/styled";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { dbService } from "../../fbase";
 import character from "../../assets/order_complete_lion.gif";
 import { Footer } from "../utils/Footer";
@@ -11,6 +16,9 @@ import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 import { setBasket } from "../../reducer/user";
+import { Spinner } from "../utils/Spinner";
+import { usePriceComma } from "../../hooks/usePriceComma";
+import { BsCheckCircleFill } from "react-icons/bs";
 
 const MyPagePayResult = () => {
   const [loading, setLoading] = useState(false);
@@ -18,14 +26,17 @@ const MyPagePayResult = () => {
   const [myInfo, setMyInfo] = useState({});
   const [dataType, setDataType] = useState([]);
   const [filterInfo, setFilterInfo] = useState({});
+  const [dbRef, setDocRef] = useState("");
+
   const dispatch = useDispatch();
   const currentOrder = useSelector((state) => state.user.order);
   const currentBasket = useSelector((state) => state.user.basket);
   const currentUser = useSelector((state) => state.user.currentUser);
-  const dbRef = doc(dbService, "userInfo", currentUser.uid.toString());
+
   const { timeToString } = useTimeStamp();
-  const queryClient = useQueryClient();
+  const { PriceComma } = usePriceComma();
   const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
 
   const params = {
     cid: "TC0ONETIME",
@@ -44,16 +55,25 @@ const MyPagePayResult = () => {
   // search에 따라 데이터 값 설정
   useEffect(() => {
     const type = searchParams.get("type");
-    setDataType(type === "direct" ? currentOrder : currentBasket);
+    const currentCheckBasket = currentBasket.filter((item) => item.check);
+    setDataType(type === "direct" ? currentOrder : currentCheckBasket);
   }, [currentBasket, currentOrder, searchParams]);
+
+  useEffect(() => {
+    if (currentUser.uid) {
+      setDocRef(doc(dbService, "userInfo", currentUser.uid.toString()));
+    }
+  }, [currentUser.uid]);
 
   // Firebase 본인 정보 가져오기
   useEffect(() => {
-    onSnapshot(dbRef, (doc) => {
-      setLoading(true);
-      setMyInfo(doc.data());
-    });
-  }, [currentUser.uid, dbRef]);
+    if (dbRef) {
+      onSnapshot(dbRef, (doc) => {
+        setLoading(true);
+        setMyInfo(doc.data());
+      });
+    }
+  }, [dbRef]);
 
   // 잔여 수량 변경
   const { mutate } = useMutation(
@@ -88,6 +108,8 @@ const MyPagePayResult = () => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
 
+          console.log(response.data);
+
           // 상품 잔여 수량 mutation으로 변경
           dataType.map((order) => {
             return mutate({
@@ -102,7 +124,7 @@ const MyPagePayResult = () => {
 
   // 주문 내역 firebase 업데이트
   useEffect(() => {
-    if (params.pg_token && result && loading) {
+    if (result.length !== 0) {
       const userInfo = async () => {
         await updateDoc(dbRef, {
           orderList: [
@@ -117,6 +139,11 @@ const MyPagePayResult = () => {
                 image: order.image,
                 title: order.title,
               })),
+
+              totalPrice: result.amount?.total,
+              deliveryPrice:
+                result.amount?.total >= 30000 ? "무료" : "+ 3,000원",
+              usePoint: result.amount?.point,
               type: result.payment_method_type === "MONEY" ? "현금" : "카드",
             },
           ],
@@ -135,14 +162,14 @@ const MyPagePayResult = () => {
       };
       userInfo();
     }
-  }, [result, dataType]);
+  }, [result]);
 
   // 구매한 제품 장바구니에서 삭제
   const orderItemBasketRemove = async () => {
+    // localStorage 저장된 값 가져오기
     const localBuyItem = localStorage.getItem("buyItem");
 
     if (localBuyItem) {
-      console.log("?");
       const fbFilter = myInfo?.basket?.filter(
         (info) => !localBuyItem?.includes(info.product)
       );
@@ -166,17 +193,21 @@ const MyPagePayResult = () => {
     }
   }, [loading, myInfo?.orderList, result]);
 
+  console.log("?");
+
   return (
     <>
-      <Container>
-        {filterInfo && (
-          <>
+      {result.length !== 0 ? (
+        <>
+          <Container>
             <OrderInfoBox>
               <CharacterBox>
                 <img src={character} alt="order lion" loading="lazy" />
               </CharacterBox>
               <OrderInfoText>
-                <OrderInfoTitle>주문이 완료되었어요!</OrderInfoTitle>
+                <OrderInfoTitle>
+                  <BsCheckCircleFill /> 주문이 완료되었어요!
+                </OrderInfoTitle>
                 <OrderInfoSub>
                   주문하신 내역은&nbsp;
                   <Link to="/mypage/orderlist">'마이 - 주문내역'</Link>
@@ -194,15 +225,20 @@ const MyPagePayResult = () => {
                       <ListContents>
                         <ListImageBox to={`/detail/${list.product}`}>
                           <ListImage>
-                            <img src={list.image} alt={list.title} />
+                            <img
+                              src={list.image}
+                              alt={list.title}
+                              loading="lazy"
+                            />
                           </ListImage>
                         </ListImageBox>
                         <ListInfoBox to={`/detail/${list.product}`}>
                           <ListInfo>
                             <ListTitle>{list.title}</ListTitle>
                             <ListPrice>
-                              <span>{list.price}</span>원&nbsp;/&nbsp;
-                              <span>{list.quanity}</span>개
+                              {list.price}
+                              &nbsp;|&nbsp;
+                              {list.quanity}개
                             </ListPrice>
                           </ListInfo>
                         </ListInfoBox>
@@ -214,23 +250,62 @@ const MyPagePayResult = () => {
             </OrderInfoCategory>
 
             <OrderInfoCategory>
-              <OrderCategoryText>주문 정보</OrderCategoryText>
+              <OrderCategoryText>결제 정보</OrderCategoryText>
               <OrderPayInfo>
-                <OrderPayText>
-                  주문번호&nbsp;<span>{filterInfo?.tid}</span>
-                </OrderPayText>
-                <OrderPayText>
-                  결제일시&nbsp;<span>{timeToString(filterInfo)}</span>
-                </OrderPayText>
-                <OrderPayText>
-                  결제수단&nbsp;<span>{filterInfo?.type}</span>
-                </OrderPayText>
+                <OrderPayBox>
+                  <OrderPayTitle>주문번호</OrderPayTitle>&nbsp;
+                  <OrderPaySub>{filterInfo?.tid}</OrderPaySub>
+                </OrderPayBox>
+                <OrderPayBox>
+                  <OrderPayTitle>결제일시</OrderPayTitle>&nbsp;
+                  <OrderPaySub>
+                    {filterInfo && timeToString(filterInfo)}
+                  </OrderPaySub>
+                </OrderPayBox>
+                <OrderPayBox>
+                  <OrderPayTitle>결제수단</OrderPayTitle>&nbsp;
+                  <OrderPaySub>{filterInfo?.type}</OrderPaySub>
+                </OrderPayBox>
+
+                <OrderPayBox>
+                  <OrderPayTitle>총 상품금액</OrderPayTitle>&nbsp;
+                  <OrderPaySub>
+                    {PriceComma(filterInfo?.totalPrice)}
+                    <span>원</span>
+                  </OrderPaySub>
+                </OrderPayBox>
+                <OrderPayBox>
+                  <OrderPayTitle>배송비</OrderPayTitle>&nbsp;
+                  <OrderPaySub>
+                    {PriceComma(filterInfo?.deliveryPrice)}
+                    {!filterInfo?.deliveryPrice === "무료" ?? <span>원</span>}
+                  </OrderPaySub>
+                </OrderPayBox>
+                <OrderPayBox>
+                  <OrderPayTitle>포인트 사용</OrderPayTitle>&nbsp;
+                  <OrderPaySub>
+                    -&nbsp;{PriceComma(filterInfo?.usePoint)}
+                    <span>원</span>
+                  </OrderPaySub>
+                </OrderPayBox>
               </OrderPayInfo>
             </OrderInfoCategory>
-          </>
-        )}
-      </Container>
-      <Footer />
+
+            <OrderInfoCategory>
+              <OrderTotalPrice>
+                <OrderPayTitle>최종 결제금액</OrderPayTitle>
+                <OrderPaySub>
+                  {PriceComma(filterInfo?.totalPrice - filterInfo?.usePoint)}
+                  <span>원</span>
+                </OrderPaySub>
+              </OrderTotalPrice>
+            </OrderInfoCategory>
+          </Container>
+          <Footer />
+        </>
+      ) : (
+        <Spinner />
+      )}
     </>
   );
 };
@@ -265,13 +340,24 @@ const CharacterBox = styled.div`
 `;
 
 const OrderInfoText = styled.div`
-  padding: 30px 20px;
+  padding: 45px 20px;
 `;
 
 const OrderInfoTitle = styled.h2`
+  display: flex;
+  align-items: center;
   font-weight: bold;
   font-size: 24px;
   margin-bottom: 6px;
+
+  svg {
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    position: relative;
+  }
 `;
 
 const OrderInfoSub = styled.p`
@@ -298,14 +384,32 @@ const OrderCategoryText = styled.strong`
   color: #747475;
 `;
 
-export const OrderListBox = styled.ul`
+const OrderTotalPrice = styled.strong`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+
+  :last-of-type {
+    span {
+      font-size: 16px;
+    }
+
+    strong {
+      font-size: 20px;
+    }
+  }
+`;
+
+const OrderListBox = styled.ul`
   overflow: hidden;
   :not(:last-of-type) {
     margin-bottom: 25px;
   }
 `;
 
-export const OrderList = styled.li`
+const OrderList = styled.li`
   position: relative;
   margin: 20px 0px 0;
   padding: 0 28px 0px 0;
@@ -316,16 +420,56 @@ export const OrderList = styled.li`
   }
 `;
 
+const OrderPayInfo = styled.div`
+  /* padding: 0 20px; */
+`;
+
+const OrderPayBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  :not(:last-of-type) {
+    margin-bottom: 8px;
+  }
+
+  :nth-of-type(3) {
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f2f2f2;
+  }
+
+  :nth-of-type(4) {
+    padding-top: 10px;
+  }
+
+  :last-of-type {
+    color: #e95555;
+  }
+`;
+
+const OrderPayTitle = styled.span`
+  /* display: inline-block; */
+  /* width: 100px; */
+  /* margin: 0 8px 0 0; */
+`;
+
+const OrderPaySub = styled.strong`
+  span {
+    font-size: 14px;
+    margin-left: 1.6px;
+  }
+`;
+
 const ListContents = styled.div`
   overflow: hidden;
-  height: 100px;
+  /* height: 100px; */
 `;
 
 const ListImageBox = styled(Link)`
   float: left;
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   border-radius: 6px;
 
   ::before {
@@ -371,7 +515,7 @@ const ListTitle = styled.strong`
   display: -webkit-box;
   overflow: hidden;
   line-height: 20px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   max-height: 40px;
   text-overflow: ellipsis;
@@ -381,25 +525,12 @@ const ListTitle = styled.strong`
 `;
 
 const ListPrice = styled.div`
-  padding-top: 4px;
-  font-size: 15px;
-  line-height: 24px;
+  padding-top: 2px;
+  font-size: 14px;
+  /* line-height: 24px; */
   vertical-align: top;
 
-  span {
-    font-size: 16px;
-  }
-`;
-
-const OrderPayInfo = styled.div`
-  /* padding: 0 20px; */
-`;
-
-const OrderPayText = styled.span`
-  display: block;
-  margin-bottom: 5px;
-
-  span {
-    margin-left: 4px;
+  strong {
+    /* font-weight: 700; */
   }
 `;

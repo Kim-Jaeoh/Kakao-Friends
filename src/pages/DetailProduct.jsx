@@ -1,9 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, lazy } from "react";
 import styled from "@emotion/styled";
 import { RouterHeader } from "../components/header/RouterHeader";
 import Flicking from "@egjs/react-flicking";
 import "@egjs/react-flicking/dist/flicking.css";
-import { AutoPlay, Pagination } from "@egjs/flicking-plugins";
+import { AutoPlay } from "@egjs/flicking-plugins";
 import "@egjs/flicking-plugins/dist/pagination.css";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -12,10 +12,12 @@ import { useEffect } from "react";
 import { Rating } from "../components/utils/Rating";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { AiOutlineBell } from "react-icons/ai";
-import { ProductRecommend } from "../components/utils/ProductRecommend";
-import { ProductSeen } from "../components/utils/ProductSeen";
 import { DetailProductModal } from "../components/modal/DetailProductModal";
 import axios from "axios";
+const ProductRecommend = lazy(() =>
+  import("../components/utils/ProductRecommend")
+);
+const ProductSeen = lazy(() => import("../components/utils/ProductSeen"));
 
 const Container = styled.main`
   position: relative;

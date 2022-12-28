@@ -56,7 +56,7 @@ const BestItemViewBtn = styled(Link)`
   color: #fff !important;
 `;
 
-export const NotInfo = ({ url, title, text, text2, btn }) => {
+const NotInfo = ({ url, title, text, text2, btn }) => {
   return (
     <EmptyBasketBox>
       <EmptyBasketCharacter>
@@ -80,3 +80,5 @@ export const NotInfo = ({ url, title, text, text2, btn }) => {
     </EmptyBasketBox>
   );
 };
+
+export default NotInfo;

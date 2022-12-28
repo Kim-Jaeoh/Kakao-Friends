@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy } from "react";
 import styled from "@emotion/styled";
 import axios from "axios";
-import { NotInfo } from "../utils/NotInfo";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../../fbase";
+import { usePriceComma } from "../../hooks/usePriceComma";
+const NotInfo = lazy(() => import("../utils/NotInfo"));
 
-const MyPageOrderList = () => {
+const MyPageOrderList = ({ isLoggedIn }) => {
   const [orderList, setOrderList] = useState([]);
   const [myInfo, setMyInfo] = useState([]);
   // const [docRef, setDocRef] = useState("");
@@ -16,6 +17,7 @@ const MyPageOrderList = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentBasket = useSelector((state) => state.user.basket);
 
+  const { PriceDeleteComma, PriceReComma, PriceComma } = usePriceComma(); // 시간 포멧 커스텀 훅
   const { timeToString } = useTimeStamp(); // 시간 포멧 커스텀 훅
 
   // 결제 상태 로직
@@ -31,12 +33,9 @@ const MyPageOrderList = () => {
     return setPayStatus(paymentMap[paymentType]);
   };
 
-  // // docRef state 설정
-  // useEffect(() => {
-  //   if (currentUser.uid) {
-  //     setDocRef(doc(dbService, "userInfo", currentUser.uid.toString()));
-  //   }
-  // }, [currentUser.uid]);
+  useEffect(() => {
+    if (!isLoggedIn) return;
+  }, [isLoggedIn]);
 
   // Firebase 본인 정보 가져오기
   useEffect(() => {
@@ -122,6 +121,44 @@ const MyPageOrderList = () => {
                       );
                     })}
                   </OrderListBox>
+
+                  <OrderInfoCategory>
+                    <OrderCategoryText>결제 정보</OrderCategoryText>
+                    <OrderPayInfo>
+                      <OrderPayBox>
+                        <OrderPayTitle>총 상품금액</OrderPayTitle>&nbsp;
+                        <OrderPaySub>
+                          {PriceComma(order.totalPrice)}
+                          <span>원</span>
+                        </OrderPaySub>
+                      </OrderPayBox>
+                      <OrderPayBox>
+                        <OrderPayTitle>배송비</OrderPayTitle>&nbsp;
+                        <OrderPaySub>
+                          {PriceComma(order.deliveryPrice)}
+                          {!order?.deliveryPrice === "무료" ?? <span>원</span>}
+                        </OrderPaySub>
+                      </OrderPayBox>
+                      <OrderPayBox>
+                        <OrderPayTitle>포인트 사용</OrderPayTitle>&nbsp;
+                        <OrderPaySub>
+                          -&nbsp;
+                          {PriceComma(order.usePoint)}
+                          <span>원</span>
+                        </OrderPaySub>
+                      </OrderPayBox>
+                    </OrderPayInfo>
+                  </OrderInfoCategory>
+
+                  <OrderInfoCategory>
+                    <OrderTotalPrice>
+                      <OrderPayTitle>최종 결제금액</OrderPayTitle>
+                      <OrderPaySub>
+                        {PriceComma(order.totalPrice - order.usePoint)}
+                        <span>원</span>
+                      </OrderPaySub>
+                    </OrderTotalPrice>
+                  </OrderInfoCategory>
                 </Orderbox>
               );
             })}
@@ -187,8 +224,29 @@ const OrderInfo = styled.div`
   }
 `;
 
+const OrderPriceInfo = styled.div`
+  display: flex;
+  margin-left: auto;
+  /* justify-content: flex-end; */
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+
+  div {
+    :first-of-type {
+      margin-right: 15px;
+      color: #747475;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    font-weight: 700;
+    font-size: 16px;
+  }
+`;
+
 const OrderListBox = styled.ul`
   overflow: hidden;
+  border-bottom: 1px solid #f2f2f2;
 `;
 
 const OrderList = styled.li`
@@ -201,6 +259,80 @@ const OrderList = styled.li`
   }
 `;
 
+//
+
+const OrderInfoCategory = styled.div`
+  background-color: #fff;
+  padding: 20px;
+  /* margin-bottom: 25px; */
+  :not(:last-of-type) {
+    border-bottom: 1px solid #f2f2f2;
+  }
+`;
+
+const OrderCategoryText = styled.strong`
+  display: block;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #747475;
+`;
+
+const OrderTotalPrice = styled.strong`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+
+  :last-of-type {
+    span {
+      font-size: 16px;
+    }
+
+    strong {
+      font-size: 20px;
+    }
+  }
+`;
+
+const OrderPayInfo = styled.div`
+  /* padding: 0 20px; */
+`;
+
+const OrderPayBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  :not(:last-of-type) {
+    margin-bottom: 8px;
+  }
+
+  :nth-of-type(3) {
+    color: #e95555;
+    /* padding-bottom: 18px; */
+    /* border-bottom: 1px solid #f2f2f2; */
+  }
+
+  :nth-of-type(4) {
+    padding-top: 10px;
+  }
+`;
+
+const OrderPayTitle = styled.span`
+  /* display: inline-block; */
+  /* width: 100px; */
+  /* margin: 0 8px 0 0; */
+`;
+
+const OrderPaySub = styled.strong`
+  span {
+    font-size: 14px;
+    margin-left: 1.6px;
+  }
+`;
+//
 const ListContents = styled.div`
   overflow: hidden;
   height: 100px;
@@ -257,7 +389,7 @@ const ListTitle = styled.strong`
   overflow: hidden;
   line-height: 20px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 500;
   max-height: 40px;
   text-overflow: ellipsis;
   -webkit-line-clamp: 2;

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setOrder, setTotalPrice } from "../reducer/user";
 
-export const usePayReady = (list, currentTotalPrice, type) => {
+export const usePayReady = (list, totalPrice, type) => {
   const [obj, setObj] = useState([]);
-  const [totalPrice, setTotalPrice] = useState("");
+  // const [totalPrice, setTotalPrice] = useState("");
   const dispatch = useDispatch();
 
   // 요청 단계 완료 시 승인 단계로 넘어가지는 URL (search 타입 지정)
@@ -15,27 +15,8 @@ export const usePayReady = (list, currentTotalPrice, type) => {
   const failUrl = "http://localhost:3000";
   const cancelUrl = "http://localhost:3000";
 
-  // console.log(
-  // list
-  //   ?.map((item) => item?.price?.split(",").join("") * item?.quanity)
-  //   ?.reduce((a, b) => a + b, 0)
-  // );
-
-  // useEffect(() => {
-  //   setTotalPrice(
-  //     list
-  //       ?.map((item) => item?.price?.split(",").join("") * item?.quanity)
-  //       ?.reduce((a, b) => a + b, 0)
-  //   );
-  // }, [list]);
-
-  // useEffect(() => {
-  //   console.log(currentTotalPrice);
-  // }, [currentTotalPrice]);
-
   useEffect(() => {
     let params = {};
-    // if (!currentTotalPrice) return (currentTotalPrice = 3000);
 
     if (list?.length !== 0) {
       params = {
@@ -49,7 +30,7 @@ export const usePayReady = (list, currentTotalPrice, type) => {
         quantity: list
           ?.map((item) => item?.quanity)
           ?.reduce((a, b) => a + b, 0),
-        total_amount: currentTotalPrice || 3000,
+        total_amount: totalPrice || 3000,
         vat_amount: 0,
         tax_free_amount: 0,
         approval_url: appUrl,
@@ -78,7 +59,7 @@ export const usePayReady = (list, currentTotalPrice, type) => {
           } = response;
 
           if (type === "direct") {
-            list.map((order) =>
+            list?.map((order) =>
               dispatch(
                 setOrder([
                   {
@@ -100,9 +81,8 @@ export const usePayReady = (list, currentTotalPrice, type) => {
         });
       };
       postKakaopay();
-      // return () => localStorage.setItem("tid", "");
     }
-  }, [appUrl, currentTotalPrice, list, type]);
+  }, [appUrl, totalPrice, list, type]);
 
   const { next_redirect_pc_url } = obj;
 
