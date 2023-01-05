@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Kakao-Friends/static/css/main.57c5b9fe.css",
-    "main.js": "/Kakao-Friends/static/js/main.fd155d31.js",
+    "main.js": "/Kakao-Friends/static/js/main.ea4c523a.js",
     "static/css/47.816c62f3.chunk.css": "/Kakao-Friends/static/css/47.816c62f3.chunk.css",
     "static/js/47.95dee865.chunk.js": "/Kakao-Friends/static/js/47.95dee865.chunk.js",
     "static/js/113.674cff4e.chunk.js": "/Kakao-Friends/static/js/113.674cff4e.chunk.js",
@@ -11,7 +11,7 @@
     "static/js/927.fc3cdb46.chunk.js": "/Kakao-Friends/static/js/927.fc3cdb46.chunk.js",
     "static/js/293.3a9eae1b.chunk.js": "/Kakao-Friends/static/js/293.3a9eae1b.chunk.js",
     "static/js/448.8d057071.chunk.js": "/Kakao-Friends/static/js/448.8d057071.chunk.js",
-    "static/js/38.cebb1dab.chunk.js": "/Kakao-Friends/static/js/38.cebb1dab.chunk.js",
+    "static/js/38.ff8d03e1.chunk.js": "/Kakao-Friends/static/js/38.ff8d03e1.chunk.js",
     "static/js/787.76456938.chunk.js": "/Kakao-Friends/static/js/787.76456938.chunk.js",
     "static/js/922.27b3a7e2.chunk.js": "/Kakao-Friends/static/js/922.27b3a7e2.chunk.js",
     "static/js/490.e2d67dba.chunk.js": "/Kakao-Friends/static/js/490.e2d67dba.chunk.js",
@@ -42,7 +42,7 @@
     "static/media/belt_banner_mo.jpg": "/Kakao-Friends/static/media/belt_banner_mo.527b04b19dcb615142a7.jpg",
     "index.html": "/Kakao-Friends/index.html",
     "main.57c5b9fe.css.map": "/Kakao-Friends/static/css/main.57c5b9fe.css.map",
-    "main.fd155d31.js.map": "/Kakao-Friends/static/js/main.fd155d31.js.map",
+    "main.ea4c523a.js.map": "/Kakao-Friends/static/js/main.ea4c523a.js.map",
     "47.816c62f3.chunk.css.map": "/Kakao-Friends/static/css/47.816c62f3.chunk.css.map",
     "47.95dee865.chunk.js.map": "/Kakao-Friends/static/js/47.95dee865.chunk.js.map",
     "113.674cff4e.chunk.js.map": "/Kakao-Friends/static/js/113.674cff4e.chunk.js.map",
@@ -52,7 +52,7 @@
     "927.fc3cdb46.chunk.js.map": "/Kakao-Friends/static/js/927.fc3cdb46.chunk.js.map",
     "293.3a9eae1b.chunk.js.map": "/Kakao-Friends/static/js/293.3a9eae1b.chunk.js.map",
     "448.8d057071.chunk.js.map": "/Kakao-Friends/static/js/448.8d057071.chunk.js.map",
-    "38.cebb1dab.chunk.js.map": "/Kakao-Friends/static/js/38.cebb1dab.chunk.js.map",
+    "38.ff8d03e1.chunk.js.map": "/Kakao-Friends/static/js/38.ff8d03e1.chunk.js.map",
     "787.76456938.chunk.js.map": "/Kakao-Friends/static/js/787.76456938.chunk.js.map",
     "922.27b3a7e2.chunk.js.map": "/Kakao-Friends/static/js/922.27b3a7e2.chunk.js.map",
     "490.e2d67dba.chunk.js.map": "/Kakao-Friends/static/js/490.e2d67dba.chunk.js.map",
@@ -69,6 +69,6 @@
   },
   "entrypoints": [
     "static/css/main.57c5b9fe.css",
-    "static/js/main.fd155d31.js"
+    "static/js/main.ea4c523a.js"
   ]
 }
