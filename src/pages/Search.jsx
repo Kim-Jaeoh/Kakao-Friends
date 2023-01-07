@@ -102,6 +102,8 @@ const Search = () => {
   const searchDelete = () => {
     setSearchText("");
     inputRef.current.value = "";
+    setFocus(false);
+    setIsSubmit(false);
   };
 
   // 검색(form enter)했는지 체크
@@ -109,12 +111,12 @@ const Search = () => {
     (e) => {
       e.preventDefault();
       setFocus(false);
+      setIsSubmit(true);
       navigate({
         pathname: "/search/result",
         search: `?keyword=${searchText}`,
       });
       inputRef.current.blur();
-      setIsSubmit(true);
     },
     [navigate, searchText]
   );
@@ -124,6 +126,7 @@ const Search = () => {
     setIsSubmit(false);
   };
 
+  // 키워드가 있을 때 (ex. 메뉴 카테고리에서 넘어올 때)
   useEffect(() => {
     if (!focus && keyword) {
       setIsSubmit(true);

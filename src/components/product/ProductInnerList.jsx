@@ -9,17 +9,17 @@ import useInfinityScroll from "../../hooks/useInfinityScroll";
 const ProductInnerList = ({ api }) => {
   const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
   const { ref, dataList: dataItem } = useInfinityScroll(api, 16); // 무한스크롤 커스텀 훅
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  // 라우터 이탈 시 데이터 clean up으로 직접 리셋
-  useEffect(() => {
-    return () => {
-      queryClient.setQueryData(["infiniteProduct", api], (data) => ({
-        pages: data?.pages.slice(0, 1),
-        pageParams: data?.pageParams?.slice(0, 1),
-      }));
-    };
-  }, [queryClient, api]);
+  // // 라우터 이탈 시 데이터 clean up으로 직접 리셋
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.setQueryData(["infiniteProduct", api], (data) => ({
+  //       pages: data?.pages.slice(0, 1),
+  //       pageParams: data?.pageParams?.slice(0, 1),
+  //     }));
+  //   };
+  // }, [api]);
 
   return (
     <ListBox>

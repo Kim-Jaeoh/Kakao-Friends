@@ -1,19 +1,18 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setOrder, setTotalPrice } from "../reducer/user";
+import { setOrder } from "../reducer/user";
 
 export const usePayReady = (list, totalPrice, type) => {
   const [obj, setObj] = useState([]);
-  // const [totalPrice, setTotalPrice] = useState("");
   const dispatch = useDispatch();
 
   // 요청 단계 완료 시 승인 단계로 넘어가지는 URL (search 타입 지정)
-  const appUrl = `http://localhost:3000/mypage/payresult?type=${
-    type === "direct" ? "direct" : "basket"
-  }`;
-  const failUrl = "http://localhost:3000";
-  const cancelUrl = "http://localhost:3000";
+  // const appUrl = `${process.env.REACT_APP_CLIENT_PORT}/mypage/payresult?type=${
+  //   type === "direct" ? "direct" : "basket"
+  // }`;
+  // const failUrl = process.env.REACT_APP_CLIENT_PORT;
+  // const cancelUrl = process.env.REACT_APP_CLIENT_PORT;
 
   useEffect(() => {
     let params = {};
@@ -33,9 +32,11 @@ export const usePayReady = (list, totalPrice, type) => {
         total_amount: totalPrice || 3000,
         vat_amount: 0,
         tax_free_amount: 0,
-        approval_url: appUrl,
-        fail_url: failUrl,
-        cancel_url: cancelUrl,
+        approval_url: `${
+          process.env.REACT_APP_CLIENT_PORT
+        }/mypage/payresult?type=${type === "direct" ? "direct" : "basket"}`,
+        fail_url: process.env.REACT_APP_CLIENT_PORT,
+        cancel_url: process.env.REACT_APP_CLIENT_PORT,
       };
 
       const postKakaopay = async () => {
@@ -82,7 +83,7 @@ export const usePayReady = (list, totalPrice, type) => {
       };
       postKakaopay();
     }
-  }, [appUrl, totalPrice, list, type]);
+  }, [totalPrice, list, type, dispatch]);
 
   const { next_redirect_pc_url } = obj;
 

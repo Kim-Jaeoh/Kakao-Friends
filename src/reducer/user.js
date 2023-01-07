@@ -77,15 +77,15 @@ const initialState = {
     like: [],
   },
   basket: [
-    {
-      id: "",
-      product: "",
-      title: "",
-      price: "",
-      image: "",
-      quanity: "",
-      check: true,
-    },
+    // {
+    //   id: "",
+    //   product: "",
+    //   title: "",
+    //   price: "",
+    //   image: "",
+    //   quanity: "",
+    //   check: true,
+    // },
   ],
   order: {
     tid: "",

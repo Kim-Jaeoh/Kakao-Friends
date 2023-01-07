@@ -3,12 +3,7 @@ import styled from "@emotion/styled";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { dbService } from "../../fbase";
 import character from "../../assets/order_complete_lion.gif";
 import { Footer } from "../utils/Footer";
@@ -59,6 +54,7 @@ const MyPagePayResult = () => {
     setDataType(type === "direct" ? currentOrder : currentCheckBasket);
   }, [currentBasket, currentOrder, searchParams]);
 
+  // Firebase ref 지정
   useEffect(() => {
     if (currentUser.uid) {
       setDocRef(doc(dbService, "userInfo", currentUser.uid.toString()));
@@ -80,7 +76,7 @@ const MyPagePayResult = () => {
     (amount) =>
       dataType.map((order) => {
         return axios.patch(
-          `http://localhost:4000/productListData/${order.product}`,
+          `${process.env.REACT_APP_SERVER_PORT}/api/product/${order.product}`,
           amount
         );
       }),
@@ -107,8 +103,6 @@ const MyPagePayResult = () => {
         }).then(async (response) => {
           // 결제 승인에 대한 응답 출력
           setResult(response.data);
-
-          console.log(response.data);
 
           // 상품 잔여 수량 mutation으로 변경
           dataType.map((order) => {
@@ -192,8 +186,6 @@ const MyPagePayResult = () => {
       );
     }
   }, [loading, myInfo?.orderList, result]);
-
-  console.log("?");
 
   return (
     <>
@@ -332,10 +324,15 @@ const CharacterBox = styled.div`
   /* bottom: 0; */
   overflow: hidden;
   width: 100px;
+  display: none;
 
   img {
     display: block;
     width: 100%;
+  }
+
+  @media screen and (min-width: 640px) {
+    display: block;
   }
 `;
 

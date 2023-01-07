@@ -15,9 +15,8 @@ const MyPageOrderList = ({ isLoggedIn }) => {
   // const [docRef, setDocRef] = useState("");
   const [payStatus, setPayStatus] = useState("");
   const currentUser = useSelector((state) => state.user.currentUser);
-  const currentBasket = useSelector((state) => state.user.basket);
 
-  const { PriceDeleteComma, PriceReComma, PriceComma } = usePriceComma(); // 시간 포멧 커스텀 훅
+  const { PriceComma } = usePriceComma(); // 시간 포멧 커스텀 훅
   const { timeToString } = useTimeStamp(); // 시간 포멧 커스텀 훅
 
   // 결제 상태 로직
@@ -33,10 +32,6 @@ const MyPageOrderList = ({ isLoggedIn }) => {
     return setPayStatus(paymentMap[paymentType]);
   };
 
-  useEffect(() => {
-    if (!isLoggedIn) return;
-  }, [isLoggedIn]);
-
   // Firebase 본인 정보 가져오기
   useEffect(() => {
     const docRef = doc(dbService, "userInfo", currentUser.uid.toString());
@@ -46,15 +41,6 @@ const MyPageOrderList = ({ isLoggedIn }) => {
       });
     }
   }, [currentUser.uid]);
-
-  // 시간 순서별
-  useEffect(() => {
-    setOrderList(
-      myInfo?.orderList
-        ?.map((list) => list)
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    );
-  }, [myInfo?.orderList]);
 
   // 결제 상태
   useEffect(() => {
@@ -71,6 +57,15 @@ const MyPageOrderList = ({ isLoggedIn }) => {
         }).then((r) => {
           executePayment(r.data.status);
         })
+    );
+  }, [myInfo?.orderList]);
+
+  // 시간 순서별
+  useEffect(() => {
+    setOrderList(
+      myInfo?.orderList
+        ?.map((list) => list)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     );
   }, [myInfo?.orderList]);
 

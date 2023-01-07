@@ -4,15 +4,14 @@ import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Footer } from "../components/utils/Footer";
 import { LoginPopupModal } from "../components/modal/LoginPopupModal";
-import MyPageSeen from "../components/myPage/MyPageSeen";
-import MyPageBasket from "../components/myPage/MyPageBasket";
-import MyPageOrderList from "../components/myPage/MyPageOrderList";
-
-// const MyPageSeen = lazy(() => import("../components/myPage/MyPageSeen"));
-// const MyPageBasket = lazy(() => import("../components/myPage/MyPageBasket"));
-// const MyPageOrderList = lazy(() =>
-//   import("../components/myPage/MyPageOrderList")
-// );
+// import MyPageSeen from "../components/myPage/MyPageSeen";
+// import MyPageBasket from "../components/myPage/MyPageBasket";
+// import MyPageOrderList from "../components/myPage/MyPageOrderList";
+const MyPageSeen = lazy(() => import("../components/myPage/MyPageSeen"));
+const MyPageBasket = lazy(() => import("../components/myPage/MyPageBasket"));
+const MyPageOrderList = lazy(() =>
+  import("../components/myPage/MyPageOrderList")
+);
 
 const Container = styled.main`
   position: relative;
@@ -79,6 +78,7 @@ const MyPage = () => {
   const [loginPopupModal, setLoginPopupModal] = useState(false);
   const { pathname } = useLocation();
   const currentBasket = useSelector((state) => state.user.basket);
+  const currentUser = useSelector((state) => state.user.currentUser);
   const loginToken = useSelector((state) => state.user.loginToken);
   const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
 

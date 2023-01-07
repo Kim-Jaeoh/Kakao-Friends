@@ -7,6 +7,7 @@ import { usePriceComma } from "../../hooks/usePriceComma";
 import useInfinityScroll from "../../hooks/useInfinityScroll";
 import { useQuery } from "react-query";
 import axios from "axios";
+import { useEffect } from "react";
 const NotInfo = lazy(() => import("../utils/NotInfo"));
 
 const BasketRecommendBox = styled.div`
@@ -141,18 +142,24 @@ export const SearchResultItem = () => {
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
-  const api = `http://localhost:4000/ProductListData?q=${keyword}&`;
+  // 상품 리스트
+  const api = `${
+    process.env.REACT_APP_SERVER_PORT
+  }/api/search?keyword=${encodeURIComponent(keyword)}&`;
   const { ref, dataList } = useInfinityScroll(api, 9); // 무한스크롤 커스텀 훅
 
+  // 검색 결과 개수
   const DataLength = useCallback(async () => {
     return await axios.get(
-      `http://localhost:4000/ProductListData?q=${keyword}`
+      `${
+        process.env.REACT_APP_SERVER_PORT
+      }/api/searchLength?keyword=${encodeURIComponent(keyword)}`
     );
   }, [keyword]);
 
   const { data: dataLength } = useQuery("productList", DataLength, {
     refetchOnWindowFocus: false,
-    onError: (e) => console.log("이거임", e.message),
+    onError: (e) => console.log(e.message),
   });
 
   return (

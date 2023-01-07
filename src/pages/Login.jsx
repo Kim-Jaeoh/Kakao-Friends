@@ -37,7 +37,7 @@ const Login = () => {
   useEffect(() => {
     if (!code) return;
     getKakaoToken();
-  }, []);
+  }, [code]);
 
   return <Spinner />;
 };

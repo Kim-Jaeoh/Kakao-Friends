@@ -1,7 +1,6 @@
 import axios from "axios";
 
-// const API = "https://kakao-friends.herokuapp.com";
-const API = "http://localhost:4000";
+const API = `${process.env.REACT_APP_SERVER_PORT}/api`;
 
 export const BannerListApi = async () =>
   await axios.get(`${API}/mainContentsBannerList`);
@@ -27,14 +26,6 @@ export const RestockListApi = async () =>
 export const MenuCharacterListApi = async () =>
   await axios.get(`${API}/menuCharacterListData`);
 
-export const CategoryListApi = async () =>
-  await axios.get(`${API}/menuCategoryListData`);
-
-export const ProductListApi = async () =>
-  await axios.get(`${API}/productListData`);
-
-export const HalloweenApi = async () => await axios.get(`${API}/Halloween`);
+export const ProductListApi = async () => await axios.get(`${API}/product`);
 
 export const PromotionApi = async () => await axios.get(`${API}/promotionlist`);
-
-export const orderListApi = async () => await axios.get(`${API}/payList`);

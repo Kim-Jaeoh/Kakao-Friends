@@ -2,8 +2,7 @@ import { lazy } from "react";
 const ProductInnerList = lazy(() => import("./ProductInnerList"));
 
 export const ProductRealTime = () => {
-  const api =
-    "http://localhost:4000/ProductListData?amount_ne=0&_sort=amount&_order=asc&";
+  const api = `${process.env.REACT_APP_SERVER_PORT}/api/productlist/realtime?`;
 
   return <ProductInnerList api={api} />;
 };

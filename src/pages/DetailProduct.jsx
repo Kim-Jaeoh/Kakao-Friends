@@ -33,8 +33,11 @@ const SliderBox = styled.div`
 
 const SliderItem = styled.div`
   position: relative;
-  width: 638px;
+  width: 390px;
   padding-top: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
 
   img {
     position: absolute;
@@ -42,6 +45,10 @@ const SliderItem = styled.div`
     top: 0;
     display: block;
     width: 100%;
+  }
+
+  @media screen and (min-width: 640px) {
+    width: 638px;
   }
 `;
 
@@ -163,7 +170,7 @@ const DetailProduct = () => {
 
   const api = async () => {
     return await axios.get(
-      `http://localhost:4000/ProductListData?product=${id}`
+      `${process.env.REACT_APP_SERVER_PORT}/api/product/${id}`
     );
   };
 
@@ -174,7 +181,7 @@ const DetailProduct = () => {
 
   useEffect(() => {
     if (data) {
-      const dataList = data?.data[0];
+      const dataList = data?.data;
 
       setProduct([
         {

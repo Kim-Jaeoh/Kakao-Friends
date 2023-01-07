@@ -1,12 +1,24 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useInView } from "react-intersection-observer";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 
 // 무한 스크롤
 const useInfinityScroll = (url, count) => {
+  const queryClient = useQueryClient();
+
+  // 라우터 이탈 시 데이터 clean up으로 직접 리셋
+  useEffect(() => {
+    return () => {
+      queryClient.setQueryData(["infiniteProduct", url], (data) => ({
+        pages: data?.pages.slice(0, 1),
+        pageParams: data?.pageParams?.slice(0, 1),
+      }));
+    };
+  }, [url]);
+
   const fetchRepositories = async (page) => {
-    const res = await axios.get(`${url}_limit=${count}&_page=${page}`);
+    const res = await axios.get(`${url}limit=${count}&page=${page}`);
     return res.data;
   };
 
@@ -16,7 +28,7 @@ const useInfinityScroll = (url, count) => {
     fetchNextPage,
   } = useInfiniteQuery(
     ["infiniteProduct", url],
-    ({ pageParam = 0 }) => {
+    ({ pageParam = 1 }) => {
       return fetchRepositories(pageParam);
     },
     {
@@ -31,10 +43,10 @@ const useInfinityScroll = (url, count) => {
   const { ref, inView } = useInView();
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (inView) {
       fetchNextPage();
     }
-  }, [fetchNextPage, hasNextPage, inView, url]);
+  }, [fetchNextPage, inView, url]);
 
   return { ref, dataList };
 };

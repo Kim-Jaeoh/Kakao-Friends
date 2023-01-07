@@ -10,7 +10,6 @@ import {
   Decrement,
   Increment,
   setBasket,
-  setCartPrice,
   UnCheckItem,
 } from "../../reducer/user";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
@@ -18,54 +17,16 @@ import { usePriceComma } from "../../hooks/usePriceComma";
 import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
 import { updateDoc } from "firebase/firestore";
-import ProductRecommend from "../utils/ProductRecommend";
+import axios from "axios";
+// import ProductRecommend from "../utils/ProductRecommend";
 const NotInfo = lazy(() => import("../utils/NotInfo"));
-// const ProductRecommend = lazy(() => import("../utils/ProductRecommend"));
+const ProductRecommend = lazy(() => import("../utils/ProductRecommend"));
 
 const Container = styled.div`
   padding-bottom: 80px;
   @media screen and (min-width: 375px) {
     padding-bottom: 80px;
   }
-`;
-
-const EmptyBasketBox = styled.div`
-  padding: 30% 0;
-`;
-
-const EmptyBasketCharacter = styled.span`
-  display: block;
-  width: 192px;
-  height: 192px;
-  margin: 0 auto 12px;
-
-  img {
-    display: block;
-    width: 100%;
-  }
-`;
-
-const EmptyText = styled.span`
-  display: block;
-  font-size: 16px;
-  line-height: 24px;
-  color: #aeaeaf;
-  text-align: center;
-  letter-spacing: -0.025em;
-`;
-
-const BestItemViewBtn = styled(Link)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 120px;
-  height: 36px;
-  margin: 24px auto 0;
-  padding-bottom: 2px;
-  background-color: #3c404b;
-  border-radius: 8px;
-  color: #fff !important;
-  cursor: pointer;
 `;
 
 const BasketBox = styled.div``;
@@ -514,10 +475,9 @@ const MyPageBasket = () => {
   const [totalProgress, setTotalProgress] = useState(0);
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
-  // const currentPrice = useSelector((state) => state.user.cartPrice);
 
-  const [popupModal, setPopupModal] = useState(false); // 구매 팝업 상태 값
-  const togglePopupModal = () => setPopupModal((prev) => !prev); // 구매 팝업
+  const [loginPopupModal, setLoginPopupModal] = useState(false);
+  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
 
   const { currentBasket, myInfo, docRef } = useBasketToggle(); //장바구니 커스텀 훅
   const { PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
@@ -527,6 +487,7 @@ const MyPageBasket = () => {
     totalPrice,
     "basket"
   ); // 카카오페이 구매 커스텀 훅
+  
 
   // 배송 금액 바
   useEffect(() => {
@@ -636,14 +597,14 @@ const MyPageBasket = () => {
         window.location.href = `${payReadyURL}`;
       }
     } else {
-      togglePopupModal();
+      toggleLoginPopupModal();
     }
   };
 
   return (
     <>
       <Container>
-        {currentBasket?.length === 0 ? (
+        {currentBasket.length === 0 ? (
           <NotInfo
             url={
               "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221026/104605/assets/images/m960/ico_cart_empty.png"
@@ -835,11 +796,10 @@ const MyPageBasket = () => {
           </BasketBox>
         )}
         <ProductRecommend />
-        {popupModal && !currentUser.uid && (
+        {loginPopupModal && !currentUser.uid && (
           <LoginPopupModal
-            popupModal={popupModal}
-            setPopupModal={setPopupModal}
-            togglePopupModal={togglePopupModal}
+            loginPopupModal={loginPopupModal}
+            toggleLoginPopupModal={toggleLoginPopupModal}
           />
         )}
       </Container>

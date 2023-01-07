@@ -137,7 +137,9 @@ const ProductRecommend = ({ productId }) => {
   const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
 
   const api = async () =>
-    await axios.get("http://localhost:4000/ProductListData?amount_ne=0");
+    await axios.get(
+      `${process.env.REACT_APP_SERVER_PORT}/api/product?amount_ne=0`
+    );
 
   const { data: dataList, isLoading } = useQuery(
     ["productList", productId],
