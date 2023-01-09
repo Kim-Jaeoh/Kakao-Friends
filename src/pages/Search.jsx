@@ -130,6 +130,7 @@ const Search = () => {
   useEffect(() => {
     if (!focus && keyword) {
       setIsSubmit(true);
+      setSearchText(keyword);
       inputRef.current.value = keyword;
     }
     return () => setIsSubmit(false);

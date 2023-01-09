@@ -37,7 +37,6 @@ const NotResultBox = styled.div`
 
 export const SearchResultList = ({ setFocus, searchText }) => {
   const [resultItem, setResultItem] = useState([]);
-  const [searchParams] = useSearchParams();
 
   const { data: dataList } = useQuery(
     ["productList", searchText],
