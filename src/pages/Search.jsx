@@ -102,8 +102,7 @@ const Search = () => {
   const searchDelete = () => {
     setSearchText("");
     inputRef.current.value = "";
-    setFocus(false);
-    setIsSubmit(false);
+    navigate("/search");
   };
 
   // 검색(form enter)했는지 체크
