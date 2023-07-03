@@ -1,16 +1,92 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { useSelector } from "react-redux";
 import { BsBag, BsBagFill } from "react-icons/bs";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 import { Link } from "react-router-dom";
 import { usePriceComma } from "../../hooks/usePriceComma";
 import { useQuery } from "react-query";
-import { ProductListApi } from "../../apis/dataApi";
 import axios from "axios";
 import { cloneDeep } from "lodash";
-import { doc, onSnapshot } from "firebase/firestore";
-import { dbService } from "../../fbase";
+
+const ProductRecommend = ({ productId }) => {
+  const [randomItem, setRandomItem] = useState([]);
+  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
+  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
+
+  const api = async () =>
+    await axios.get(
+      `${process.env.REACT_APP_SERVER_PORT}/api/product?amount_ne=0`
+    );
+
+  const { data: dataList } = useQuery("productList", api, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  // 추천 목록 랜덤화
+  useEffect(() => {
+    // 객체 깊은 복사
+    let arr = cloneDeep(dataList?.data); // 렌더링이 2번 돼서 cloneDeep으로 해결
+
+    if (productId) {
+      arr = arr?.filter((obj) => obj?.product !== productId);
+    } else {
+      arr = arr?.filter(
+        (obj) =>
+          !currentBasket.some((basket) => obj?.product === basket.product)
+      );
+    }
+
+    const randomArray = (array) => {
+      // (피셔-예이츠)
+      for (let index = array?.length - 1; index > 0; index--) {
+        // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+        const randomPosition = Math.floor(Math.random() * (index + 1));
+
+        // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+        const temporary = array[index];
+        array[index] = array[randomPosition];
+        array[randomPosition] = temporary;
+      }
+    };
+
+    randomArray(arr);
+    setRandomItem(arr);
+  }, [currentBasket, dataList?.data, productId]);
+
+  return (
+    <BasketRecommendBox>
+      <strong>잠깐만, 이 제품은 어때요?</strong>
+      <BasketRecommendListBox>
+        {randomItem?.slice(0, 8).map((list, index) => (
+          <BasketRecommendList key={list.product}>
+            <RecommendListBox>
+              <RecommendListImage to={`/detail/${list.product}`}>
+                <img src={list.image} alt={list.title} loading="lazy" />
+              </RecommendListImage>
+              <RecommendListText>
+                <strong>{list.title}</strong>
+                <RecomendListPrice>
+                  <span>{PriceComma(list.price)}</span>원
+                </RecomendListPrice>
+                <BagButton onClick={() => toggleIcon(list)}>
+                  {currentBasket?.filter((obj) => obj.product === list.product)
+                    .length > 0 ? (
+                    <BsBagFill style={{ color: "#ff447f" }} />
+                  ) : (
+                    <BsBag />
+                  )}
+                </BagButton>
+              </RecommendListText>
+            </RecommendListBox>
+          </BasketRecommendList>
+        ))}
+      </BasketRecommendListBox>
+    </BasketRecommendBox>
+  );
+};
+
+export default ProductRecommend;
 
 const BasketRecommendBox = styled.div`
   padding-top: 36px;
@@ -125,87 +201,4 @@ const BagButton = styled.button`
     justify-content: center;
     margin: 6px;
   }
-
-  /* @media screen and (min-width: 640px) {
-    right: 6px;
-  } */
 `;
-
-const ProductRecommend = ({ productId }) => {
-  const [randomItem, setRandomItem] = useState([]);
-  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
-  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
-
-  const api = async () =>
-    await axios.get(
-      `${process.env.REACT_APP_SERVER_PORT}/api/product?amount_ne=0`
-    );
-
-  const { data: dataList, isLoading } = useQuery(
-    ["productList", productId],
-    api,
-    {
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e.message),
-    }
-  );
-
-  // 추천 목록 랜덤화
-  useEffect(() => {
-    // 객체 깊은 복사
-    let arr = cloneDeep(dataList?.data); // 렌더링이 2번 돼서 cloneDeep으로 해결
-
-    if (productId) {
-      arr = arr?.filter((obj) => obj?.product !== productId);
-    }
-
-    const randomArray = (array) => {
-      // (피셔-예이츠)
-      for (let index = array?.length - 1; index > 0; index--) {
-        // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
-        const randomPosition = Math.floor(Math.random() * (index + 1));
-
-        // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
-        const temporary = array[index];
-        array[index] = array[randomPosition];
-        array[randomPosition] = temporary;
-      }
-    };
-
-    randomArray(arr);
-    setRandomItem(arr);
-  }, [dataList?.data, productId]);
-
-  return (
-    <BasketRecommendBox>
-      <strong>잠깐만, 이 제품은 어때요?</strong>
-      <BasketRecommendListBox>
-        {randomItem?.slice(0, 8).map((list, index) => (
-          <BasketRecommendList key={list.product}>
-            <RecommendListBox>
-              <RecommendListImage to={`/detail/${list.product}`}>
-                <img src={list.image} alt={list.title} loading="lazy" />
-              </RecommendListImage>
-              <RecommendListText>
-                <strong>{list.title}</strong>
-                <RecomendListPrice>
-                  <span>{PriceComma(list.price)}</span>원
-                </RecomendListPrice>
-                <BagButton onClick={() => toggleIcon(list)}>
-                  {currentBasket?.filter((obj) => obj.product === list.product)
-                    .length > 0 ? (
-                    <BsBagFill style={{ color: "#ff447f" }} />
-                  ) : (
-                    <BsBag />
-                  )}
-                </BagButton>
-              </RecommendListText>
-            </RecommendListBox>
-          </BasketRecommendList>
-        ))}
-      </BasketRecommendListBox>
-    </BasketRecommendBox>
-  );
-};
-
-export default ProductRecommend;

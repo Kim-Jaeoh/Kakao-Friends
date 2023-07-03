@@ -22,12 +22,10 @@ const MyPagePayResult = () => {
   const [dataType, setDataType] = useState([]);
   const [filterInfo, setFilterInfo] = useState({});
   const [dbRef, setDocRef] = useState("");
-
   const dispatch = useDispatch();
   const currentOrder = useSelector((state) => state.user.order);
   const currentBasket = useSelector((state) => state.user.basket);
   const currentUser = useSelector((state) => state.user.currentUser);
-
   const { timeToString } = useTimeStamp();
   const { PriceComma } = usePriceComma();
   const [searchParams] = useSearchParams();

@@ -3,16 +3,6 @@ import styled from "@emotion/styled";
 import { useLocation } from "react-router-dom";
 import CategoryMenuBtn from "./CategoryMenuBtn";
 
-const Container = styled.nav`
-  border-bottom: 1px solid #e3e5e8;
-`;
-
-const Inner = styled.ul`
-  display: flex;
-  padding: 0 5px;
-  box-sizing: border-box;
-`;
-
 export const Category = () => {
   const { pathname } = useLocation();
   const [selected, setSelected] = useState(1);
@@ -68,3 +58,13 @@ export const Category = () => {
     </Container>
   );
 };
+
+const Container = styled.nav`
+  border-bottom: 1px solid #e3e5e8;
+`;
+
+const Inner = styled.ul`
+  display: flex;
+  padding: 0 5px;
+  box-sizing: border-box;
+`;

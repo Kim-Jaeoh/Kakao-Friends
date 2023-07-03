@@ -17,10 +17,323 @@ import { usePriceComma } from "../../hooks/usePriceComma";
 import { usePayReady } from "../../hooks/usePayReady";
 import { LoginPopupModal } from "../modal/LoginPopupModal";
 import { updateDoc } from "firebase/firestore";
-import axios from "axios";
-// import ProductRecommend from "../utils/ProductRecommend";
 const NotInfo = lazy(() => import("../utils/NotInfo"));
 const ProductRecommend = lazy(() => import("../utils/ProductRecommend"));
+
+const MyPageBasket = () => {
+  const [checkBasketList, setCheckBasketList] = useState([]);
+  const [totalPrice, setTotalPrice] = useState("");
+  const [currentPrice, setCurrentPrice] = useState(0);
+  const [totalProgress, setTotalProgress] = useState(0);
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
+
+  const [loginPopupModal, setLoginPopupModal] = useState(false);
+  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
+
+  const { currentBasket, myInfo, docRef } = useBasketToggle(); //장바구니 커스텀 훅
+  const { PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
+
+  const { next_redirect_pc_url: payReadyURL } = usePayReady(
+    currentBasket,
+    totalPrice,
+    "basket"
+  ); // 카카오페이 구매 커스텀 훅
+
+  // 배송 금액 바
+  useEffect(() => {
+    setTotalProgress(Math.round((currentPrice / 30000) * 100));
+  }, [currentPrice]);
+
+  // 페이지 이탈 시 전체 체크 활성화
+  useEffect(() => {
+    return () => {
+      currentBasket.map((obj) => dispatch(CheckItem(obj)));
+    };
+  }, []);
+
+  // 체크된 아이템 및 숫자
+  useEffect(() => {
+    setCheckBasketList(currentBasket.filter((item) => item.check)); // 체크된 아이템 숫자
+  }, [currentBasket]);
+
+  // 상품 가격 (체크된 것들만)
+  useEffect(() => {
+    if (checkBasketList.length !== 0) {
+      setCurrentPrice(
+        checkBasketList
+          ?.map((item) => PriceDeleteComma(item.price) * item.quanity)
+          ?.reduce((l, r) => l + r)
+      );
+    } else {
+      setCurrentPrice(0);
+    }
+  }, [currentBasket, checkBasketList]);
+
+  // 전체 가격
+  useEffect(() => {
+    if (currentPrice === 0) {
+      setTotalPrice("3000");
+    } else {
+      setTotalPrice(currentPrice >= 30000 ? currentPrice : currentPrice + 3000);
+    }
+  }, [currentPrice]);
+
+  // 장바구니 개별 삭제
+  const BasketDeleteItem = async (itemId) => {
+    const filter = currentBasket?.filter((item) => item.product !== itemId);
+    dispatch(setBasket(filter));
+
+    if (currentUser.uid) {
+      const fbFilter = myInfo?.basket?.filter(
+        (item) => item?.product !== itemId
+      );
+      await updateDoc(docRef, {
+        basket: fbFilter,
+      });
+    }
+  };
+
+  // 선택 삭제
+  const selectDelete = async () => {
+    const filter = currentBasket?.filter((item) => item.check === false);
+    dispatch(setBasket(filter));
+
+    if (currentUser.uid) {
+      const fbFilter = myInfo?.basket?.filter((item) => item?.check === false);
+      await updateDoc(docRef, {
+        basket: fbFilter,
+      });
+    }
+  };
+
+  // 전체 선택
+  const checkAllHandler = (checked) => {
+    if (checked) {
+      // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
+      currentBasket.map((obj) => {
+        return dispatch(CheckItem(obj));
+      });
+    } else {
+      // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
+      currentBasket.map((obj) => {
+        return dispatch(UnCheckItem(obj));
+      });
+    }
+  };
+
+  // 개별 선택
+  const checkHandler = (check, itemId) => {
+    if (check) {
+      dispatch(CheckItem(itemId));
+    } else {
+      dispatch(UnCheckItem(itemId));
+    }
+  };
+
+  // 주문하기 새창
+  const orderClick = () => {
+    if (currentUser.uid) {
+      if (currentBasket.find((item) => item.check === true)) {
+        window.location.href = `${payReadyURL}`;
+      }
+    } else {
+      toggleLoginPopupModal();
+    }
+  };
+
+  return (
+    <Container>
+      {currentBasket.length === 0 ? (
+        <NotInfo
+          url={
+            "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221026/104605/assets/images/m960/ico_cart_empty.png"
+          }
+          text={"아직 관심 상품이 없네요!"}
+          text2={"귀여운 프렌즈 상품을 추천드릴게요"}
+          btn={true}
+        />
+      ) : (
+        <BasketBox>
+          <BasketList>
+            <DeliveryInfoBox>
+              {totalPrice && (
+                <>
+                  <DeliveryInfo>
+                    <DeliveryFreeTextBox>
+                      {currentPrice >= 30000 ? (
+                        <span>무료 배송</span>
+                      ) : (
+                        <>
+                          <span>{PriceComma(33000 - totalPrice)}</span>원 추가
+                          시 무료 배송
+                        </>
+                      )}
+                    </DeliveryFreeTextBox>
+                    {currentPrice <= 30000 && (
+                      <DeliveryPriceSave to="/product/realtime">
+                        배송비 절약하기
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </DeliveryPriceSave>
+                    )}
+                  </DeliveryInfo>
+                  <DeliveryPriceGaugebox>
+                    <DeliveryPriceGaugeBar totalProgress={totalProgress}>
+                      <DeliveryPriceGaugeCircleBox>
+                        <DeliveryPriceGaugeCircle>
+                          <div />
+                        </DeliveryPriceGaugeCircle>
+                      </DeliveryPriceGaugeCircleBox>
+                    </DeliveryPriceGaugeBar>
+                  </DeliveryPriceGaugebox>
+                </>
+              )}
+            </DeliveryInfoBox>
+            <CheckBox>
+              <Check>
+                <CheckIcon
+                  htmlFor="AllcheckBox"
+                  name="AllcheckBox"
+                  check={
+                    checkBasketList.length === currentBasket.length
+                      ? true
+                      : false
+                  }
+                >
+                  <CheckInput
+                    id="AllcheckBox"
+                    type="checkBox"
+                    checked={
+                      checkBasketList.length === currentBasket.length
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => {
+                      checkAllHandler(e.target.checked);
+                    }}
+                  />
+                  <IoCheckmarkCircleSharp />
+                </CheckIcon>
+                전체 {checkBasketList.length}
+              </Check>
+              <SelectDelete type="button" onClick={selectDelete}>
+                선택 삭제
+              </SelectDelete>
+            </CheckBox>
+            <ListCart>
+              {currentBasket?.map((list, index) => {
+                return (
+                  <List key={list.product}>
+                    <ListContents>
+                      <ListCheckIcon
+                        htmlFor={`checkItem-${list.product}`}
+                        name={`select-${list.product}`}
+                        check={list.check}
+                      >
+                        <CheckInput
+                          id={`checkItem-${list.product}`}
+                          name={`select-${list.product}`}
+                          type="checkbox"
+                          checked={list.check === true ? true : false}
+                          onChange={(e) => {
+                            checkHandler(e.target.checked, list);
+                          }}
+                        />
+                        <IoCheckmarkCircleSharp />
+                      </ListCheckIcon>
+                      <ListImageBox to={`/detail/${list.product}`}>
+                        <ListImage>
+                          <img
+                            src={list.image}
+                            alt={list.title}
+                            loading="lazy"
+                          />
+                        </ListImage>
+                      </ListImageBox>
+                      <ListInfoBox>
+                        <ListTitle to={`/detail/${list.product}`}>
+                          {list.title}
+                        </ListTitle>
+                        <ListPriceBox>
+                          <ListPrice>
+                            <span>{list.price}</span>원
+                          </ListPrice>
+                        </ListPriceBox>
+                        <ItemCounterBox>
+                          <ItemCounter>
+                            <QuanityButton
+                              quanity={list.quanity}
+                              type="button"
+                              onClick={(e) => dispatch(Decrement(list))}
+                            >
+                              <BiMinus />
+                            </QuanityButton>
+                            <ItemQuanityNumber>
+                              {list.quanity}
+                            </ItemQuanityNumber>
+                            <QuanityButton
+                              quanity={list.quanity}
+                              type="button"
+                              onClick={(e) => dispatch(Increment(list))}
+                            >
+                              <BiPlus />
+                            </QuanityButton>
+                          </ItemCounter>
+                        </ItemCounterBox>
+                      </ListInfoBox>
+                      <ListDelete
+                        onClick={() => BasketDeleteItem(list.product)}
+                      >
+                        <IoCloseOutline />
+                      </ListDelete>
+                    </ListContents>
+                  </List>
+                );
+              })}
+            </ListCart>
+          </BasketList>
+          <BasketBillBox>
+            <BasketListTotalPrice>
+              <BasketListPrice>
+                <span>상품 금액</span>
+                <span>{PriceComma(currentPrice)}원</span>
+              </BasketListPrice>
+              <BasketListPrice>
+                <span>배송비</span>
+                <span>{currentPrice >= 30000 ? "무료" : "3,000원"}</span>
+              </BasketListPrice>
+              <BasketListPrice>
+                <strong>총 결제금액</strong>
+                <strong>{PriceComma(totalPrice)}원</strong>
+              </BasketListPrice>
+            </BasketListTotalPrice>
+            <DescCart>장바구니 상품은 최대 90일까지 보관됩니다.</DescCart>
+          </BasketBillBox>
+          <BasketBottomButton>
+            {totalPrice && (
+              <OrderButton noChecked={currentPrice === 0} onClick={orderClick}>
+                {currentPrice === 0
+                  ? "주문하기"
+                  : `${PriceComma(totalPrice)}원 주문하기`}
+              </OrderButton>
+            )}
+          </BasketBottomButton>
+        </BasketBox>
+      )}
+      <ProductRecommend />
+      {loginPopupModal && !currentUser.uid && (
+        <LoginPopupModal
+          loginPopupModal={loginPopupModal}
+          toggleLoginPopupModal={toggleLoginPopupModal}
+        />
+      )}
+    </Container>
+  );
+};
+
+export default MyPageBasket;
 
 const Container = styled.div`
   padding-bottom: 80px;
@@ -84,7 +397,6 @@ const DeliveryPriceGaugebox = styled.div`
 `;
 
 const DeliveryPriceGaugeBar = styled.div`
-  /* overflow: hidden; */
   width: ${(props) => props.totalProgress + "%"};
   max-width: 100%;
   position: absolute;
@@ -210,7 +522,6 @@ const List = styled.li`
 
 const ListContents = styled.div`
   overflow: hidden;
-  /* position: relative; */
   padding-left: 29px;
 `;
 
@@ -467,344 +778,3 @@ const OrderButton = styled.button`
     color: #fff;
   }
 `;
-
-const MyPageBasket = () => {
-  const [checkBasketList, setCheckBasketList] = useState([]);
-  const [totalPrice, setTotalPrice] = useState("");
-  const [currentPrice, setCurrentPrice] = useState(0);
-  const [totalProgress, setTotalProgress] = useState(0);
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.currentUser);
-
-  const [loginPopupModal, setLoginPopupModal] = useState(false);
-  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
-
-  const { currentBasket, myInfo, docRef } = useBasketToggle(); //장바구니 커스텀 훅
-  const { PriceDeleteComma, PriceComma } = usePriceComma(); // 금액 콤마 커스텀 훅
-
-  const { next_redirect_pc_url: payReadyURL } = usePayReady(
-    currentBasket,
-    totalPrice,
-    "basket"
-  ); // 카카오페이 구매 커스텀 훅
-  
-
-  // 배송 금액 바
-  useEffect(() => {
-    setTotalProgress(Math.round((currentPrice / 30000) * 100));
-  }, [currentPrice]);
-
-  // 페이지 이탈 시 전체 체크 활성화
-  useEffect(() => {
-    return () => {
-      currentBasket.map((obj) => dispatch(CheckItem(obj)));
-    };
-  }, []);
-
-  // 체크된 아이템 및 숫자
-  useEffect(() => {
-    setCheckBasketList(currentBasket.filter((item) => item.check)); // 체크된 아이템 숫자
-  }, [currentBasket]);
-
-  // 상품 가격 (체크된 것들만)
-  useEffect(() => {
-    if (checkBasketList.length !== 0) {
-      setCurrentPrice(
-        checkBasketList
-          ?.map((item) => PriceDeleteComma(item.price) * item.quanity)
-          ?.reduce((l, r) => l + r)
-      );
-    } else {
-      setCurrentPrice(0);
-    }
-  }, [currentBasket, checkBasketList]);
-
-  // 전체 가격
-  useEffect(() => {
-    if (currentPrice === 0) {
-      setTotalPrice("3000");
-    } else {
-      setTotalPrice(currentPrice >= 30000 ? currentPrice : currentPrice + 3000);
-    }
-  }, [currentPrice]);
-
-  // 장바구니 개별 삭제
-  const BasketDeleteItem = async (itemId) => {
-    const filter = currentBasket?.filter((item) => item.product !== itemId);
-    dispatch(setBasket(filter));
-
-    if (currentUser.uid) {
-      const fbFilter = myInfo?.basket?.filter(
-        (item) => item?.product !== itemId
-      );
-      await updateDoc(docRef, {
-        basket: fbFilter,
-      });
-    }
-  };
-
-  // 선택 삭제
-  const selectDelete = async () => {
-    const filter = currentBasket?.filter((item) => item.check === false);
-    dispatch(setBasket(filter));
-
-    if (currentUser.uid) {
-      const fbFilter = myInfo?.basket?.filter((item) => item?.check === false);
-      await updateDoc(docRef, {
-        basket: fbFilter,
-      });
-    }
-  };
-
-  // // 수량 키보드 변경
-  // const onChange = useCallback(
-  //   (list, value) => {
-  //     if (isFocus === true) {
-  //       dispatch(InputChange(list, +value));
-  //     }
-  //   },
-  //   [dispatch, isFocus]
-  // );
-
-  // 전체 선택
-  const checkAllHandler = (checked) => {
-    if (checked) {
-      // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
-      currentBasket.map((obj) => {
-        return dispatch(CheckItem(obj));
-      });
-    } else {
-      // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
-      currentBasket.map((obj) => {
-        return dispatch(UnCheckItem(obj));
-      });
-    }
-  };
-
-  // 개별 선택
-  const checkHandler = (check, itemId) => {
-    if (check) {
-      dispatch(CheckItem(itemId));
-    } else {
-      dispatch(UnCheckItem(itemId));
-    }
-  };
-
-  // 주문하기 새창
-  const orderClick = () => {
-    if (currentUser.uid) {
-      if (currentBasket.find((item) => item.check === true)) {
-        window.location.href = `${payReadyURL}`;
-      }
-    } else {
-      toggleLoginPopupModal();
-    }
-  };
-
-  return (
-    <>
-      <Container>
-        {currentBasket.length === 0 ? (
-          <NotInfo
-            url={
-              "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221026/104605/assets/images/m960/ico_cart_empty.png"
-            }
-            text={"아직 관심 상품이 없네요!"}
-            text2={"귀여운 프렌즈 상품을 추천드릴게요"}
-            btn={true}
-          />
-        ) : (
-          <BasketBox>
-            <BasketList>
-              <DeliveryInfoBox>
-                {totalPrice && (
-                  <>
-                    <DeliveryInfo>
-                      <DeliveryFreeTextBox>
-                        {currentPrice >= 30000 ? (
-                          <span>무료 배송</span>
-                        ) : (
-                          <>
-                            <span>{PriceComma(33000 - totalPrice)}</span>원 추가
-                            시 무료 배송
-                          </>
-                        )}
-                      </DeliveryFreeTextBox>
-                      {currentPrice <= 30000 && (
-                        <DeliveryPriceSave to="/product/realtime">
-                          배송비 절약하기
-                          <span>
-                            <IoIosArrowForward />
-                          </span>
-                        </DeliveryPriceSave>
-                      )}
-                    </DeliveryInfo>
-                    <DeliveryPriceGaugebox>
-                      <DeliveryPriceGaugeBar totalProgress={totalProgress}>
-                        <DeliveryPriceGaugeCircleBox>
-                          <DeliveryPriceGaugeCircle>
-                            <div />
-                          </DeliveryPriceGaugeCircle>
-                        </DeliveryPriceGaugeCircleBox>
-                      </DeliveryPriceGaugeBar>
-                    </DeliveryPriceGaugebox>
-                  </>
-                )}
-              </DeliveryInfoBox>
-              <CheckBox>
-                <Check>
-                  <CheckIcon
-                    htmlFor="AllcheckBox"
-                    name="AllcheckBox"
-                    check={
-                      checkBasketList.length === currentBasket.length
-                        ? true
-                        : false
-                    }
-                  >
-                    <CheckInput
-                      id="AllcheckBox"
-                      type="checkBox"
-                      checked={
-                        checkBasketList.length === currentBasket.length
-                          ? true
-                          : false
-                      }
-                      onChange={(e) => {
-                        checkAllHandler(e.target.checked);
-                      }}
-                    />
-                    <IoCheckmarkCircleSharp />
-                  </CheckIcon>
-                  전체 {checkBasketList.length}
-                </Check>
-                <SelectDelete type="button" onClick={selectDelete}>
-                  선택 삭제
-                </SelectDelete>
-              </CheckBox>
-              <ListCart>
-                {currentBasket?.map((list, index) => {
-                  return (
-                    <List key={list.product}>
-                      <ListContents>
-                        <ListCheckIcon
-                          htmlFor={`checkItem-${list.product}`}
-                          name={`select-${list.product}`}
-                          check={list.check}
-                        >
-                          <CheckInput
-                            id={`checkItem-${list.product}`}
-                            name={`select-${list.product}`}
-                            type="checkbox"
-                            checked={list.check === true ? true : false}
-                            onChange={(e) => {
-                              checkHandler(e.target.checked, list);
-                            }}
-                          />
-                          <IoCheckmarkCircleSharp />
-                        </ListCheckIcon>
-                        <ListImageBox to={`/detail/${list.product}`}>
-                          <ListImage>
-                            <img
-                              src={list.image}
-                              alt={list.title}
-                              loading="lazy"
-                            />
-                          </ListImage>
-                        </ListImageBox>
-                        <ListInfoBox>
-                          <ListTitle to={`/detail/${list.product}`}>
-                            {list.title}
-                          </ListTitle>
-                          <ListPriceBox>
-                            <ListPrice>
-                              <span>{list.price}</span>원
-                            </ListPrice>
-                          </ListPriceBox>
-                          <ItemCounterBox>
-                            <ItemCounter>
-                              <QuanityButton
-                                quanity={list.quanity}
-                                type="button"
-                                onClick={(e) => dispatch(Decrement(list))}
-                              >
-                                <BiMinus />
-                              </QuanityButton>
-                              <ItemQuanityNumber>
-                                {list.quanity}
-                              </ItemQuanityNumber>
-                              {/* <input
-                                type="number"
-                                value={list.quanity}
-                                onFocus={() => setIsFocus(true)}
-                                onBlur={() => setIsFocus(false)}
-                                min="1"
-                                max="99"
-                                onChange={(e) => onChange(list, e.target.value)}
-                                onWheel={(e) => e.target.blur()} // 마우스 휠 막기
-                              /> */}
-                              <QuanityButton
-                                quanity={list.quanity}
-                                type="button"
-                                onClick={(e) => dispatch(Increment(list))}
-                              >
-                                <BiPlus />
-                              </QuanityButton>
-                            </ItemCounter>
-                          </ItemCounterBox>
-                        </ListInfoBox>
-                        <ListDelete
-                          onClick={() => BasketDeleteItem(list.product)}
-                        >
-                          <IoCloseOutline />
-                        </ListDelete>
-                      </ListContents>
-                    </List>
-                  );
-                })}
-              </ListCart>
-            </BasketList>
-            <BasketBillBox>
-              <BasketListTotalPrice>
-                <BasketListPrice>
-                  <span>상품 금액</span>
-                  <span>{PriceComma(currentPrice)}원</span>
-                </BasketListPrice>
-                <BasketListPrice>
-                  <span>배송비</span>
-                  <span>{currentPrice >= 30000 ? "무료" : "3,000원"}</span>
-                </BasketListPrice>
-                <BasketListPrice>
-                  <strong>총 결제금액</strong>
-                  <strong>{PriceComma(totalPrice)}원</strong>
-                </BasketListPrice>
-              </BasketListTotalPrice>
-              <DescCart>장바구니 상품은 최대 90일까지 보관됩니다.</DescCart>
-            </BasketBillBox>
-            <BasketBottomButton>
-              {totalPrice && (
-                <OrderButton
-                  noChecked={currentPrice === 0}
-                  onClick={orderClick}
-                >
-                  {currentPrice === 0
-                    ? "주문하기"
-                    : `${PriceComma(totalPrice)}원 주문하기`}
-                </OrderButton>
-              )}
-            </BasketBottomButton>
-          </BasketBox>
-        )}
-        <ProductRecommend />
-        {loginPopupModal && !currentUser.uid && (
-          <LoginPopupModal
-            loginPopupModal={loginPopupModal}
-            toggleLoginPopupModal={toggleLoginPopupModal}
-          />
-        )}
-      </Container>
-    </>
-  );
-};
-
-export default MyPageBasket;

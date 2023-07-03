@@ -26,7 +26,7 @@ export const DetailProductModal = ({
   const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
 
   const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
-  const modalFixed = useModalScrollFixed(buttonModal); // 모달 스크롤 픽스
+  // const modalFixed = useModalScrollFixed(buttonModal); // 모달 스크롤 픽스
   const { next_redirect_pc_url: payReadyURL } = usePayReady(
     products,
     totalPrice,
@@ -83,7 +83,7 @@ export const DetailProductModal = ({
       <Modal
         open={buttonModal}
         onClose={toggleButtonModal}
-        disableScrollLock={true}
+        disableScrollLock={false}
       >
         <Wrapper>
           <Container>
@@ -172,17 +172,17 @@ export const DetailProductModal = ({
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  position: relative;
+`;
 
 const Container = styled.div`
-  display: flex;
-  -webkit-box-pack: end;
-  align-items: flex-end;
+  width: 100%;
+  padding-right: 17px;
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
   min-width: 320px;
   margin: 0 auto;
 

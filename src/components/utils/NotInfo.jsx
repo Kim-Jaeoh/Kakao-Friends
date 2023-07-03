@@ -1,10 +1,35 @@
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
+const NotInfo = ({ url, title, text, text2, btn }) => {
+  return (
+    <EmptyBasketBox>
+      <EmptyBasketCharacter>
+        <img src={url} alt="not info" loading="lazy" />
+      </EmptyBasketCharacter>
+      {title && <EmptyTitle>{title}</EmptyTitle>}
+      {!text2 ? (
+        <EmptyText>{text}</EmptyText>
+      ) : (
+        <EmptyText>
+          {text}
+          <br />
+          {text2}
+        </EmptyText>
+      )}
+      {btn && (
+        <BestItemViewBox>
+          <BestItemViewBtn to="/product">인기 상품 보기</BestItemViewBtn>
+        </BestItemViewBox>
+      )}
+    </EmptyBasketBox>
+  );
+};
+
+export default NotInfo;
+
 const EmptyBasketBox = styled.div`
   padding: 30% 0;
-  /* margin-bottom: -80px; */
-  /* margin-bottom: -100px; */
 `;
 
 const EmptyBasketCharacter = styled.span`
@@ -55,30 +80,3 @@ const BestItemViewBtn = styled(Link)`
   background-color: #3c404b;
   color: #fff !important;
 `;
-
-const NotInfo = ({ url, title, text, text2, btn }) => {
-  return (
-    <EmptyBasketBox>
-      <EmptyBasketCharacter>
-        <img src={url} alt="not info" loading="lazy" />
-      </EmptyBasketCharacter>
-      {title && <EmptyTitle>{title}</EmptyTitle>}
-      {!text2 ? (
-        <EmptyText>{text}</EmptyText>
-      ) : (
-        <EmptyText>
-          {text}
-          <br />
-          {text2}
-        </EmptyText>
-      )}
-      {btn && (
-        <BestItemViewBox>
-          <BestItemViewBtn to="/product">인기 상품 보기</BestItemViewBtn>
-        </BestItemViewBox>
-      )}
-    </EmptyBasketBox>
-  );
-};
-
-export default NotInfo;

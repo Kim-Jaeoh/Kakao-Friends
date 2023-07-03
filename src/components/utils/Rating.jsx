@@ -1,9 +1,37 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { AiFillStar } from "react-icons/ai";
-import { FaStar } from "react-icons/fa";
-import { useMutation } from "react-query";
 import styled from "@emotion/styled";
+
+export const Rating = () => {
+  const [clicked, setClicked] = useState([false, false, false, false, false]);
+
+  const handleStarClick = (index) => {
+    let clickStates = [...clicked];
+
+    for (let i = 0; i < 5; i++) {
+      clickStates[i] = i <= index ? true : false;
+    }
+    setClicked(clickStates);
+  };
+
+  return (
+    <Wrap>
+      <Stars>
+        {Array.from({ length: 5 }).map((_, idx) => {
+          return (
+            <AiFillStar
+              key={idx}
+              size="18"
+              onClick={() => handleStarClick(idx)}
+              className={clicked[idx] && "yellowStar"}
+            />
+          );
+        })}
+      </Stars>
+      <RatingText></RatingText>
+    </Wrap>
+  );
+};
 
 const Wrap = styled.div`
   display: flex;
@@ -45,37 +73,3 @@ const Stars = styled.div`
     color: #ff477e;
   }
 `;
-
-export const Rating = ({ productId, rate }) => {
-  const ARRAY = [0, 1, 2, 3, 4];
-  const [clicked, setClicked] = useState([false, false, false, false, false]);
-
-  const handleStarClick = (index) => {
-    let clickStates = [...clicked];
-    // if (rate < 5) {
-    //   clickStates[rate] = rate <= index ? true : false;
-    // }
-    for (let i = 0; i < 5; i++) {
-      clickStates[i] = i <= index ? true : false;
-    }
-    setClicked(clickStates);
-  };
-
-  return (
-    <Wrap>
-      <Stars>
-        {ARRAY.map((el, idx) => {
-          return (
-            <AiFillStar
-              key={idx}
-              size="18"
-              onClick={() => handleStarClick(el)}
-              className={clicked[el] && "yellowStar"}
-            />
-          );
-        })}
-      </Stars>
-      <RatingText></RatingText>
-    </Wrap>
-  );
-};

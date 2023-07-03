@@ -1,6 +1,28 @@
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
+const SelectMenuBtn = ({ url, text, selected, num, onSelected }) => {
+  return (
+    <>
+      {selected === num ? (
+        <Container>
+          <Link onClick={() => onSelected(num)} to={url}>
+            <ListAfter>{text}</ListAfter>
+          </Link>
+        </Container>
+      ) : (
+        <Container>
+          <Link onClick={() => onSelected(num)} to={url}>
+            <List>{text}</List>
+          </Link>
+        </Container>
+      )}
+    </>
+  );
+};
+
+export default SelectMenuBtn;
+
 const Container = styled.li`
   flex: 1 auto;
   text-align: center;
@@ -29,25 +51,3 @@ const ListAfter = styled(List)`
     content: "";
   }
 `;
-
-const SelectMenuBtn = ({ url, text, selected, num, onSelected }) => {
-  return (
-    <>
-      {selected === num ? (
-        <Container>
-          <Link onClick={() => onSelected(num)} to={url}>
-            <ListAfter>{text}</ListAfter>
-          </Link>
-        </Container>
-      ) : (
-        <Container>
-          <Link onClick={() => onSelected(num)} to={url}>
-            <List>{text}</List>
-          </Link>
-        </Container>
-      )}
-    </>
-  );
-};
-
-export default SelectMenuBtn;

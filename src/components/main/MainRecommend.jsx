@@ -1,14 +1,59 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Link } from "react-router-dom";
 import listImage1 from "../../assets/category_list_1.png";
 import listImage2 from "../../assets/category_list_2.png";
 import listImage3 from "../../assets/category_list_3.png";
 import listImage4 from "../../assets/category_list_4.png";
 
-const Container = styled.div`
-  /* position: relative; */
-`;
+export const MainRecommend = () => {
+  return (
+    <Container>
+      <Title>
+        <strong>추천하는 카테고리</strong>
+      </Title>
+
+      <CategoryBox>
+        <CategoryList>
+          <ListImageBox>
+            <ListImage>
+              <img src={listImage1} alt="미니인형" loading="lazy" />
+            </ListImage>
+            <ListTitle>미니인형</ListTitle>
+          </ListImageBox>
+        </CategoryList>
+
+        <CategoryList>
+          <ListImageBox>
+            <ListImage>
+              <img src={listImage2} alt="생활소품" loading="lazy" />
+            </ListImage>
+            <ListTitle>생활소품</ListTitle>
+          </ListImageBox>
+        </CategoryList>
+
+        <CategoryList>
+          <ListImageBox>
+            <ListImage>
+              <img src={listImage3} alt="데스크 소품" loading="lazy" />
+            </ListImage>
+            <ListTitle>데스크 소품</ListTitle>
+          </ListImageBox>
+        </CategoryList>
+
+        <CategoryList>
+          <ListImageBox>
+            <ListImage>
+              <img src={listImage4} alt="소형 전자" loading="lazy" />
+            </ListImage>
+            <ListTitle>소형 전자</ListTitle>
+          </ListImageBox>
+        </CategoryList>
+      </CategoryBox>
+    </Container>
+  );
+};
+
+const Container = styled.div``;
 
 const Title = styled.div`
   position: relative;
@@ -51,21 +96,6 @@ const CategoryList = styled.li`
     min-height: 156px;
     padding: 0 8px;
   }
-
-  /* div {
-    display: block;
-    overflow: hidden;
-    height: 100%;
-    padding: 16px 0 10px;
-    border-radius: 8px;
-    text-align: center;
-    background-color: rgba(245, 245, 245, 0.77);
-    box-sizing: border-box;
-
-    @media screen and (min-width: 640px) {
-      padding: 28px 0 18px;
-    }
-  } */
 `;
 
 const ListImageBox = styled.div`
@@ -123,51 +153,3 @@ const ListTitle = styled.span`
     line-height: 20px;
   }
 `;
-
-export const MainRecommend = () => {
-  return (
-    <Container>
-      <Title>
-        <strong>추천하는 카테고리</strong>
-      </Title>
-
-      <CategoryBox>
-        <CategoryList>
-          <ListImageBox>
-            <ListImage>
-              <img src={listImage1} alt="미니인형" loading="lazy" />
-            </ListImage>
-            <ListTitle>미니인형</ListTitle>
-          </ListImageBox>
-        </CategoryList>
-
-        <CategoryList>
-          <ListImageBox>
-            <ListImage>
-              <img src={listImage2} alt="생활소품" loading="lazy" />
-            </ListImage>
-            <ListTitle>생활소품</ListTitle>
-          </ListImageBox>
-        </CategoryList>
-
-        <CategoryList>
-          <ListImageBox>
-            <ListImage>
-              <img src={listImage3} alt="데스크 소품" loading="lazy" />
-            </ListImage>
-            <ListTitle>데스크 소품</ListTitle>
-          </ListImageBox>
-        </CategoryList>
-
-        <CategoryList>
-          <ListImageBox>
-            <ListImage>
-              <img src={listImage4} alt="소형 전자" loading="lazy" />
-            </ListImage>
-            <ListTitle>소형 전자</ListTitle>
-          </ListImageBox>
-        </CategoryList>
-      </CategoryBox>
-    </Container>
-  );
-};

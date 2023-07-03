@@ -7,6 +7,114 @@ import { useQuery } from "react-query";
 import { SeriesListApi } from "../../apis/dataApi";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 
+export const MainSeriesContents = () => {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [hover, setHover] = useState(false);
+  const { toggleIcon, currentBasket } = useBasketToggle();
+
+  const { data: dataList, isLoading } = useQuery("seriesList", SeriesListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  const togglePlay = () => {
+    if (hover) {
+      if (!isPlaying) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const onClick = () => {
+    setHover((prev) => !prev);
+  };
+
+  // 재생 시 hover 노출 및 2초 뒤 꺼짐
+  useEffect(() => {
+    clearTimeout();
+    if (hover) {
+      setTimeout(() => {
+        return setHover(false);
+      }, 2000);
+    }
+
+    return () => clearTimeout();
+  }, [hover]);
+
+  return (
+    <Container>
+      <Title>
+        <strong>춘식이랑 집 꾸미기</strong>
+      </Title>
+      <Wrapper>
+        <VideoBox>
+          {hover && (
+            <VideoButton
+              onClick={togglePlay}
+              hover={hover}
+              isPlaying={isPlaying}
+            >
+              {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
+            </VideoButton>
+          )}
+          <Video
+            ref={videoRef}
+            muted
+            loop
+            autoPlay
+            playsInline
+            src={videoContents}
+            type="video/mp4"
+            onClick={onClick}
+          />
+        </VideoBox>
+        <InfoBox>
+          <strong>프렌즈 에브리 예이</strong>
+          <span>
+            프렌즈와 힙한 라이프
+            <br />
+            라이언 춘식이와 EveryYay!
+          </span>
+
+          <ListBox>
+            {!isLoading &&
+              dataList?.data.map((list, index) => (
+                <List key={list.id}>
+                  <ListLink to={`/detail/${list.product}`}>
+                    <ListImage>
+                      <img src={list.image} alt={list.title} loading="lazy" />
+                    </ListImage>
+                    <ListText>
+                      <ListTitle>{list.title}</ListTitle>
+                      <ListPrice>
+                        <span>{list.price}</span>원
+                      </ListPrice>
+                    </ListText>
+                  </ListLink>
+
+                  <BagButton onClick={(e) => toggleIcon(list, index)}>
+                    {currentBasket?.filter(
+                      (obj) => obj.product === list.product
+                    ).length > 0 ? (
+                      <BsBagFill />
+                    ) : (
+                      <BsBag />
+                    )}
+                  </BagButton>
+                </List>
+              ))}
+          </ListBox>
+        </InfoBox>
+      </Wrapper>
+    </Container>
+  );
+};
+
 const Container = styled.div``;
 
 const Wrapper = styled.div`
@@ -42,7 +150,6 @@ const VideoButton = styled.button`
   transform: translate(-50%, -50%);
 
   opacity: ${(props) => (props.hover ? "100" : "0")};
-  /* transition: opacity 0.6s; */
 
   svg {
     width: 70px;
@@ -185,113 +292,3 @@ const BagButton = styled.button`
     right: 6px;
   }
 `;
-
-export const MainSeriesContents = () => {
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [hover, setHover] = useState(false);
-  const { toggleIcon, currentBasket } = useBasketToggle();
-
-  const { data: dataList, isLoading } = useQuery("seriesList", SeriesListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
-  const togglePlay = () => {
-    if (hover) {
-      if (!isPlaying) {
-        videoRef.current.play();
-        setIsPlaying(true);
-      } else {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      }
-    }
-  };
-
-  const onClick = () => {
-    setHover((prev) => !prev);
-  };
-
-  // 재생 시 hover 노출 및 2초뒤 꺼짐
-  useEffect(() => {
-    clearTimeout();
-    if (hover) {
-      setTimeout(() => {
-        return setHover(false);
-      }, 2000);
-    }
-
-    return () => clearTimeout();
-  }, [hover]);
-
-  return (
-    <Container>
-      <Title>
-        <strong>춘식이랑 집 꾸미기</strong>
-      </Title>
-      <Wrapper>
-        <VideoBox>
-          {hover && (
-            <VideoButton
-              onClick={togglePlay}
-              hover={hover}
-              isPlaying={isPlaying}
-              // onMouseEnter={onMouseOverButton}
-            >
-              {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
-            </VideoButton>
-          )}
-          <Video
-            ref={videoRef}
-            muted
-            loop
-            autoPlay
-            playsInline
-            src={videoContents}
-            type="video/mp4"
-            onClick={onClick}
-            // onMouseOut={onMouseOutButton}
-          />
-        </VideoBox>
-        <InfoBox>
-          <strong>프렌즈 에브리 예이</strong>
-          <span>
-            프렌즈와 힙한 라이프
-            <br />
-            라이언 춘식이와 EveryYay!
-          </span>
-
-          <ListBox>
-            {!isLoading &&
-              dataList?.data.map((list, index) => (
-                <List key={list.id}>
-                  <ListLink to={`/detail/${list.product}`}>
-                    <ListImage>
-                      <img src={list.image} alt={list.title} loading="lazy" />
-                    </ListImage>
-                    <ListText>
-                      <ListTitle>{list.title}</ListTitle>
-                      <ListPrice>
-                        <span>{list.price}</span>원
-                      </ListPrice>
-                    </ListText>
-                  </ListLink>
-
-                  <BagButton onClick={(e) => toggleIcon(list, index)}>
-                    {currentBasket?.filter(
-                      (obj) => obj.product === list.product
-                    ).length > 0 ? (
-                      <BsBagFill />
-                    ) : (
-                      <BsBag />
-                    )}
-                  </BagButton>
-                </List>
-              ))}
-          </ListBox>
-        </InfoBox>
-      </Wrapper>
-    </Container>
-  );
-};

@@ -1,8 +1,53 @@
 import styled from "@emotion/styled";
 import { Modal } from "@mui/material";
 import { IoCloseOutline } from "react-icons/io5";
-import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 import { useKakaoAuth } from "../../hooks/useKakaoAuth";
+
+export const LoginPopupModal = ({ loginPopupModal, toggleLoginPopupModal }) => {
+  // 모달 스크롤 픽스 (type이 있는 경우는 모달이 2중이고, 하나 닫았을 때 스크롤이 다시 되는 걸 방지하기 위해 별도의 값을 넣음)
+  const { onLogInClick } = useKakaoAuth(); // 카카오 auth 커스텀 훅
+
+  return (
+    <>
+      <Modal
+        open={loginPopupModal}
+        onClose={toggleLoginPopupModal}
+        disableScrollLock={false}
+      >
+        <Wrapper>
+          <Container>
+            <ListDelete onClick={toggleLoginPopupModal}>
+              <IoCloseOutline />
+            </ListDelete>
+            <ImageBox>
+              <Image
+                src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/img_apeach.png"
+                alt="kakao"
+                loading="lazy"
+              />
+            </ImageBox>
+            <Title>앗! 로그인</Title>
+            <SubTitleBox>
+              <span>앗! 깜빡, 로그인하고 이용하기❤️️</span>
+            </SubTitleBox>
+            <LoginButtonBox>
+              <LoginButton onClick={onLogInClick}>
+                <LoginButtonLogo>
+                  <img
+                    src="https://www.nicepng.com/png/full/388-3888984_open-png.png"
+                    alt=""
+                    loading="lazy"
+                  />
+                </LoginButtonLogo>
+                로그인하기
+              </LoginButton>
+            </LoginButtonBox>
+          </Container>
+        </Wrapper>
+      </Modal>
+    </>
+  );
+};
 
 const Wrapper = styled.div`
   overflow-y: scroll;
@@ -125,61 +170,3 @@ const LoginButtonLogo = styled.div`
     width: 100%;
   }
 `;
-
-export const LoginPopupModal = ({
-  loginPopupModal,
-  toggleLoginPopupModal,
-  type,
-}) => {
-  // 모달 스크롤 픽스 (type이 있는 경우는 모달이 2중이고, 하나 닫았을 때 스크롤이 다시 되는 걸 방지하기 위해 별도의 값을 넣음)
-  const modalFixed = useModalScrollFixed(loginPopupModal, type);
-  const { onLogInClick } = useKakaoAuth(); // 카카오 auth 커스텀 훅
-
-  return (
-    <>
-      <Modal
-        open={loginPopupModal}
-        onClose={toggleLoginPopupModal}
-        disableScrollLock={true}
-      >
-        <Wrapper>
-          <Container>
-            <ListDelete onClick={toggleLoginPopupModal}>
-              <IoCloseOutline />
-            </ListDelete>
-            <ImageBox>
-              <Image
-                src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221109/181135/assets/images/m960/img_apeach.png"
-                alt="kakao"
-                loading="lazy"
-              />
-            </ImageBox>
-            <Title>앗! 로그인</Title>
-            <SubTitleBox>
-              <span>앗! 깜빡, 로그인하고 이용하기❤️️</span>
-            </SubTitleBox>
-            <LoginButtonBox>
-              <LoginButton onClick={onLogInClick}>
-                <LoginButtonLogo>
-                  <img
-                    src="https://www.nicepng.com/png/full/388-3888984_open-png.png"
-                    alt=""
-                    loading="lazy"
-                  />
-                </LoginButtonLogo>
-                로그인하기
-              </LoginButton>
-            </LoginButtonBox>
-          </Container>
-        </Wrapper>
-      </Modal>
-      {/* {signModal && (
-        <AuthModal
-          signModal={signModal}
-          toggleSignModal={toggleSignModal}
-          toggleModal={toggleSignModal}
-        />
-      )} */}
-    </>
-  );
-};

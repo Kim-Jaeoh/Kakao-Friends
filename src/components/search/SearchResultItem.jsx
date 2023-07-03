@@ -10,6 +10,92 @@ import axios from "axios";
 import { useEffect } from "react";
 const NotInfo = lazy(() => import("../utils/NotInfo"));
 
+export const SearchResultItem = () => {
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword");
+
+  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
+  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
+
+  // 상품 리스트
+  const api = `${
+    process.env.REACT_APP_SERVER_PORT
+  }/api/search?keyword=${encodeURIComponent(keyword)}&`;
+  const { ref, dataList } = useInfinityScroll(api, 9); // 무한스크롤 커스텀 훅
+
+  // 검색 결과 개수
+  const DataLength = useCallback(async () => {
+    return await axios.get(
+      `${
+        process.env.REACT_APP_SERVER_PORT
+      }/api/searchLength?keyword=${encodeURIComponent(keyword)}`
+    );
+  }, [keyword]);
+
+  const { data: dataLength } = useQuery("productList", DataLength, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  return (
+    <BasketRecommendBox>
+      {keyword && (
+        <>
+          <SearchResultBox>
+            <span>
+              총 <strong>{dataLength?.data.length}</strong> 개
+            </span>
+          </SearchResultBox>
+          {keyword && dataList?.pages?.flat().length !== 0 ? (
+            <BasketRecommendListBox>
+              {dataList?.pages?.flat().map((list, index) => (
+                <BasketRecommendList key={list.id}>
+                  <RecommendListBox>
+                    <RecommendListImage to={`/detail/${list.product}`}>
+                      <img src={list.image} alt={list.title} loading="lazy" />
+                    </RecommendListImage>
+                    <RecommendListText>
+                      <strong>{list.title}</strong>
+                      <RecomendListPrice>
+                        <span>{PriceComma(list.price)}</span>원
+                      </RecomendListPrice>
+                      <BagButton onClick={(e) => toggleIcon(list)}>
+                        {currentBasket?.filter(
+                          (obj) => obj.product === list.product
+                        ).length > 0 ? (
+                          <BsBagFill style={{ color: "#ff447f" }} />
+                        ) : (
+                          <BsBag />
+                        )}
+                      </BagButton>
+                    </RecommendListText>
+                  </RecommendListBox>
+                </BasketRecommendList>
+              ))}
+            </BasketRecommendListBox>
+          ) : (
+            <NotInfo
+              url={
+                "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221202/101742/assets/images/m960/ico_empty_ryan.png"
+              }
+              title={"검색 결과가 없습니다."}
+              text={"다른 검색어를 입력하시거나, "}
+              text2={"철자 및 띄어쓰기를 확인해주세요."}
+            />
+          )}
+        </>
+      )}
+      <div
+        ref={ref}
+        style={{
+          position: "absolute",
+          bottom: "200px",
+        }}
+      />
+    </BasketRecommendBox>
+  );
+};
+
 const BasketRecommendBox = styled.div`
   position: relative;
 
@@ -134,89 +220,3 @@ const SearchResultBox = styled.div`
     }
   }
 `;
-
-export const SearchResultItem = () => {
-  const [searchParams] = useSearchParams();
-  const keyword = searchParams.get("keyword");
-
-  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
-  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
-
-  // 상품 리스트
-  const api = `${
-    process.env.REACT_APP_SERVER_PORT
-  }/api/search?keyword=${encodeURIComponent(keyword)}&`;
-  const { ref, dataList } = useInfinityScroll(api, 9); // 무한스크롤 커스텀 훅
-
-  // 검색 결과 개수
-  const DataLength = useCallback(async () => {
-    return await axios.get(
-      `${
-        process.env.REACT_APP_SERVER_PORT
-      }/api/searchLength?keyword=${encodeURIComponent(keyword)}`
-    );
-  }, [keyword]);
-
-  const { data: dataLength } = useQuery("productList", DataLength, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
-  return (
-    <BasketRecommendBox>
-      {keyword && (
-        <>
-          <SearchResultBox>
-            <span>
-              총 <strong>{dataLength?.data.length}</strong> 개
-            </span>
-          </SearchResultBox>
-          {keyword && dataList?.pages?.flat().length !== 0 ? (
-            <BasketRecommendListBox>
-              {dataList?.pages?.flat().map((list, index) => (
-                <BasketRecommendList key={list.id}>
-                  <RecommendListBox>
-                    <RecommendListImage to={`/detail/${list.product}`}>
-                      <img src={list.image} alt={list.title} loading="lazy" />
-                    </RecommendListImage>
-                    <RecommendListText>
-                      <strong>{list.title}</strong>
-                      <RecomendListPrice>
-                        <span>{PriceComma(list.price)}</span>원
-                      </RecomendListPrice>
-                      <BagButton onClick={(e) => toggleIcon(list)}>
-                        {currentBasket?.filter(
-                          (obj) => obj.product === list.product
-                        ).length > 0 ? (
-                          <BsBagFill style={{ color: "#ff447f" }} />
-                        ) : (
-                          <BsBag />
-                        )}
-                      </BagButton>
-                    </RecommendListText>
-                  </RecommendListBox>
-                </BasketRecommendList>
-              ))}
-            </BasketRecommendListBox>
-          ) : (
-            <NotInfo
-              url={
-                "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221202/101742/assets/images/m960/ico_empty_ryan.png"
-              }
-              title={"검색 결과가 없습니다."}
-              text={"다른 검색어를 입력하시거나, "}
-              text2={"철자 및 띄어쓰기를 확인해주세요."}
-            />
-          )}
-        </>
-      )}
-      <div
-        ref={ref}
-        style={{
-          position: "absolute",
-          bottom: "200px",
-        }}
-      />
-    </BasketRecommendBox>
-  );
-};

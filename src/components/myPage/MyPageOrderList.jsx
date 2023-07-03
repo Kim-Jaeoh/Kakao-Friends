@@ -12,7 +12,6 @@ const NotInfo = lazy(() => import("../utils/NotInfo"));
 const MyPageOrderList = ({ isLoggedIn }) => {
   const [orderList, setOrderList] = useState([]);
   const [myInfo, setMyInfo] = useState([]);
-  // const [docRef, setDocRef] = useState("");
   const [payStatus, setPayStatus] = useState("");
   const currentUser = useSelector((state) => state.user.currentUser);
 

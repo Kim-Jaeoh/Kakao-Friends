@@ -4,6 +4,59 @@ import { useQuery } from "react-query";
 import { MenuCharacterListApi } from "../../apis/dataApi";
 import { Link } from "react-router-dom";
 
+export const SearchMain = () => {
+  const { data: dataList1, isLoading1 } = useQuery(
+    "character",
+    MenuCharacterListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
+
+  const category = [
+    "전체",
+    "토이",
+    "리빙",
+    "잡화",
+    "문구",
+    "의류",
+    "디지털",
+    "여행/레져",
+    "식품",
+    "테마 기획전",
+  ];
+
+  return (
+    <SearchCategoryBox>
+      <SearchCharacterListBox>
+        {!isLoading1 &&
+          dataList1?.data.map((list, index) => (
+            <SearchCharacterList key={list.id}>
+              <Link to={`/search/result?keyword=${list.title}`}>
+                <SearchCharacterImage
+                  image={list.image}
+                  imageH={list.imageHover}
+                />
+                <SearchCharacterText>{list.title}</SearchCharacterText>
+              </Link>
+            </SearchCharacterList>
+          ))}
+      </SearchCharacterListBox>
+      <SearchCategoryTextBox>
+        <span>카테고리</span>
+        <SearchCategoryTextList>
+          {category.map((list, index) => (
+            <SearchCategoryText key={index}>
+              <Link>{list}</Link>
+            </SearchCategoryText>
+          ))}
+        </SearchCategoryTextList>
+      </SearchCategoryTextBox>
+    </SearchCategoryBox>
+  );
+};
+
 const SearchCategoryBox = styled.div`
   padding: 0 0 80px;
 `;
@@ -106,56 +159,3 @@ const SearchCategoryText = styled.li`
     font-size: 14px;
   }
 `;
-
-export const SearchMain = () => {
-  const { data: dataList1, isLoading1 } = useQuery(
-    "character",
-    MenuCharacterListApi,
-    {
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e.message),
-    }
-  );
-
-  const category = [
-    "전체",
-    "토이",
-    "리빙",
-    "잡화",
-    "문구",
-    "의류",
-    "디지털",
-    "여행/레져",
-    "식품",
-    "테마 기획전",
-  ];
-
-  return (
-    <SearchCategoryBox>
-      <SearchCharacterListBox>
-        {!isLoading1 &&
-          dataList1?.data.map((list, index) => (
-            <SearchCharacterList key={list.id}>
-              <Link to={`/search/result?keyword=${list.title}`}>
-                <SearchCharacterImage
-                  image={list.image}
-                  imageH={list.imageHover}
-                />
-                <SearchCharacterText>{list.title}</SearchCharacterText>
-              </Link>
-            </SearchCharacterList>
-          ))}
-      </SearchCharacterListBox>
-      <SearchCategoryTextBox>
-        <span>카테고리</span>
-        <SearchCategoryTextList>
-          {category.map((list, index) => (
-            <SearchCategoryText key={index}>
-              <Link>{list}</Link>
-            </SearchCategoryText>
-          ))}
-        </SearchCategoryTextList>
-      </SearchCategoryTextBox>
-    </SearchCategoryBox>
-  );
-};

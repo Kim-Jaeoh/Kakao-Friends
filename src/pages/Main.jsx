@@ -11,6 +11,36 @@ import { MainRestock } from "../components/main/MainRestock";
 import { Footer } from "../components/utils/Footer";
 import { Link } from "react-router-dom";
 
+const Main = () => {
+  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+  return (
+    <>
+      <Container>
+        <Article>
+          <MainBanner>
+            <MainContents />
+          </MainBanner>
+          <BeltBanner to="/promotion/2" state={"카카오페이 12월 즉시할인"}>
+            <BennerContents
+              src={resize ? beltbannerMo : beltbannerPc}
+              alt="카카오페이로 결제 시 최대 5천원 할인!"
+              loading="lazy"
+            />
+          </BeltBanner>
+          <MainSlideContents />
+          <MainSeriesContents />
+          <MainCharacterItem />
+          <MainRecommend />
+          <MainRestock />
+        </Article>
+        <Footer />
+      </Container>
+    </>
+  );
+};
+
+export default Main;
+
 const Container = styled.main`
   position: relative;
   /* padding-top: 43px; */
@@ -47,35 +77,3 @@ const BennerContents = styled.img`
   margin: 0 auto;
   border-radius: 8px;
 `;
-
-const Main = () => {
-  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
-  return (
-    <>
-      <Container>
-        <Article>
-          <MainBanner>
-            <MainContents />
-          </MainBanner>
-          <BeltBanner to="/promotion/2" state={"카카오페이 12월 즉시할인"}>
-            <BennerContents
-              // resize={resize}
-              // checkSize={size}
-              src={resize ? beltbannerMo : beltbannerPc}
-              alt="카카오페이로 결제 시 최대 5천원 할인!"
-              loading="lazy"
-            />
-          </BeltBanner>
-          <MainSlideContents />
-          <MainSeriesContents />
-          <MainCharacterItem />
-          <MainRecommend />
-          <MainRestock />
-        </Article>
-        <Footer />
-      </Container>
-    </>
-  );
-};
-
-export default Main;

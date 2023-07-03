@@ -5,6 +5,45 @@ import { IoIosArrowBack } from "react-icons/io";
 import { FiHome, FiSearch } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 
+export const RouterHeader = ({ title }) => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const goHome = () => {
+    navigate("/");
+  };
+
+  return (
+    <Header>
+      <HeaderBox>
+        <IconBox>
+          <Icon onClick={() => navigate(-1)}>
+            <IoIosArrowBack />
+          </Icon>
+          <Icon onClick={goHome}>
+            <FiHome />
+          </Icon>
+        </IconBox>
+
+        <HeaderName>{title}</HeaderName>
+
+        <IconBox>
+          {!pathname.includes("/search") && (
+            <Link to="/search">
+              <Icon>
+                <FiSearch />
+              </Icon>
+            </Link>
+          )}
+          <Icon>
+            <TbWorld />
+          </Icon>
+        </IconBox>
+      </HeaderBox>
+    </Header>
+  );
+};
+
 const Header = styled.div`
   width: 100%;
   position: relative;
@@ -71,42 +110,3 @@ const HeaderName = styled.div`
     width: 100%;
   }
 `;
-
-export const RouterHeader = ({ title }) => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const goHome = () => {
-    navigate("/");
-  };
-
-  return (
-    <Header>
-      <HeaderBox>
-        <IconBox>
-          <Icon onClick={() => navigate(-1)}>
-            <IoIosArrowBack />
-          </Icon>
-          <Icon onClick={goHome}>
-            <FiHome />
-          </Icon>
-        </IconBox>
-
-        <HeaderName>{title}</HeaderName>
-
-        <IconBox>
-          {!pathname.includes("/search") && (
-            <Link to="/search">
-              <Icon>
-                <FiSearch />
-              </Icon>
-            </Link>
-          )}
-          <Icon>
-            <TbWorld />
-          </Icon>
-        </IconBox>
-      </HeaderBox>
-    </Header>
-  );
-};

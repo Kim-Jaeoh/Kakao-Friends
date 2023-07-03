@@ -2,6 +2,64 @@ import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { BsArrowUp } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
+import { throttle } from "lodash";
+
+export const TopButton = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const [btnStatus, setBtnStatus] = useState(false); // 버튼 상태
+  const [btnBottom, setBtnBottom] = useState(false); // 버튼 위치
+  const { pathname } = useLocation();
+
+  const handleTop = () => {
+    // 클릭하면 스크롤이 위로 올라가는 함수
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    setScrollY(0); // scrollY 의 값을 초기화
+    if (scrollY === 0) {
+      setBtnStatus(false);
+    }
+  };
+
+  useEffect(() => {
+    if (pathname?.includes("/detail") || pathname?.includes("/mypage/basket")) {
+      setBtnBottom(true);
+    }
+    return () => setBtnBottom(false);
+  }, [pathname]);
+
+  const handleFollow = throttle(() => {
+    if (window.scrollY > 1600) {
+      setBtnStatus(true);
+    } else {
+      setBtnStatus(false);
+    }
+    setScrollY(window.scrollY);
+  }, 1000);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleFollow);
+
+    return () => {
+      window.removeEventListener("scroll", handleFollow);
+    };
+  }, []);
+
+  return (
+    <Container>
+      <TopButtonBox
+        btnBottom={btnBottom}
+        btnStatus={btnStatus}
+        onClick={handleTop} // 버튼 클릭시 함수 호출
+      >
+        <Button>
+          <BsArrowUp />
+        </Button>
+      </TopButtonBox>
+    </Container>
+  );
+};
 
 const Container = styled.div``;
 
@@ -39,60 +97,3 @@ const Button = styled.button`
     font-weight: lighter;
   }
 `;
-
-export const TopButton = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const [btnStatus, setBtnStatus] = useState(false); // 버튼 상태
-  const [btnBottom, setBtnBottom] = useState(false); // 버튼 위치
-  const { pathname } = useLocation();
-
-  const handleTop = () => {
-    // 클릭하면 스크롤이 위로 올라가는 함수
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-    setScrollY(0); // scrollY 의 값을 초기화
-    if (scrollY === 0) {
-      setBtnStatus(false);
-    }
-  };
-
-  useEffect(() => {
-    if (pathname?.includes("/detail") || pathname?.includes("/mypage/basket")) {
-      setBtnBottom(true);
-    }
-    return () => setBtnBottom(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    const handleFollow = () => {
-      if (window.pageYOffset > 1600) {
-        setBtnStatus(true);
-      } else {
-        setBtnStatus(false);
-      }
-      setScrollY(window.pageYOffset);
-    };
-
-    window.addEventListener("scroll", handleFollow);
-
-    return () => {
-      window.removeEventListener("scroll", handleFollow);
-    };
-  }, [scrollY]);
-
-  return (
-    <Container>
-      <TopButtonBox
-        btnBottom={btnBottom}
-        btnStatus={btnStatus}
-        onClick={handleTop} // 버튼 클릭시 함수 호출
-      >
-        <Button>
-          <BsArrowUp />
-        </Button>
-      </TopButtonBox>
-    </Container>
-  );
-};

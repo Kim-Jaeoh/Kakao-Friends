@@ -20,7 +20,7 @@ export const useHandleISize = () => {
 
     window.addEventListener("resize", Resize);
     return () => {
-      window.addEventListener("resize", Resize);
+      window.removeEventListener("resize", Resize);
     };
   }, [size]);
 

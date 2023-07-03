@@ -1,9 +1,64 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Footer } from "../components/utils/Footer";
-import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { ProductSteady } from "../components/product/ProductSteady";
-import { ProductRealTime } from "../components/product/ProductRealTime";
+import { Link, useLocation } from "react-router-dom";
+import ProductInnerList from "../components/product/ProductInnerList";
+
+const Product = () => {
+  const [clickTabNumber, setClickTabNumber] = useState(1);
+  const { pathname } = useLocation();
+
+  const toggleTab = (num) => {
+    setClickTabNumber(num);
+  };
+
+  useEffect(() => {
+    if (pathname.includes("/realtime")) {
+      setClickTabNumber(1);
+    } else if (pathname.includes("/steady")) {
+      setClickTabNumber(2);
+    }
+  }, [pathname]);
+
+  const productUrl = `${process.env.REACT_APP_SERVER_PORT}/api/productlist`;
+
+  return (
+    <>
+      <Container>
+        <Wrapper>
+          <WrapperTitle>
+            <strong>지금 인기있는</strong>
+          </WrapperTitle>
+          <TabList>
+            <TabTitle
+              onClick={() => toggleTab(1)}
+              num={1}
+              selected={clickTabNumber}
+            >
+              <Link to="realtime">실시간</Link>
+            </TabTitle>
+            <TabTitle
+              onClick={() => toggleTab(2)}
+              num={2}
+              selected={clickTabNumber}
+            >
+              <Link to="steady">스테디</Link>
+            </TabTitle>
+          </TabList>
+
+          {pathname.includes("/realtime") ? (
+            <ProductInnerList api={`${productUrl}/realtime?`} />
+          ) : (
+            <ProductInnerList api={`${productUrl}/steady?`} />
+          )}
+        </Wrapper>
+        <Footer />
+      </Container>
+    </>
+  );
+};
+
+export default Product;
 
 const Container = styled.main`
   position: relative;
@@ -64,60 +119,3 @@ const TabTitle = styled.li`
       props.num === props.selected ? "700" : "normarl"};
   }
 `;
-
-const Product = () => {
-  const [clickTabNumber, setClickTabNumber] = useState(1);
-  const { pathname } = useLocation();
-
-  const toggleTab = (num) => {
-    setClickTabNumber(num);
-  };
-
-  useEffect(() => {
-    if (pathname.includes("/realtime")) {
-      setClickTabNumber(1);
-    } else if (pathname.includes("/steady")) {
-      setClickTabNumber(2);
-    }
-  }, [pathname]);
-
-  return (
-    <>
-      <Container>
-        <Wrapper>
-          <WrapperTitle>
-            <strong>지금 인기있는</strong>
-          </WrapperTitle>
-          <TabList>
-            <TabTitle
-              onClick={() => toggleTab(1)}
-              num={1}
-              selected={clickTabNumber}
-            >
-              <Link to="realtime">실시간</Link>
-            </TabTitle>
-            <TabTitle
-              onClick={() => toggleTab(2)}
-              num={2}
-              selected={clickTabNumber}
-            >
-              <Link to="steady">스테디</Link>
-            </TabTitle>
-          </TabList>
-
-          <Routes>
-            <Route path="/realtime" element={<ProductRealTime />} />
-            <Route path="/steady" element={<ProductSteady />} />
-            <Route
-              path="/*"
-              element={<Navigate replace to="/product/realtime" />}
-            />
-          </Routes>
-        </Wrapper>
-        <Footer />
-      </Container>
-    </>
-  );
-};
-
-export default React.memo(Product);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Drawer } from "@mui/material";
 import styled from "@emotion/styled";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { SlLock } from "react-icons/sl";
 import menuBannerImg from "../../assets/bn_addtalk.png";
@@ -12,9 +12,209 @@ import { useQuery } from "react-query";
 import { MenuCharacterListApi } from "../../apis/dataApi";
 import { AiOutlineBell } from "react-icons/ai";
 import { useSelector } from "react-redux";
-import { useModalScrollFixed } from "../../hooks/useModalScrollFixed";
 import { LoginPopupModal } from "./LoginPopupModal";
 import { useKakaoAuth } from "../../hooks/useKakaoAuth";
+
+export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
+  const [expanded, setExpanded] = useState("");
+  const [loginPopupModal, setLoginPopupModal] = useState(false);
+  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const { onLogInClick, onLogOutClick } = useKakaoAuth(); // 카카오 auth 커스텀 훅
+
+  const category = [
+    "전체",
+    "토이",
+    "리빙",
+    "잡화",
+    "문구",
+    "의류",
+    "디지털",
+    "여행/레져",
+    "식품",
+    "테마 기획전",
+  ];
+
+  const { data: dataList, isLoading } = useQuery(
+    "character",
+    MenuCharacterListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
+
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
+
+  // 모달창 닫힐 때 아코디언 확장 x
+  useEffect(() => {
+    if (menuModal === false) {
+      setTimeout(() => {
+        setExpanded(false);
+      }, [200]);
+    }
+    return () => clearTimeout();
+  }, [menuModal]);
+
+  return (
+    <>
+      <Drawer
+        style={{ position: "relative" }}
+        anchor={"left"}
+        open={menuModal}
+        onClose={toggleModal}
+        transitionDuration={400}
+        disableScrollLock={false}
+      >
+        <Container role="presentation">
+          <UserInfoBox>
+            {isLoggedIn ? (
+              <>
+                <UserLogin>
+                  <em>{currentUser.displayName}</em>님 반가워요!
+                </UserLogin>
+                <NotUserCheck>
+                  <span style={{ fontSize: "24px" }}>
+                    <AiOutlineBell />
+                  </span>
+                </NotUserCheck>
+              </>
+            ) : (
+              <UserLogin onClick={onLogInClick}>
+                <em>로그인</em>이 필요해요!
+              </UserLogin>
+            )}
+          </UserInfoBox>
+
+          <ListMenu>
+            <List onClick={toggleModal}>
+              <Link to="/mypage/basket">장바구니 내역</Link>
+            </List>
+            <ListLast
+              onClick={isLoggedIn ? toggleModal : toggleLoginPopupModal}
+            >
+              <Link to={isLoggedIn && "/mypage/orderlist"}>
+                주문<span>·</span>배송 내역
+              </Link>
+            </ListLast>
+
+            <Accordion
+              disableGutters
+              elevation={0}
+              square
+              expanded={expanded === "panel1"}
+              onChange={handleChange("panel1")}
+            >
+              <ListTab aria-controls="panel1d-content" id="panel1d-header">
+                <div>
+                  캐릭터
+                  <span>
+                    <IoIosArrowDown />
+                  </span>
+                </div>
+              </ListTab>
+              <ListContents>
+                <CharacterListBox>
+                  {!isLoading &&
+                    dataList?.data.map((list, index) => (
+                      <CharacterList key={list.id}>
+                        <Link
+                          onClick={toggleModal}
+                          to={`/search/result?keyword=${list.title}`}
+                        >
+                          <CharacterListImage
+                            image={list.image}
+                            imageH={list.imageHover}
+                          />
+                          <CharacterListText>{list.title}</CharacterListText>
+                        </Link>
+                      </CharacterList>
+                    ))}
+                </CharacterListBox>
+              </ListContents>
+            </Accordion>
+
+            <AccordionLast
+              disableGutters
+              elevation={0}
+              square
+              expanded={expanded === "panel2"}
+              onChange={handleChange("panel2")}
+            >
+              <ListTab aria-controls="panel1d-content" id="panel1d-header">
+                <div>
+                  카테고리
+                  <span>
+                    <IoIosArrowDown />
+                  </span>
+                </div>
+              </ListTab>
+              <ListContents>
+                <CategoryListBox>
+                  {!isLoading &&
+                    category.map((list, index) => (
+                      <CategoryList key={index}>
+                        <Link>{list}</Link>
+                      </CategoryList>
+                    ))}
+                </CategoryListBox>
+              </ListContents>
+            </AccordionLast>
+
+            <List>프렌즈 별다꾸</List>
+            <ListLast>배경화면</ListLast>
+
+            {/* 구분선 */}
+
+            <List>공지사항</List>
+            <List>고객센터</List>
+            <ListLast>
+              기프트카드 조회<span>·</span>환불
+            </ListLast>
+
+            {/* 구분선 */}
+
+            <List>카카오프렌즈샵 안내</List>
+            <MenuBanner>
+              <div>
+                <img
+                  src={menuBannerImg}
+                  alt="카톡 추가하고 프렌즈 소식을 받아보세요!"
+                  loading="lazy"
+                />
+              </div>
+            </MenuBanner>
+
+            {!isLoggedIn ? (
+              <LogInBox onClick={onLogInClick}>
+                <div>
+                  <SlLock />
+                </div>
+                로그인
+              </LogInBox>
+            ) : (
+              <LogInBox onClick={onLogOutClick}>
+                <div>
+                  <SlLock />
+                </div>
+                로그아웃
+              </LogInBox>
+            )}
+          </ListMenu>
+        </Container>
+
+        {!isLoggedIn && (
+          <LoginPopupModal
+            loginPopupModal={loginPopupModal}
+            toggleLoginPopupModal={toggleLoginPopupModal}
+          />
+        )}
+      </Drawer>
+    </>
+  );
+};
 
 const Container = styled.div`
   overflow-y: scroll;
@@ -296,209 +496,3 @@ const CategoryList = styled.li`
     color: #747475;
   }
 `;
-
-export const Menubar = ({ menuModal, toggleModal, isLoggedIn }) => {
-  const [expanded, setExpanded] = useState("");
-  const [loginPopupModal, setLoginPopupModal] = useState(false);
-  const toggleLoginPopupModal = () => setLoginPopupModal((prev) => !prev);
-  const currentUser = useSelector((state) => state.user.currentUser);
-  const modalFixed = useModalScrollFixed(menuModal); // 모달 스크롤 픽스
-  const { onLogInClick, onLogOutClick } = useKakaoAuth(); // 카카오 auth 커스텀 훅
-
-  const category = [
-    "전체",
-    "토이",
-    "리빙",
-    "잡화",
-    "문구",
-    "의류",
-    "디지털",
-    "여행/레져",
-    "식품",
-    "테마 기획전",
-  ];
-
-  const { data: dataList, isLoading } = useQuery(
-    "character",
-    MenuCharacterListApi,
-    {
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e.message),
-    }
-  );
-
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
-
-  // 모달창 닫힐 때 아코디언 확장 x
-  useEffect(() => {
-    if (menuModal === false) {
-      setTimeout(() => {
-        setExpanded(false);
-      }, [200]);
-    }
-    return () => clearTimeout();
-  }, [menuModal]);
-
-  return (
-    <>
-      <Drawer
-        style={{ position: "relative" }}
-        anchor={"left"}
-        open={menuModal}
-        onClose={toggleModal}
-        transitionDuration={400}
-        disableScrollLock={true}
-      >
-        <Container role="presentation">
-          <UserInfoBox>
-            {isLoggedIn ? (
-              <>
-                <UserLogin>
-                  <em>{currentUser.displayName}</em>님 반가워요!
-                </UserLogin>
-                <NotUserCheck>
-                  <span style={{ fontSize: "24px" }}>
-                    <AiOutlineBell />
-                  </span>
-                </NotUserCheck>
-              </>
-            ) : (
-              <UserLogin onClick={onLogInClick}>
-                <em>로그인</em>이 필요해요!
-              </UserLogin>
-            )}
-          </UserInfoBox>
-
-          <ListMenu>
-            <List onClick={toggleModal}>
-              <Link to="/mypage/basket">장바구니 내역</Link>
-            </List>
-            <ListLast
-              onClick={isLoggedIn ? toggleModal : toggleLoginPopupModal}
-            >
-              <Link to={isLoggedIn && "/mypage/orderlist"}>
-                주문<span>·</span>배송 내역
-              </Link>
-            </ListLast>
-
-            {/* 구분선 */}
-
-            <Accordion
-              disableGutters
-              elevation={0}
-              square
-              expanded={expanded === "panel1"}
-              onChange={handleChange("panel1")}
-            >
-              <ListTab aria-controls="panel1d-content" id="panel1d-header">
-                <div>
-                  캐릭터
-                  <span>
-                    <IoIosArrowDown />
-                  </span>
-                </div>
-              </ListTab>
-              <ListContents>
-                <CharacterListBox>
-                  {!isLoading &&
-                    dataList?.data.map((list, index) => (
-                      <CharacterList key={list.id}>
-                        <Link
-                          onClick={toggleModal}
-                          to={`/search/result?keyword=${list.title}`}
-                        >
-                          <CharacterListImage
-                            image={list.image}
-                            imageH={list.imageHover}
-                          />
-                          <CharacterListText>{list.title}</CharacterListText>
-                        </Link>
-                      </CharacterList>
-                    ))}
-                </CharacterListBox>
-              </ListContents>
-            </Accordion>
-
-            <AccordionLast
-              disableGutters
-              elevation={0}
-              square
-              expanded={expanded === "panel2"}
-              onChange={handleChange("panel2")}
-            >
-              <ListTab aria-controls="panel1d-content" id="panel1d-header">
-                <div>
-                  카테고리
-                  <span>
-                    <IoIosArrowDown />
-                  </span>
-                </div>
-              </ListTab>
-              <ListContents>
-                <CategoryListBox>
-                  {!isLoading &&
-                    category.map((list, index) => (
-                      <CategoryList key={index}>
-                        <Link>{list}</Link>
-                      </CategoryList>
-                    ))}
-                </CategoryListBox>
-              </ListContents>
-            </AccordionLast>
-
-            {/* 구분선 */}
-
-            <List>프렌즈 별다꾸</List>
-            <ListLast>배경화면</ListLast>
-
-            {/* 구분선 */}
-
-            <List>공지사항</List>
-            <List>고객센터</List>
-            <ListLast>
-              기프트카드 조회<span>·</span>환불
-            </ListLast>
-
-            {/* 구분선 */}
-
-            <List>카카오프렌즈샵 안내</List>
-            <MenuBanner>
-              <div>
-                <img
-                  src={menuBannerImg}
-                  alt="카톡 추가하고 프렌즈 소식을 받아보세요!"
-                  loading="lazy"
-                />
-              </div>
-            </MenuBanner>
-
-            {!isLoggedIn ? (
-              <LogInBox onClick={onLogInClick}>
-                <div>
-                  <SlLock />
-                </div>
-                로그인
-              </LogInBox>
-            ) : (
-              <LogInBox onClick={onLogOutClick}>
-                <div>
-                  <SlLock />
-                </div>
-                로그아웃
-              </LogInBox>
-            )}
-          </ListMenu>
-        </Container>
-
-        {!isLoggedIn && (
-          <LoginPopupModal
-            loginPopupModal={loginPopupModal}
-            toggleLoginPopupModal={toggleLoginPopupModal}
-          />
-        )}
-      </Drawer>
-    </>
-  );
-};

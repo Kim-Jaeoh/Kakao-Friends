@@ -6,23 +6,8 @@ import { PromotionApi } from "../apis/dataApi";
 import { Link, useParams } from "react-router-dom";
 import { Footer } from "../components/utils/Footer";
 
-const Container = styled.div`
-  position: relative;
-  margin-bottom: -60px;
-`;
-
-const ImageBox = styled.div`
-  background-color: #fff;
-
-  img {
-    display: block;
-    width: 100%;
-  }
-`;
-
 const Promotion = () => {
   const { id } = useParams();
-  // const {state} = useLocation();
 
   const { data: dataList, isLoading } = useQuery("promotionApi", PromotionApi, {
     refetchOnWindowFocus: false,
@@ -58,3 +43,17 @@ const Promotion = () => {
 };
 
 export default Promotion;
+
+const Container = styled.div`
+  position: relative;
+  margin-bottom: -60px;
+`;
+
+const ImageBox = styled.div`
+  background-color: #fff;
+
+  img {
+    display: block;
+    width: 100%;
+  }
+`;

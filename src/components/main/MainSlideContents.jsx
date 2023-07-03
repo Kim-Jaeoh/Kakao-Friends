@@ -10,6 +10,198 @@ import { useQuery } from "react-query";
 import { SlideListApi } from "../../apis/dataApi";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 
+export const MainSlideContents = () => {
+  const videoRef = useRef([]);
+  const flickingRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [hover, setHover] = useState(false);
+  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+  const { toggleIcon, currentBasket } = useBasketToggle();
+  const { data: dataList, isLoading } = useQuery("slideList", SlideListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  // 비디오
+  const togglePlay = (event) => {
+    event.preventDefault();
+    if (hover) {
+      // ref에 담긴 비디오가 재생 중일 때
+      if (videoRef?.current[slideIndex].paused) {
+        videoRef?.current[slideIndex].play();
+        setIsPlaying(true);
+      } else {
+        videoRef?.current[slideIndex]?.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  // 이미지 변경 시마다 리렌더링
+  useEffect(() => {
+    moveToFlicking(slideIndex);
+    setIsPlaying(false);
+    setHover(false);
+  }, [slideIndex]);
+
+  // 비디오 재생 중일 때 return
+  const checkAnimate = () => {
+    if (flickingRef.current.animating === true) {
+      return;
+    }
+  };
+
+  // 슬라이드 변경 (주어진 인덱스에 해당하는 패널로 이동)
+  const moveToFlicking = async (index) => {
+    const flicking = flickingRef.current;
+    if (!flicking) {
+      return;
+    }
+
+    // catch = 무분별하게 이동 시 "Animation is already playing." 에러 뜨는 거 방지
+    await flicking.moveTo(index).catch((e) => {
+      return;
+    });
+  };
+
+  const onClickArrowBackButton = () => {
+    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
+    checkAnimate();
+
+    if (slideIndex === 0) {
+      setSlideIndex(dataList?.data.length - 1); // array.length - (n)은 배열의 길이가 아닌 index 반환
+    } else {
+      setSlideIndex(slideIndex - 1);
+    }
+    if (!videoRef?.current[slideIndex].paused) {
+      videoRef?.current[slideIndex].pause();
+    }
+  };
+
+  const onClickArrowForwardButton = () => {
+    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
+    checkAnimate();
+
+    if (slideIndex === dataList?.data.length - 1) {
+      setSlideIndex(0);
+    } else {
+      setSlideIndex(slideIndex + 1);
+    }
+
+    if (!videoRef?.current[slideIndex].paused) {
+      videoRef?.current[slideIndex]?.pause();
+    }
+  };
+
+  const onClick = (index) => {
+    // 다른 비디오에서 클릭 못하게 막기
+    if (index === slideIndex) {
+      setHover((prev) => !prev);
+    }
+  };
+
+  // 재생 시 hover 노출 및 2초 뒤 꺼짐
+  useEffect(() => {
+    clearTimeout();
+    if (hover) {
+      setTimeout(() => {
+        return setHover(false);
+      }, 2000);
+    }
+
+    return () => clearTimeout();
+  }, [hover]);
+
+  return (
+    <>
+      <Container>
+        <Title>
+          <strong>신박한 프렌즈템</strong>
+        </Title>
+        <SliderBox>
+          {!resize && (
+            <ArrowBox>
+              <ArrowButton onClick={onClickArrowBackButton}>
+                <IoIosArrowBack />
+              </ArrowButton>
+              <ArrowButton onClick={onClickArrowForwardButton}>
+                <IoIosArrowForward />
+              </ArrowButton>
+            </ArrowBox>
+          )}
+
+          <Flicking
+            circular={true}
+            duration={500}
+            autoResize={true}
+            resizeOnContentsReady={true}
+            autoInit={true}
+            defaultIndex={0}
+            ref={flickingRef}
+            onChanged={(e) => {
+              setSlideIndex(e.index);
+              videoRef?.current[slideIndex]?.pause();
+            }}
+            moveType={"strict"}
+          >
+            {!isLoading &&
+              dataList?.data.map((list, index) => (
+                <SliderItem key={index}>
+                  <SlideVideoBox>
+                    {index === slideIndex && hover && (
+                      <SlideVideoButton onClick={togglePlay} hover={hover}>
+                        {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
+                      </SlideVideoButton>
+                    )}
+                    <SlideVideo
+                      ref={(el) => {
+                        videoRef.current[index] = el;
+                      }} // index마다 ref.current의 정보를 useRef([])에 담기
+                      loop
+                      muted
+                      playsInline
+                      src={list.video}
+                      poster={list.poster}
+                      type="video/mp4"
+                      onClick={() => onClick(index)}
+                    />
+                  </SlideVideoBox>
+                  <SlideInfo>
+                    <SlideInfoText>
+                      <Link to={`/detail/${list.product}`}>
+                        <strong>{list.title}</strong>
+                      </Link>
+                    </SlideInfoText>
+                    <BagButton onClick={(e) => toggleIcon(list)}>
+                      {currentBasket?.filter(
+                        (obj) => obj.product === list.product
+                      ).length > 0 ? (
+                        <BsBagFill />
+                      ) : (
+                        <BsBag />
+                      )}
+                    </BagButton>
+                  </SlideInfo>
+                </SliderItem>
+              ))}
+          </Flicking>
+        </SliderBox>
+
+        {resize && !isLoading && (
+          <PaginationButton>
+            {dataList?.data.map((list) => (
+              <PaginationSpan key={list.id} slideIndex={slideIndex}>
+                <span />
+              </PaginationSpan>
+            ))}
+          </PaginationButton>
+        )}
+      </Container>
+    </>
+  );
+};
+
 const Container = styled.div`
   position: relative;
 `;
@@ -240,193 +432,3 @@ const PaginationSpan = styled.span`
     }
   }
 `;
-
-export const MainSlideContents = () => {
-  const videoRef = useRef([]);
-  const flickingRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [hover, setHover] = useState(false);
-
-  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
-  const { toggleIcon, currentBasket } = useBasketToggle();
-
-  const { data: dataList, isLoading } = useQuery("slideList", SlideListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
-  // 비디오
-  const togglePlay = (event) => {
-    event.preventDefault();
-    if (hover) {
-      // check if video in ref is playing
-      if (videoRef?.current[slideIndex].paused) {
-        videoRef?.current[slideIndex].play();
-        setIsPlaying(true);
-        // setHover(true); // 플레이 시 아이콘 보이게
-      } else {
-        videoRef?.current[slideIndex]?.pause();
-        setIsPlaying(false);
-      }
-    }
-  };
-
-  // 이미지 변경 시마다 리렌더링
-  useEffect(() => {
-    moveToFlicking(slideIndex);
-    setIsPlaying(false);
-    setHover(false);
-  }, [slideIndex]);
-
-  // 슬라이드 변경 (주어진 인덱스에 해당하는 패널로 이동)
-  const moveToFlicking = async (index) => {
-    const flicking = flickingRef.current;
-    if (!flicking) {
-      return;
-    }
-
-    // catch = 무분별하게 이동 시 "Animation is already playing." 에러 뜨는 거 방지
-    await flicking.moveTo(index).catch((e) => {
-      return;
-    });
-  };
-
-  const onClickArrowBackButton = () => {
-    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
-    if (flickingRef.current.animating === true) {
-      return;
-    }
-    if (slideIndex === 0) {
-      setSlideIndex(dataList?.data.length - 1); // array.length - (n)은 배열의 길이가 아닌 index 반환
-    } else {
-      setSlideIndex(slideIndex - 1);
-    }
-    if (!videoRef?.current[slideIndex].paused) {
-      videoRef?.current[slideIndex].pause();
-    }
-  };
-
-  const onClickArrowForwardButton = () => {
-    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
-    if (flickingRef.current.animating === true) {
-      return;
-    }
-    if (slideIndex === dataList?.data.length - 1) {
-      setSlideIndex(0);
-    } else {
-      setSlideIndex(slideIndex + 1);
-    }
-
-    if (!videoRef?.current[slideIndex].paused) {
-      videoRef?.current[slideIndex]?.pause();
-    }
-  };
-
-  const onClick = (index) => {
-    // 다른 비디오에서 클릭 못하게 막기
-    if (index === slideIndex) {
-      setHover((prev) => !prev);
-    }
-  };
-
-  // 재생 시 hover 노출 및 2초 뒤 꺼짐
-  useEffect(() => {
-    clearTimeout();
-    if (hover) {
-      setTimeout(() => {
-        return setHover(false);
-      }, 2000);
-    }
-
-    return () => clearTimeout();
-  }, [hover]);
-
-  return (
-    <>
-      <Container>
-        <Title>
-          <strong>신박한 프렌즈템</strong>
-        </Title>
-        <SliderBox>
-          {!resize && (
-            <ArrowBox>
-              <ArrowButton onClick={onClickArrowBackButton}>
-                <IoIosArrowBack />
-              </ArrowButton>
-              <ArrowButton onClick={onClickArrowForwardButton}>
-                <IoIosArrowForward />
-              </ArrowButton>
-            </ArrowBox>
-          )}
-
-          <Flicking
-            circular={true}
-            duration={500}
-            autoResize={true}
-            resizeOnContentsReady={true}
-            autoInit={true}
-            defaultIndex={0}
-            ref={flickingRef}
-            onChanged={(e) => {
-              setSlideIndex(e.index);
-              videoRef?.current[slideIndex]?.pause();
-            }}
-            moveType={"strict"}
-          >
-            {!isLoading &&
-              dataList?.data.map((list, index) => (
-                <SliderItem key={index}>
-                  <SlideVideoBox>
-                    {index === slideIndex && hover && (
-                      <SlideVideoButton onClick={togglePlay} hover={hover}>
-                        {!isPlaying ? <BsPlayFill /> : <BsFillPauseFill />}
-                      </SlideVideoButton>
-                    )}
-                    <SlideVideo
-                      ref={(el) => {
-                        videoRef.current[index] = el;
-                      }} // index마다 ref.current의 정보를 useRef([])에 담는다 *중요!
-                      loop
-                      muted
-                      playsInline
-                      src={list.video}
-                      poster={list.poster}
-                      type="video/mp4"
-                      onClick={() => onClick(index)}
-                    />
-                  </SlideVideoBox>
-                  <SlideInfo>
-                    <SlideInfoText>
-                      <Link to={`/detail/${list.product}`}>
-                        <strong>{list.title}</strong>
-                      </Link>
-                    </SlideInfoText>
-                    <BagButton onClick={(e) => toggleIcon(list)}>
-                      {currentBasket?.filter(
-                        (obj) => obj.product === list.product
-                      ).length > 0 ? (
-                        <BsBagFill />
-                      ) : (
-                        <BsBag />
-                      )}
-                    </BagButton>
-                  </SlideInfo>
-                </SliderItem>
-              ))}
-          </Flicking>
-        </SliderBox>
-
-        {resize && !isLoading && (
-          <PaginationButton>
-            {dataList?.data.map((list) => (
-              <PaginationSpan key={list.id} slideIndex={slideIndex}>
-                <span />
-              </PaginationSpan>
-            ))}
-          </PaginationButton>
-        )}
-      </Container>
-    </>
-  );
-};

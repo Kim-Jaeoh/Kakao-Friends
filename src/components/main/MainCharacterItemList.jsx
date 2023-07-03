@@ -6,6 +6,85 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useHandleISize } from "../../hooks/useHandleISize";
 import { useBasketToggle } from "../../hooks/useBasketToggle";
 
+export const MainCharacterItemList = ({
+  titleBanner,
+  titleText,
+  subText,
+  listData,
+}) => {
+  const [resizeItem, setResizeItem] = useState([]);
+
+  const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+  const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
+
+  // 모바일 사이즈 시 리스트 4개만 보이도록 (총 6개)
+  useEffect(() => {
+    if (resize) {
+      const copy = [...listData];
+      copy.splice(copy.length - 2, 2);
+      setResizeItem(copy);
+    }
+  }, [listData, resize]);
+
+  return (
+    <Wrapper style={{ width: !resize ? "640px" : size + "px" }}>
+      <Title style={{ backgroundImage: `url(${titleBanner})` }}>
+        <strong>
+          {titleText} <br /> {subText}
+        </strong>
+      </Title>
+
+      <SlideBox>
+        <SliderItemBox>
+          {listData &&
+            (!resize ? listData : resizeItem).map((list, index) => (
+              <SliderItemList key={list.id}>
+                <SliderItem>
+                  <Link to={`/detail/${list.product}`}>
+                    <SliderImage>
+                      <img src={list.image} alt="제품" loading="lazy" />
+                    </SliderImage>
+                  </Link>
+
+                  <SliderItemInfo>
+                    <Link to={`/detail/${list.product}`}>
+                      <strong>{list.title}</strong>
+                      <em>
+                        <span>{list.price}</span>원
+                      </em>
+                    </Link>
+                  </SliderItemInfo>
+
+                  <BagButton
+                    onClick={(e) => toggleIcon(list, index)}
+                    style={{
+                      backgroundColor:
+                        currentBasket?.filter(
+                          (obj) => obj.product === list.product
+                        ).length > 0
+                          ? "#ff477E"
+                          : "#bbb",
+                    }}
+                  >
+                    <BsBag />
+                  </BagButton>
+                </SliderItem>
+              </SliderItemList>
+            ))}
+        </SliderItemBox>
+        <WrapLink>
+          <Link to="/">
+            기획전 보러가기
+            <span>
+              <IoIosArrowForward />
+            </span>
+          </Link>
+        </WrapLink>
+      </SlideBox>
+    </Wrapper>
+  );
+};
+
 const Wrapper = styled.div`
   max-width: 640px;
   min-width: 320px;
@@ -184,82 +263,3 @@ const WrapLink = styled.div`
     }
   }
 `;
-
-export const MainCharacterItemList = ({
-  titleBanner,
-  titleText,
-  subText,
-  listData,
-}) => {
-  const [resizeItem, setResizeItem] = useState([]);
-
-  const { size, resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
-  const { toggleIcon, currentBasket } = useBasketToggle(); // 장바구니 커스텀 훅
-
-  // 모바일 사이즈 시 리스트 4개만 보이도록 (총 6개)
-  useEffect(() => {
-    if (resize) {
-      const copy = [...listData];
-      copy.splice(copy.length - 2, 2);
-      setResizeItem(copy);
-    }
-  }, [listData, resize]);
-
-  return (
-    <Wrapper style={{ width: !resize ? "640px" : size + "px" }}>
-      <Title style={{ backgroundImage: `url(${titleBanner})` }}>
-        <strong>
-          {titleText} <br /> {subText}
-        </strong>
-      </Title>
-
-      <SlideBox>
-        <SliderItemBox>
-          {listData &&
-            (!resize ? listData : resizeItem).map((list, index) => (
-              <SliderItemList key={list.id}>
-                <SliderItem>
-                  <Link to={`/detail/${list.product}`}>
-                    <SliderImage>
-                      <img src={list.image} alt="제품" loading="lazy" />
-                    </SliderImage>
-                  </Link>
-
-                  <SliderItemInfo>
-                    <Link to={`/detail/${list.product}`}>
-                      <strong>{list.title}</strong>
-                      <em>
-                        <span>{list.price}</span>원
-                      </em>
-                    </Link>
-                  </SliderItemInfo>
-
-                  <BagButton
-                    onClick={(e) => toggleIcon(list, index)}
-                    style={{
-                      backgroundColor:
-                        currentBasket?.filter(
-                          (obj) => obj.product === list.product
-                        ).length > 0
-                          ? "#ff477E"
-                          : "#bbb",
-                    }}
-                  >
-                    <BsBag />
-                  </BagButton>
-                </SliderItem>
-              </SliderItemList>
-            ))}
-        </SliderItemBox>
-        <WrapLink>
-          <Link to="/">
-            기획전 보러가기
-            <span>
-              <IoIosArrowForward />
-            </span>
-          </Link>
-        </WrapLink>
-      </SlideBox>
-    </Wrapper>
-  );
-};

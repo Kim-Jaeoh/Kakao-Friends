@@ -2,13 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 import FadeLoader from "react-spinners/FadeLoader";
 
-const Box = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
 export const Spinner = () => {
   return (
     <Box>
@@ -16,3 +9,10 @@ export const Spinner = () => {
     </Box>
   );
 };
+
+const Box = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;

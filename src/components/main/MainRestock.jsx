@@ -9,6 +9,154 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 
+export const MainRestock = () => {
+  const flickingRef = useRef(null);
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const [visible2, setVisible2] = useState(true);
+  const [clickIcon, setClickIcon] = useState(false);
+  const [clickNumber, setClickNumber] = useState([]);
+
+  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
+
+  const { data: dataList, isLoading } = useQuery(
+    "productList",
+    ProductListApi,
+    {
+      refetchOnWindowFocus: false,
+      onError: (e) => console.log(e.message),
+    }
+  );
+
+  // dataList에서 amount(수량)이 0인 객체만 6개 가져오기
+  const RestockItem = dataList?.data
+    .filter((item) => item.amount === 0)
+    .slice(0, 6);
+
+  // 이미지 변경 시마다 슬라이드 이동
+  useEffect(() => {
+    moveToFlicking(slideIndex);
+  }, [slideIndex]);
+
+  // 슬라이드 변경 (주어진 인덱스에 해당하는 패널로 이동)
+  const moveToFlicking = async (index) => {
+    const flicking = flickingRef.current;
+    if (!flicking) {
+      return;
+    }
+
+    // 무분별하게 이동 시 "Animation is already playing." 에러 뜨는 거 방지
+    await flicking.moveTo(index).catch((e) => {
+      return;
+    });
+  };
+
+  const onClickArrowBackButton = () => {
+    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
+    if (flickingRef.current.animating === true) {
+      return;
+    }
+    if (slideIndex !== 0) {
+      setSlideIndex(slideIndex - 1);
+    }
+  };
+
+  const onClickArrowForwardButton = () => {
+    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
+    if (flickingRef.current.animating === true) {
+      return;
+    }
+    if (slideIndex !== 3) {
+      setSlideIndex(slideIndex + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (slideIndex === 0) {
+      setVisible(false);
+    } else {
+      setVisible(true);
+    }
+    if (slideIndex === 3) {
+      setVisible2(false);
+    } else {
+      setVisible2(true);
+    }
+  }, [slideIndex]);
+
+  const toggleBell = (index) => {
+    setClickNumber(index);
+    if (clickIcon) {
+      setClickIcon(false);
+    } else {
+      setClickIcon(true);
+    }
+  };
+
+  return (
+    <Container>
+      <Title>
+        <strong>다시 놓치지 않을 거예요</strong>
+        <Link>
+          더보기
+          <IoIosArrowForward />
+        </Link>
+      </Title>
+      <SliderBox visible={visible} visible2={visible2}>
+        {!resize && (
+          <ArrowBox>
+            <ArrowButton onClick={onClickArrowBackButton} visible={visible}>
+              <IoIosArrowBack />
+            </ArrowButton>
+            <ArrowButton
+              onClick={onClickArrowForwardButton}
+              visible2={visible2}
+            >
+              <IoIosArrowForward />
+            </ArrowButton>
+          </ArrowBox>
+        )}
+        <Flicking
+          duration={500}
+          autoResize={true}
+          autoInit={true}
+          ref={flickingRef}
+          changeOnHold={false}
+          moveType={"strict"}
+          onChanged={(e) => {
+            setSlideIndex(e.index);
+          }}
+          bound={true}
+          align={"prev"}
+        >
+          {!isLoading &&
+            RestockItem.map((list, index) => (
+              <div key={list.id}>
+                <ListBox>
+                  <Link to={`/detail/${list.product}`}>
+                    <ListImage
+                      src={list.image}
+                      alt={list.title}
+                      loading="lazy"
+                    />
+                    <ListTitle>{list.title}</ListTitle>
+                  </Link>
+                  <BellButton onClick={() => toggleBell(index)}>
+                    {clickIcon && index === clickNumber ? (
+                      <AiFillBell />
+                    ) : (
+                      <AiOutlineBell />
+                    )}
+                  </BellButton>
+                </ListBox>
+              </div>
+            ))}
+        </Flicking>
+      </SliderBox>
+    </Container>
+  );
+};
+
 const Container = styled.div``;
 
 const Title = styled.div`
@@ -187,151 +335,3 @@ const ArrowButton = styled.button`
     justify-content: center;
   }
 `;
-
-export const MainRestock = () => {
-  const flickingRef = useRef(null);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
-  const [visible2, setVisible2] = useState(true);
-  const [clickIcon, setClickIcon] = useState(false);
-  const [clickNumber, setClickNumber] = useState([]);
-
-  const { resize } = useHandleISize(); // 사이즈 체크 커스텀 훅
-
-  const { data: dataList, isLoading } = useQuery(
-    "productList",
-    ProductListApi,
-    {
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e.message),
-    }
-  );
-
-  // dataList에서 amount(수량)이 0인 객체만 6개 가져오기
-  const RestockItem = dataList?.data
-    .filter((item) => item.amount === 0)
-    .slice(0, 6);
-
-  // 이미지 변경 시마다 슬라이드 이동
-  useEffect(() => {
-    moveToFlicking(slideIndex);
-  }, [slideIndex]);
-
-  // 슬라이드 변경 (주어진 인덱스에 해당하는 패널로 이동)
-  const moveToFlicking = async (index) => {
-    const flicking = flickingRef.current;
-    if (!flicking) {
-      return;
-    }
-
-    // 무분별하게 이동 시 "Animation is already playing." 에러 뜨는 거 방지
-    await flicking.moveTo(index).catch((e) => {
-      return;
-    });
-  };
-
-  const onClickArrowBackButton = () => {
-    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
-    if (flickingRef.current.animating === true) {
-      return;
-    }
-    if (slideIndex !== 0) {
-      setSlideIndex(slideIndex - 1);
-    }
-  };
-
-  const onClickArrowForwardButton = () => {
-    // 무분별하게 클릭할 경우 아이콘 엉키는 거 방지
-    if (flickingRef.current.animating === true) {
-      return;
-    }
-    if (slideIndex !== 3) {
-      setSlideIndex(slideIndex + 1);
-    }
-  };
-
-  useEffect(() => {
-    if (slideIndex === 0) {
-      setVisible(false);
-    } else {
-      setVisible(true);
-    }
-    if (slideIndex === 3) {
-      setVisible2(false);
-    } else {
-      setVisible2(true);
-    }
-  }, [slideIndex]);
-
-  const toggleBell = (index) => {
-    setClickNumber(index);
-    if (clickIcon) {
-      setClickIcon(false);
-    } else {
-      setClickIcon(true);
-    }
-  };
-
-  return (
-    <Container>
-      <Title>
-        <strong>다시 놓치지 않을 거예요</strong>
-        <Link>
-          더보기
-          <IoIosArrowForward />
-        </Link>
-      </Title>
-      <SliderBox visible={visible} visible2={visible2}>
-        {!resize && (
-          <ArrowBox>
-            <ArrowButton onClick={onClickArrowBackButton} visible={visible}>
-              <IoIosArrowBack />
-            </ArrowButton>
-            <ArrowButton
-              onClick={onClickArrowForwardButton}
-              visible2={visible2}
-            >
-              <IoIosArrowForward />
-            </ArrowButton>
-          </ArrowBox>
-        )}
-        <Flicking
-          duration={500}
-          autoResize={true}
-          autoInit={true}
-          ref={flickingRef}
-          changeOnHold={false}
-          moveType={"strict"}
-          onChanged={(e) => {
-            setSlideIndex(e.index);
-          }}
-          bound={true}
-          align={"prev"}
-        >
-          {!isLoading &&
-            RestockItem.map((list, index) => (
-              <div key={list.id}>
-                <ListBox>
-                  <Link to={`/detail/${list.product}`}>
-                    <ListImage
-                      src={list.image}
-                      alt={list.title}
-                      loading="lazy"
-                    />
-                    <ListTitle>{list.title}</ListTitle>
-                  </Link>
-                  <BellButton onClick={() => toggleBell(index)}>
-                    {clickIcon && index === clickNumber ? (
-                      <AiFillBell />
-                    ) : (
-                      <AiOutlineBell />
-                    )}
-                  </BellButton>
-                </ListBox>
-              </div>
-            ))}
-        </Flicking>
-      </SliderBox>
-    </Container>
-  );
-};

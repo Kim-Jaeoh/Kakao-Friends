@@ -11,79 +11,6 @@ import { SearchResultItem } from "../components/search/SearchResultItem";
 import { SearchResultList } from "../components/search/SearchResultList";
 import { SearchMain } from "../components/search/SearchMain";
 
-const Container = styled.div`
-  width: 100%;
-  outline: none;
-`;
-
-const SearchBox = styled.div`
-  position: relative;
-  padding: 14px 20px 13px;
-  border-bottom: 1px solid #dedfe0;
-  background-color: #fff;
-`;
-
-const SearchForm = styled.form``;
-
-const SearchContents = styled.div`
-  position: relative;
-  height: 25px;
-  padding: 9px 40px 9px 10px;
-  border-radius: 21px;
-  background-color: #f2f2f2;
-  display: flex;
-  align-items: center;
-`;
-
-const SearchIcon = styled.label`
-  width: 24px;
-  height: 24px;
-  font-size: 23px;
-  text-align: center;
-  margin-right: 6px;
-
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-    }
-  }
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  border: 0;
-  font-size: 16px;
-  line-height: 25px;
-  background-color: transparent;
-  outline: none;
-  resize: none;
-`;
-
-const ResetButton = styled.div`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  right: 7px;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
-
-  span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      color: #cacbcc;
-      font-size: 22px;
-    }
-  }
-`;
-
 const Search = () => {
   const [focus, setFocus] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
@@ -183,3 +110,76 @@ const Search = () => {
 };
 
 export default Search;
+
+const Container = styled.div`
+  width: 100%;
+  outline: none;
+`;
+
+const SearchBox = styled.div`
+  position: relative;
+  padding: 14px 20px 13px;
+  border-bottom: 1px solid #dedfe0;
+  background-color: #fff;
+`;
+
+const SearchForm = styled.form``;
+
+const SearchContents = styled.div`
+  position: relative;
+  height: 25px;
+  padding: 9px 40px 9px 10px;
+  border-radius: 21px;
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+`;
+
+const SearchIcon = styled.label`
+  width: 24px;
+  height: 24px;
+  font-size: 23px;
+  text-align: center;
+  margin-right: 6px;
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+    }
+  }
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  border: 0;
+  font-size: 16px;
+  line-height: 25px;
+  background-color: transparent;
+  outline: none;
+  resize: none;
+`;
+
+const ResetButton = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 7px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      color: #cacbcc;
+      font-size: 22px;
+    }
+  }
+`;

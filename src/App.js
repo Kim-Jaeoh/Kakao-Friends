@@ -24,26 +24,6 @@ const Search = lazy(() => import("./pages/Search"));
 const Promotion = lazy(() => import("./pages/Promotion"));
 const Login = lazy(() => import("./pages/Login"));
 
-const Container = styled.div`
-  font-size: 14px;
-  line-height: 1.5;
-  color: #111111;
-  letter-spacing: -0.015em;
-
-  position: relative;
-  margin: 0 auto;
-  max-width: 640px;
-  min-width: 320px !important;
-  min-height: 100vh;
-  background-color: #fff;
-  box-sizing: border-box;
-
-  a {
-    color: #111111;
-    text-decoration: none;
-  }
-`;
-
 function App() {
   return (
     <>
@@ -70,3 +50,23 @@ function App() {
 }
 
 export default App;
+
+const Container = styled.div`
+  font-size: 14px;
+  line-height: 1.5;
+  color: #111111;
+  letter-spacing: -0.015em;
+
+  position: relative;
+  margin: 0 auto;
+  max-width: 640px;
+  min-width: 320px !important;
+  min-height: 100vh;
+  background-color: #fff;
+  box-sizing: border-box;
+
+  a {
+    color: #111111;
+    text-decoration: none;
+  }
+`;

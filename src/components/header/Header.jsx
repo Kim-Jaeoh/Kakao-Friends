@@ -9,73 +9,6 @@ import { Category } from "./Category";
 import { Menubar } from "../modal/Menubar";
 import { useSelector } from "react-redux";
 
-const Container = styled.header`
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  margin: 0 auto;
-  background-color: #fff;
-  max-width: 640px;
-  min-width: 320px;
-
-  @media screen and (min-width: 640px) {
-    width: 640px;
-  }
-`;
-
-const HeaderBox = styled.div`
-  display: flex;
-  align-items: center;
-  height: 46px;
-  font-size: 16px;
-  line-height: 46px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const IconBox = styled.div`
-  width: 24px;
-  height: 24px;
-  font-size: 22px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-  cursor: pointer;
-
-  svg {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`;
-
-const Icons = styled.div`
-  display: flex;
-  position: absolute;
-  right: 12px;
-
-  > div {
-    cursor: default;
-  }
-`;
-
-const Logo = styled(Link)`
-  display: block;
-  width: 167px;
-  height: 46px;
-  margin: 0 auto;
-  cursor: pointer;
-
-  img {
-    display: block;
-    width: 100%;
-  }
-`;
-
 export const Header = () => {
   const { pathname } = useLocation();
   const [showHeader, setShowHeader] = useState(true);
@@ -149,3 +82,70 @@ export const Header = () => {
     </>
   );
 };
+
+const Container = styled.header`
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin: 0 auto;
+  background-color: #fff;
+  max-width: 640px;
+  min-width: 320px;
+
+  @media screen and (min-width: 640px) {
+    width: 640px;
+  }
+`;
+
+const HeaderBox = styled.div`
+  display: flex;
+  align-items: center;
+  height: 46px;
+  font-size: 16px;
+  line-height: 46px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const IconBox = styled.div`
+  width: 24px;
+  height: 24px;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+
+  svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const Icons = styled.div`
+  display: flex;
+  position: absolute;
+  right: 12px;
+
+  > div {
+    cursor: default;
+  }
+`;
+
+const Logo = styled(Link)`
+  display: block;
+  width: 167px;
+  height: 46px;
+  margin: 0 auto;
+  cursor: pointer;
+
+  img {
+    display: block;
+    width: 100%;
+  }
+`;

@@ -8,6 +8,59 @@ import { useQuery } from "react-query";
 import { ProductListApi } from "../../apis/dataApi";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
+const ProductSeen = ({ productId }) => {
+  const [seenArray, setSeenArray] = useState([]);
+  const { viewedItems } = useLocalStorage(); // 로컬 저장 커스텀 훅
+  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
+  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
+
+  const { data: dataList } = useQuery("productList", ProductListApi, {
+    refetchOnWindowFocus: false,
+    // onSuccess: (e) => setLoading(true),
+    onError: (e) => console.log(e.message),
+  });
+
+  useEffect(() => {
+    // 최근 본 상품 map으로 반환 후 filter
+    let arr = viewedItems?.map((item) => dataList?.data[item - 1]);
+    const filter = arr?.filter((item) => item?.product !== productId);
+    setSeenArray(filter);
+  }, [dataList?.data, productId, viewedItems]);
+
+  return (
+    <BasketRecommendBox>
+      <strong>최근 본 상품이 요기 있네</strong>
+      <BasketRecommendListBox>
+        {seenArray?.slice(0, 8).map((list, index) => (
+          <BasketRecommendList key={index}>
+            <RecommendListBox>
+              <RecommendListImage to={`/detail/${list?.product}`}>
+                <img src={list?.image} alt={list?.title} loading="lazy" />
+              </RecommendListImage>
+              <RecommendListText>
+                <strong>{list?.title}</strong>
+                <RecomendListPrice>
+                  <span>{PriceComma(list?.price)}</span>원
+                </RecomendListPrice>
+                <BagButton onClick={(e) => toggleIcon(list)}>
+                  {currentBasket?.filter((obj) => obj.product === list?.product)
+                    .length > 0 ? (
+                    <BsBagFill style={{ color: "#ff447f" }} />
+                  ) : (
+                    <BsBag />
+                  )}
+                </BagButton>
+              </RecommendListText>
+            </RecommendListBox>
+          </BasketRecommendList>
+        ))}
+      </BasketRecommendListBox>
+    </BasketRecommendBox>
+  );
+};
+
+export default ProductSeen;
+
 const BasketRecommendBox = styled.div`
   padding-top: 36px;
   margin-bottom: 36px;
@@ -122,63 +175,4 @@ const BagButton = styled.button`
     justify-content: center;
     margin: 6px;
   }
-
-  /* @media screen and (min-width: 640px) {
-    right: 6px;
-  } */
 `;
-
-const ProductSeen = ({ productId }) => {
-  const [seenArray, setSeenArray] = useState([]);
-  const { viewedItems } = useLocalStorage(); // 로컬 저장 커스텀 훅
-
-  const { PriceComma } = usePriceComma(); // 가격 콤마 커스텀 훅
-
-  const { toggleIcon, currentBasket } = useBasketToggle(); //장바구니 커스텀 훅
-
-  const { data: dataList } = useQuery("productList", ProductListApi, {
-    refetchOnWindowFocus: false,
-    // onSuccess: (e) => setLoading(true),
-    onError: (e) => console.log(e.message),
-  });
-
-  useEffect(() => {
-    // 본 순서대로 나열되게 새로 map을 이용하여 저장함
-    let arr = viewedItems?.map((item) => dataList?.data[item - 1]);
-    const filter = arr?.filter((item) => item?.product !== productId);
-    setSeenArray(filter);
-  }, [dataList?.data, productId, viewedItems]);
-
-  return (
-    <BasketRecommendBox>
-      <strong>최근 본 상품이 요기 있네</strong>
-      <BasketRecommendListBox>
-        {seenArray?.slice(0, 8).map((list, index) => (
-          <BasketRecommendList key={index}>
-            <RecommendListBox>
-              <RecommendListImage to={`/detail/${list?.product}`}>
-                <img src={list?.image} alt={list?.title} loading="lazy" />
-              </RecommendListImage>
-              <RecommendListText>
-                <strong>{list?.title}</strong>
-                <RecomendListPrice>
-                  <span>{PriceComma(list?.price)}</span>원
-                </RecomendListPrice>
-                <BagButton onClick={(e) => toggleIcon(list)}>
-                  {currentBasket?.filter((obj) => obj.product === list?.product)
-                    .length > 0 ? (
-                    <BsBagFill style={{ color: "#ff447f" }} />
-                  ) : (
-                    <BsBag />
-                  )}
-                </BagButton>
-              </RecommendListText>
-            </RecommendListBox>
-          </BasketRecommendList>
-        ))}
-      </BasketRecommendListBox>
-    </BasketRecommendBox>
-  );
-};
-
-export default ProductSeen;

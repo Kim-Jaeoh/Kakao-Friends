@@ -3,6 +3,58 @@ import styled from "@emotion/styled";
 import { useQuery } from "react-query";
 import { BannerListApi } from "../../apis/dataApi.js";
 
+export const MainContents = () => {
+  const { data: dataList, isLoading } = useQuery("banner", BannerListApi, {
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e.message),
+  });
+
+  return (
+    <>
+      {!isLoading &&
+        dataList?.data.map((list) => (
+          <Container key={list.id}>
+            <MainContentsImageBox to={list.url}>
+              {list.video ? (
+                <MainContentsVideo
+                  height={list.height}
+                  loop
+                  autoPlay
+                  playsInline
+                  muted
+                  poster={list.image}
+                >
+                  <source src={list.video} type="video/mp4" />
+                </MainContentsVideo>
+              ) : (
+                <MainContentsImage
+                  src={list.image}
+                  height={list.height}
+                  alt={list.title}
+                  loading="lazy"
+                />
+              )}
+              <MainContentsText>
+                {list.title2 ? (
+                  <strong>
+                    {list.title} <br /> {list.title2}
+                  </strong>
+                ) : (
+                  <strong>{list.title}</strong>
+                )}
+                <span>
+                  {list.sub1}
+                  <br />
+                  {list.sub2}
+                </span>
+              </MainContentsText>
+            </MainContentsImageBox>
+          </Container>
+        ))}
+    </>
+  );
+};
+
 const Container = styled.div`
   display: block;
   overflow: hidden;
@@ -88,56 +140,3 @@ const MainContentsText = styled.span`
     word-break: break-all;
   }
 `;
-
-export const MainContents = () => {
-  const { data: dataList, isLoading } = useQuery("banner", BannerListApi, {
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e.message),
-  });
-
-  return (
-    <>
-      {!isLoading &&
-        dataList?.data.map((list) => (
-          <Container key={list.id}>
-            <MainContentsImageBox to={list.url}>
-              {list.video ? (
-                <MainContentsVideo
-                  height={list.height}
-                  loop
-                  // controls
-                  autoPlay
-                  playsInline
-                  muted
-                  poster={list.image}
-                >
-                  <source src={list.video} type="video/mp4" />
-                </MainContentsVideo>
-              ) : (
-                <MainContentsImage
-                  src={list.image}
-                  height={list.height}
-                  alt={list.title}
-                  loading="lazy"
-                />
-              )}
-              <MainContentsText>
-                {list.title2 ? (
-                  <strong>
-                    {list.title} <br /> {list.title2}
-                  </strong>
-                ) : (
-                  <strong>{list.title}</strong>
-                )}
-                <span>
-                  {list.sub1}
-                  <br />
-                  {list.sub2}
-                </span>
-              </MainContentsText>
-            </MainContentsImageBox>
-          </Container>
-        ))}
-    </>
-  );
-};
